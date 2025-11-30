@@ -1141,7 +1141,7 @@
             
             <div class="menu-story">
                 <p>在遙遠的王國，美麗的愛莉絲公主被邪惡的魔王擄走，囚禁在魔塔的最頂層。</p>
-                <p>身為王國最勇敢的騎士，你誓言要攀登這座五百層魔塔，穿越十個危險區域，擊敗魔王，拯救公主！</p>
+                <p>身為王國最勇敢的騎士，你誓言要攀登這座魔塔，穿越十個危險區域，擊敗魔王，拯救公主！</p>
                 <p>「騎士大人，請一定要來救我...」</p>
             </div>
 
@@ -2275,8 +2275,7 @@
                 const fleeChance = this.getFleeChance();
                 if (Math.random() * 100 < fleeChance) {
                     this.inCombat = false;
-                    this.level++;
-                    this.nextLevel();
+                    this.renderFleeSuccess(); // Show screen instead of skipping immediately
                 } else {
                     this.lastBattleLog = {
                         playerDamage: 0,
@@ -2443,7 +2442,7 @@
                 potionTypes.forEach(type => {
                     const potion = POTION_TYPES[type];
                     this.merchantItems.push({
-                        type: 'potion',
+                        shopType: 'potion',
                         potionType: type,
                         name: potion.name,
                         emoji: potion.emoji,
@@ -2459,7 +2458,7 @@
                     const equip = this.generateEquipmentDrop(rarityBoost);
                     equip.price = this.calculateEquipmentPrice(equip);
                     this.merchantItems.push({
-                        type: 'equipment',
+                        shopType: 'equipment',
                         ...equip
                     });
                 }
@@ -2484,12 +2483,14 @@
                 const item = this.merchantItems[index];
                 if (!item || this.player.gold < item.price) return;
 
-                this.player.gold -= item.price;
-
-                if (item.type === 'potion') {
+                if (item.shopType === 'potion') {
+                    this.player.gold -= item.price;
                     this.player.potions[item.potionType]++;
-                } else if (item.type === 'equipment') {
+                } else if (item.shopType === 'equipment') {
                     if (this.player.bag.length < 20) {
+                        this.player.gold -= item.price; // Deduct gold here
+                        
+                        // Create a clean copy of the equipment
                         const equipCopy = { 
                             name: item.name,
                             rarity: item.rarity,
@@ -2498,22 +2499,13 @@
                             dodge: item.dodge,
                             crit: item.crit,
                             hp: item.hp || 0,
-                            type: item.equipType || item.type,
-                            id: item.id
+                            type: item.type, // The type (weapon/armor) is already correct from ...equip
+                            id: Date.now() + Math.random()
                         };
-                        // Fix: properly set equipment type
-                        if (item.equipType) {
-                            equipCopy.type = item.equipType;
-                        } else if (EQUIPMENT.weapons.some(w => w.name === item.name)) {
-                            equipCopy.type = 'weapon';
-                        } else if (EQUIPMENT.armor.some(a => a.name === item.name)) {
-                            equipCopy.type = 'armor';
-                        } else {
-                            equipCopy.type = 'accessory';
-                        }
+                        
                         this.player.bag.push(equipCopy);
                     } else {
-                        this.player.gold += item.price;
+                        // Bag full, do nothing (don't deduct gold)
                         return;
                     }
                 }
@@ -2711,24 +2703,15 @@
                     </div>
                     <div class="event-content">
                         ${bossDialogue}
-                        <div class="battle-arena">
-                            <div class="combatant player">
-                                <div class="combatant-sprite">🧑‍⚔️</div>
-                                <div class="combatant-name">騎士</div>
-                                <div class="combatant-hp-bar">
-                                    <div class="combatant-hp-fill" style="width: ${Math.max(0, (this.player.hp / maxHp) * 100)}%"></div>
-                                </div>
-                                <div class="combatant-hp-text">${this.player.hp} / ${maxHp}</div>
-                                <div class="combatant-stats">⚔️${this.getAttack()} 🛡️${this.getDefense()}</div>
-                            </div>
-                            <div class="combatant monster">
-                                <div class="combatant-sprite">${monster.emoji}</div>
-                                <div class="combatant-name ${monster.type}">${typeText} ${monster.name}</div>
-                                <div class="combatant-hp-bar">
+                        <div class="battle-arena" style="justify-content: center;">
+                            <div class="combatant monster" style="max-width: 80%;">
+                                <div class="combatant-sprite" style="font-size: 4rem;">${monster.emoji}</div>
+                                <div class="combatant-name ${monster.type}" style="font-size: 1.1rem;">${typeText} ${monster.name}</div>
+                                <div class="combatant-hp-bar" style="height: 16px; margin-top: 5px;">
                                     <div class="combatant-hp-fill" style="width: ${Math.max(0, (monster.hp / monster.maxHp) * 100)}%"></div>
                                 </div>
-                                <div class="combatant-hp-text">${Math.max(0, monster.hp)} / ${monster.maxHp}</div>
-                                <div class="combatant-stats">⚔️${monster.attack} 🛡️${monster.defense}</div>
+                                <div class="combatant-hp-text" style="font-size: 0.9rem;">${Math.max(0, monster.hp)} / ${monster.maxHp}</div>
+                                <div class="combatant-stats" style="font-size: 0.8rem;">⚔️${monster.attack} 🛡️${monster.defense}</div>
                             </div>
                         </div>
                         ${battleLogHtml}
@@ -2856,6 +2839,26 @@
                     </div>
                     <div class="action-buttons">
                         <button class="btn btn-primary" onclick="game.collectLoot()">收集</button>
+                    </div>
+                `;
+            }
+
+            renderFleeSuccess() {
+                const panel = document.getElementById('event-panel');
+                panel.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-icon">🏃</div>
+                        <div><div class="event-title">逃脫成功</div></div>
+                    </div>
+                    <div class="event-content">
+                        <div class="treasure-display">
+                            <div class="treasure-icon">💨</div>
+                            <p style="color: #a8e6cf; font-size: 1.1rem; margin-top: 10px;">你成功擺脫了怪物的追擊！</p>
+                            <p style="color: #aaa; font-size: 0.9rem; margin-top: 5px;">雖然有些狼狽，但至少保住了性命。</p>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="game.level++; game.nextLevel()">繼續前進</button>
                     </div>
                 `;
             }
