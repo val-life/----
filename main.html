@@ -469,6 +469,7 @@
             margin-bottom: 6px;
             flex-shrink: 0;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .potion-slot {
@@ -601,58 +602,205 @@
             line-height: 1.4;
         }
 
-        /* Monster Display */
-        .monster-display {
+        /* Battle Arena */
+        .battle-arena {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .battle-arena::before {
+            content: '⚔️';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+
+        .combatant {
             text-align: center;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .combatant-sprite {
+            font-size: 3rem;
             margin-bottom: 8px;
+            animation: combatantIdle 1.5s ease-in-out infinite;
         }
 
-        .monster-sprite {
-            font-size: clamp(2.5rem, 8vw, 3.5rem);
-            margin-bottom: 5px;
-            animation: monsterBounce 1s ease-in-out infinite;
+        .combatant.player .combatant-sprite {
+            animation-delay: 0.2s;
         }
 
-        @keyframes monsterBounce {
+        @keyframes combatantIdle {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
+            50% { transform: translateY(-5px); }
         }
 
-        .monster-name {
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        .combatant-name {
             font-weight: bold;
+            font-size: 0.9rem;
             margin-bottom: 4px;
         }
 
-        .monster-name.normal { color: #888; }
-        .monster-name.elite { color: #667eea; }
-        .monster-name.boss { color: #ffd700; }
+        .combatant.player .combatant-name {
+            color: #4ecdc4;
+        }
 
-        .monster-stats {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            font-size: 0.75rem;
+        .combatant.monster .combatant-name.normal {
+            color: #888;
+        }
+
+        .combatant.monster .combatant-name.elite {
+            color: #667eea;
+        }
+
+        .combatant.monster .combatant-name.boss {
+            color: #ffd700;
+        }
+
+        .combatant-hp-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .combatant-hp-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .combatant.player .combatant-hp-fill {
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+        }
+
+        .combatant.monster .combatant-hp-fill {
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+        }
+
+        .combatant-hp-text {
+            font-size: 0.7rem;
             color: #aaa;
         }
 
-        .monster-hp-bar {
-            width: 80%;
-            max-width: 200px;
-            margin: 8px auto 0;
-            height: 14px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 7px;
-            overflow: hidden;
+        .combatant-stats {
+            font-size: 0.65rem;
+            color: #888;
+            margin-top: 4px;
         }
 
-        .monster-hp-fill {
+        /* Battle Log - Single Round */
+        .battle-log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .battle-log-title {
+            font-size: 0.7rem;
+            color: #888;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .battle-log-entry {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 0.8rem;
+        }
+
+        .battle-log-entry.player-attack {
+            color: #4ecdc4;
+        }
+
+        .battle-log-entry.player-crit {
+            color: #f39c12;
+        }
+
+        .battle-log-entry.monster-attack {
+            color: #e94560;
+        }
+
+        .battle-log-entry.dodge {
+            color: #a8e6cf;
+        }
+
+        .battle-log-entry.heal {
+            color: #4ecdc4;
+        }
+
+        .damage-number {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* Area Transition */
+        .area-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #ff6b35, #e94560);
-            transition: width 0.3s ease;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .area-transition h2 {
+            font-size: 1.8rem;
+            color: #e94560;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+        }
+
+        .area-transition .area-name {
+            font-size: 1.3rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .area-transition .area-desc {
+            font-size: 0.9rem;
+            color: #aaa;
+            text-align: center;
+            max-width: 300px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .area-transition .area-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
         }
 
         /* Loot Display */
@@ -740,6 +888,24 @@
             color: #aaa;
         }
 
+        /* Sell All Button */
+        .sell-all-btn {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-left: auto;
+            transition: all 0.2s;
+        }
+
+        .sell-all-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(243, 156, 18, 0.4);
+        }
+
         /* Treasure Display */
         .treasure-display {
             text-align: center;
@@ -760,33 +926,6 @@
         .treasure-rewards {
             font-size: 0.9rem;
         }
-
-        /* Combat Log */
-        .combat-log {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 8px;
-            border-radius: 6px;
-            max-height: 70px;
-            overflow-y: auto;
-            margin-bottom: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.7rem;
-            flex-shrink: 0;
-        }
-
-        .log-entry {
-            padding: 2px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .log-entry.damage { color: #e94560; }
-        .log-entry.heal { color: #4ecdc4; }
-        .log-entry.dodge { color: #a8e6cf; }
-        .log-entry.gold { color: #ffd700; }
-        .log-entry.crit { color: #f39c12; }
-        .log-entry.info { color: #888; }
-        .log-entry.loot { color: #a855f7; }
-        .log-entry.soul { color: #c084fc; }
 
         /* Buttons */
         .action-buttons {
@@ -848,7 +987,7 @@
 
         .flee-info {
             font-size: 0.65rem;
-            color: #aaa;
+            color: rgba(255,255,255,0.7);
             display: block;
             margin-top: 2px;
         }
@@ -919,28 +1058,6 @@
             font-weight: bold;
         }
 
-        /* Item Tooltip */
-        .tooltip {
-            position: fixed;
-            background: rgba(20, 20, 40, 0.95);
-            border: 1px solid #e94560;
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.75rem;
-            z-index: 1000;
-            pointer-events: none;
-            max-width: 200px;
-        }
-
-        .tooltip-name {
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .tooltip-stats {
-            color: #aaa;
-        }
-
         /* Animations */
         .shake {
             animation: shake 0.5s ease-in-out;
@@ -950,6 +1067,16 @@
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-6px); }
             75% { transform: translateX(6px); }
+        }
+
+        .attack-animation {
+            animation: attackPulse 0.3s ease-out;
+        }
+
+        @keyframes attackPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         .princess-sprite {
@@ -985,9 +1112,6 @@
             .bag-items {
                 max-height: 55px;
             }
-            .combat-log {
-                max-height: 50px;
-            }
         }
 
         @media (max-height: 550px) {
@@ -1017,7 +1141,7 @@
             
             <div class="menu-story">
                 <p>在遙遠的王國，美麗的愛莉絲公主被邪惡的魔王擄走，囚禁在魔塔的最頂層。</p>
-                <p>身為王國最勇敢的騎士，你誓言要攀登這座千層魔塔，擊敗魔王，拯救公主！</p>
+                <p>身為王國最勇敢的騎士，你誓言要攀登這座五百層魔塔，穿越十個危險區域，擊敗魔王，拯救公主！</p>
                 <p>「騎士大人，請一定要來救我...」</p>
             </div>
 
@@ -1054,7 +1178,7 @@
             <!-- Header -->
             <div class="game-header">
                 <h1>🏰 魔塔傳說 🏰</h1>
-                <div class="level-display">魔塔 第 <span id="current-level">1</span> 層 / 100</div>
+                <div class="level-display">第 <span id="current-level">1</span> 層 / 500</div>
                 <div class="floor-name" id="floor-name">地下監牢</div>
             </div>
 
@@ -1135,9 +1259,18 @@
         </div>
     </div>
 
+    <!-- Area Transition Overlay -->
+    <div class="area-transition hidden" id="area-transition">
+        <div class="area-icon" id="area-icon">🏰</div>
+        <h2>進入新區域</h2>
+        <div class="area-name" id="area-name">地下監牢</div>
+        <div class="area-desc" id="area-desc">陰暗潮濕的監牢，關押著被遺忘的靈魂...</div>
+        <button class="btn btn-primary" onclick="game.closeAreaTransition()">繼續前進</button>
+    </div>
+
     <script>
         // ==================== PERSISTENT DATA ====================
-        const SAVE_KEY = 'magicTower_soulData';
+        const SAVE_KEY = 'magicTower_soulData_v2';
 
         function loadSoulData() {
             const data = localStorage.getItem(SAVE_KEY);
@@ -1147,16 +1280,16 @@
             return {
                 souls: 0,
                 upgrades: {
-                    vitality: 0,      // +10 max HP per level
-                    strength: 0,       // +2 attack per level
-                    resilience: 0,     // +2 defense per level
-                    agility: 0,        // +2% dodge per level
-                    precision: 0,      // +2% crit per level
-                    fortune: 0,        // +5% gold per level
-                    soulHarvest: 0,    // +10% soul gain per level
-                    potionMaster: 0,   // +10% potion effectiveness per level
-                    startingGold: 0,   // +20 starting gold per level
-                    secondChance: 0    // % chance to survive fatal blow with 1 HP
+                    vitality: 0,
+                    strength: 0,
+                    resilience: 0,
+                    agility: 0,
+                    precision: 0,
+                    fortune: 0,
+                    soulHarvest: 0,
+                    potionMaster: 0,
+                    startingGold: 0,
+                    secondChance: 0
                 },
                 totalRuns: 0,
                 bestFloor: 0,
@@ -1169,34 +1302,33 @@
         }
 
         const SOUL_UPGRADES = [
-            { id: 'vitality', name: '生命強化', desc: '永久增加最大生命值', effect: '+10 生命', maxLevel: 20, baseCost: 10, costMult: 1.5 },
-            { id: 'strength', name: '力量強化', desc: '永久增加攻擊力', effect: '+2 攻擊', maxLevel: 20, baseCost: 12, costMult: 1.5 },
+            { id: 'vitality', name: '生命強化', desc: '永久增加最大生命值', effect: '+15 生命', maxLevel: 20, baseCost: 10, costMult: 1.5 },
+            { id: 'strength', name: '力量強化', desc: '永久增加攻擊力', effect: '+3 攻擊', maxLevel: 20, baseCost: 12, costMult: 1.5 },
             { id: 'resilience', name: '堅韌強化', desc: '永久增加防禦力', effect: '+2 防禦', maxLevel: 20, baseCost: 12, costMult: 1.5 },
-            { id: 'agility', name: '敏捷強化', desc: '永久增加閃避率', effect: '+2% 閃避', maxLevel: 15, baseCost: 15, costMult: 1.6 },
-            { id: 'precision', name: '精準強化', desc: '永久增加爆擊率', effect: '+2% 爆擊', maxLevel: 15, baseCost: 15, costMult: 1.6 },
+            { id: 'agility', name: '敏捷強化', desc: '永久增加閃避率', effect: '+1% 閃避', maxLevel: 15, baseCost: 15, costMult: 1.6 },
+            { id: 'precision', name: '精準強化', desc: '永久增加爆擊率', effect: '+1% 爆擊', maxLevel: 15, baseCost: 15, costMult: 1.6 },
             { id: 'fortune', name: '財運祝福', desc: '增加金幣獲取量', effect: '+5% 金幣', maxLevel: 10, baseCost: 20, costMult: 1.7 },
             { id: 'soulHarvest', name: '靈魂收割', desc: '增加靈魂碎片獲取', effect: '+10% 靈魂', maxLevel: 10, baseCost: 25, costMult: 1.8 },
             { id: 'potionMaster', name: '藥劑大師', desc: '增加藥水效果', effect: '+10% 效果', maxLevel: 10, baseCost: 18, costMult: 1.6 },
-            { id: 'startingGold', name: '初始資金', desc: '每次冒險開始時獲得額外金幣', effect: '+20 金幣', maxLevel: 10, baseCost: 15, costMult: 1.5 },
+            { id: 'startingGold', name: '初始資金', desc: '每次冒險開始時獲得額外金幣', effect: '+25 金幣', maxLevel: 10, baseCost: 15, costMult: 1.5 },
             { id: 'secondChance', name: '不死決心', desc: '受到致命傷害時有機會存活', effect: '+5% 機率', maxLevel: 10, baseCost: 30, costMult: 2.0 }
         ];
 
         // ==================== GAME DATA ====================
         
-        // Floor Names
-        const FLOOR_NAMES = {
-            1: '地下監牢',
-            11: '陰暗洞窟',
-            21: '骷髏墓地',
-            31: '幽暗森林',
-            41: '魔法實驗室',
-            51: '惡魔殿堂',
-            61: '冰霜走廊',
-            71: '烈焰通道',
-            81: '虛空裂隙',
-            91: '魔王寶座',
-            100: '魔王寶座頂層'
-        };
+        // 10 Areas, 50 floors each = 500 total floors
+        const AREAS = [
+            { id: 1, name: '地下監牢', icon: '⛓️', desc: '陰暗潮濕的監牢，關押著被遺忘的靈魂...', startFloor: 1 },
+            { id: 2, name: '陰暗洞窟', icon: '🕳️', desc: '蜿蜒曲折的洞穴，迴盪著不祥的聲響...', startFloor: 51 },
+            { id: 3, name: '骷髏墓地', icon: '💀', desc: '亡靈遊蕩的禁地，空氣中瀰漫著死亡的氣息...', startFloor: 101 },
+            { id: 4, name: '幽暗森林', icon: '🌲', desc: '永夜籠罩的森林，樹木之間潛伏著危險...', startFloor: 151 },
+            { id: 5, name: '魔法實驗室', icon: '🧪', desc: '瘋狂法師的實驗場，到處都是失敗的造物...', startFloor: 201 },
+            { id: 6, name: '惡魔殿堂', icon: '👿', desc: '惡魔聚集的大廳，邪惡的力量在此匯聚...', startFloor: 251 },
+            { id: 7, name: '冰霜走廊', icon: '❄️', desc: '寒冷刺骨的通道，凍結的屍體隨處可見...', startFloor: 301 },
+            { id: 8, name: '烈焰通道', icon: '🔥', desc: '熔岩流淌的地獄，高溫足以融化一切...', startFloor: 351 },
+            { id: 9, name: '虛空裂隙', icon: '🌀', desc: '空間扭曲的異界，現實的法則在此失效...', startFloor: 401 },
+            { id: 10, name: '魔王寶座', icon: '👑', desc: '魔王的王座之間，公主就在這裡等待救援！', startFloor: 451 }
+        ];
 
         // Story Dialogues
         const STORY_DIALOGUES = {
@@ -1204,23 +1336,23 @@
                 speaker: '老國王',
                 text: '勇敢的騎士啊，我的女兒被魔王抓走了。請你一定要救回她！這把劍是先王留下的寶物，希望能助你一臂之力。'
             },
-            floor10: {
+            area2: {
                 speaker: '神秘幽靈',
                 text: '活人？在這魔塔中還能見到活人...你是來救那位公主的吧？小心，越往上走，魔物越強大...'
             },
-            floor25: {
+            area3: {
                 speaker: '被囚禁的士兵',
                 text: '咳咳...騎士大人？我是先遣隊的倖存者...其他人都...公主應該被關在最頂層，魔王很強，請務必小心！'
             },
-            floor50: {
+            area5: {
                 speaker: '愛莉絲公主（遠處的聲音）',
                 text: '有人在嗎？請救救我...我能感覺到有人在接近...是騎士大人嗎？請快來救我！'
             },
-            floor75: {
+            area7: {
                 speaker: '魔王的影子',
                 text: '哼哼哼...又一個不自量力的人類。你以為能救走公主？我在頂層等著你，來送死吧！'
             },
-            floor90: {
+            area9: {
                 speaker: '愛莉絲公主',
                 text: '騎士大人！你真的來了！魔王就在上面...他很強大，但我相信你一定能打敗他！'
             },
@@ -1240,89 +1372,137 @@
             skeleton: { name: '骨頭碎片', emoji: '🦴', basePrice: 15 },
             zombie: { name: '腐肉', emoji: '🧟', basePrice: 12 },
             ghost: { name: '幽魂精華', emoji: '👻', basePrice: 25 },
-            orc: { name: '獸人獠牙', emoji: '🦷', basePrice: 30 },
+            orc: { name: '獸人獠牙', emoji: '🐗', basePrice: 30 },
+            treant: { name: '古樹心材', emoji: '🌳', basePrice: 35 },
+            golem: { name: '魔力核心', emoji: '💎', basePrice: 40 },
             demon: { name: '惡魔之角', emoji: '😈', basePrice: 50 },
-            golem: { name: '魔力核心', emoji: '💎', basePrice: 65 },
-            vampire: { name: '血晶', emoji: '🩸', basePrice: 70 },
-            dragon: { name: '龍鱗', emoji: '🐉', basePrice: 150 },
-            boss: { name: '魔王碎片', emoji: '👑', basePrice: 300 }
+            frost: { name: '寒冰結晶', emoji: '❄️', basePrice: 55 },
+            flame: { name: '烈焰精華', emoji: '🔥', basePrice: 60 },
+            void: { name: '虛空碎片', emoji: '🌀', basePrice: 70 },
+            dragon: { name: '龍鱗', emoji: '🐉', basePrice: 100 },
+            boss: { name: '魔王碎片', emoji: '👑', basePrice: 200 }
         };
 
-        // Monsters - Balanced for 100 floors
-        const MONSTERS = {
-            early: [
-                { name: '史萊姆', emoji: '🟢', baseHp: 25, baseAtk: 4, baseDef: 1, goldMin: 3, goldMax: 8, material: 'slime', matChance: 0.4 },
-                { name: '老鼠', emoji: '🐀', baseHp: 20, baseAtk: 5, baseDef: 0, goldMin: 2, goldMax: 6, material: 'rat', matChance: 0.35 },
-                { name: '蝙蝠', emoji: '🦇', baseHp: 18, baseAtk: 6, baseDef: 0, goldMin: 3, goldMax: 7, material: 'bat', matChance: 0.35 },
-                { name: '蜘蛛', emoji: '🕷️', baseHp: 22, baseAtk: 5, baseDef: 1, goldMin: 3, goldMax: 8, material: 'spider', matChance: 0.4 },
-                { name: '哥布林', emoji: '👺', baseHp: 30, baseAtk: 6, baseDef: 2, goldMin: 5, goldMax: 12, material: 'goblin', matChance: 0.45 },
+        // Monsters by Area
+        const MONSTERS_BY_AREA = {
+            1: [ // 地下監牢
+                { name: '史萊姆', emoji: '🟢', baseHp: 30, baseAtk: 8, baseDef: 2, goldMin: 5, goldMax: 12, material: 'slime', matChance: 0.4 },
+                { name: '老鼠', emoji: '🐀', baseHp: 25, baseAtk: 10, baseDef: 1, goldMin: 4, goldMax: 10, material: 'rat', matChance: 0.35 },
+                { name: '蝙蝠', emoji: '🦇', baseHp: 22, baseAtk: 12, baseDef: 1, goldMin: 5, goldMax: 11, material: 'bat', matChance: 0.35 },
             ],
-            mid: [
-                { name: '骷髏', emoji: '💀', baseHp: 40, baseAtk: 10, baseDef: 4, goldMin: 8, goldMax: 18, material: 'skeleton', matChance: 0.4 },
-                { name: '殭屍', emoji: '🧟', baseHp: 55, baseAtk: 8, baseDef: 6, goldMin: 10, goldMax: 20, material: 'zombie', matChance: 0.35 },
-                { name: '幽靈', emoji: '👻', baseHp: 35, baseAtk: 12, baseDef: 2, goldMin: 12, goldMax: 25, material: 'ghost', matChance: 0.3 },
-                { name: '獸人', emoji: '👹', baseHp: 60, baseAtk: 11, baseDef: 7, goldMin: 12, goldMax: 22, material: 'orc', matChance: 0.4 },
+            2: [ // 陰暗洞窟
+                { name: '蜘蛛', emoji: '🕷️', baseHp: 40, baseAtk: 15, baseDef: 4, goldMin: 8, goldMax: 18, material: 'spider', matChance: 0.4 },
+                { name: '哥布林', emoji: '👺', baseHp: 50, baseAtk: 18, baseDef: 5, goldMin: 10, goldMax: 22, material: 'goblin', matChance: 0.45 },
+                { name: '洞穴蝙蝠', emoji: '🦇', baseHp: 35, baseAtk: 20, baseDef: 3, goldMin: 9, goldMax: 20, material: 'bat', matChance: 0.35 },
             ],
-            late: [
-                { name: '惡魔', emoji: '😈', baseHp: 80, baseAtk: 18, baseDef: 10, goldMin: 20, goldMax: 40, material: 'demon', matChance: 0.35 },
-                { name: '石像鬼', emoji: '🗿', baseHp: 120, baseAtk: 15, baseDef: 18, goldMin: 25, goldMax: 45, material: 'golem', matChance: 0.3 },
-                { name: '吸血鬼', emoji: '🧛', baseHp: 70, baseAtk: 22, baseDef: 8, goldMin: 22, goldMax: 42, material: 'vampire', matChance: 0.3 },
+            3: [ // 骷髏墓地
+                { name: '骷髏', emoji: '💀', baseHp: 60, baseAtk: 22, baseDef: 8, goldMin: 15, goldMax: 30, material: 'skeleton', matChance: 0.4 },
+                { name: '殭屍', emoji: '🧟', baseHp: 80, baseAtk: 20, baseDef: 10, goldMin: 18, goldMax: 35, material: 'zombie', matChance: 0.35 },
+                { name: '幽靈', emoji: '👻', baseHp: 50, baseAtk: 28, baseDef: 5, goldMin: 20, goldMax: 40, material: 'ghost', matChance: 0.3 },
             ],
-            endgame: [
-                { name: '暗黑龍', emoji: '🐉', baseHp: 150, baseAtk: 28, baseDef: 20, goldMin: 40, goldMax: 80, material: 'dragon', matChance: 0.3 },
-                { name: '魔王近衛', emoji: '👿', baseHp: 130, baseAtk: 32, baseDef: 18, goldMin: 45, goldMax: 85, material: 'demon', matChance: 0.35 },
+            4: [ // 幽暗森林
+                { name: '狼人', emoji: '🐺', baseHp: 90, baseAtk: 30, baseDef: 12, goldMin: 25, goldMax: 45, material: 'orc', matChance: 0.4 },
+                { name: '樹妖', emoji: '🌳', baseHp: 120, baseAtk: 25, baseDef: 18, goldMin: 28, goldMax: 50, material: 'treant', matChance: 0.35 },
+                { name: '毒蜘蛛', emoji: '🕷️', baseHp: 70, baseAtk: 35, baseDef: 8, goldMin: 22, goldMax: 42, material: 'spider', matChance: 0.4 },
             ],
-            bosses: [
-                { name: '哥布林王', emoji: '👑', baseHp: 150, baseAtk: 15, baseDef: 8, goldMin: 50, goldMax: 100, material: 'boss', matChance: 0.8, floor: 25, soulReward: 15 },
-                { name: '骷髏領主', emoji: '☠️', baseHp: 250, baseAtk: 25, baseDef: 15, goldMin: 80, goldMax: 150, material: 'boss', matChance: 0.85, floor: 50, soulReward: 25 },
-                { name: '惡魔將軍', emoji: '👿', baseHp: 400, baseAtk: 40, baseDef: 25, goldMin: 120, goldMax: 220, material: 'boss', matChance: 0.9, floor: 75, soulReward: 40 },
-                { name: '魔王', emoji: '🔱', baseHp: 600, baseAtk: 55, baseDef: 35, goldMin: 200, goldMax: 350, material: 'boss', matChance: 1.0, floor: 100, soulReward: 100 },
+            5: [ // 魔法實驗室
+                { name: '石像鬼', emoji: '🗿', baseHp: 150, baseAtk: 32, baseDef: 25, goldMin: 35, goldMax: 60, material: 'golem', matChance: 0.35 },
+                { name: '魔偶', emoji: '🎭', baseHp: 100, baseAtk: 40, baseDef: 15, goldMin: 38, goldMax: 65, material: 'golem', matChance: 0.3 },
+                { name: '失敗實驗體', emoji: '🧪', baseHp: 130, baseAtk: 38, baseDef: 20, goldMin: 40, goldMax: 70, material: 'golem', matChance: 0.35 },
+            ],
+            6: [ // 惡魔殿堂
+                { name: '小惡魔', emoji: '😈', baseHp: 120, baseAtk: 45, baseDef: 18, goldMin: 45, goldMax: 80, material: 'demon', matChance: 0.35 },
+                { name: '地獄犬', emoji: '🐕', baseHp: 140, baseAtk: 50, baseDef: 22, goldMin: 50, goldMax: 85, material: 'demon', matChance: 0.3 },
+                { name: '墮落天使', emoji: '👼', baseHp: 110, baseAtk: 55, baseDef: 15, goldMin: 55, goldMax: 95, material: 'demon', matChance: 0.3 },
+            ],
+            7: [ // 冰霜走廊
+                { name: '冰霜巨人', emoji: '🧊', baseHp: 200, baseAtk: 52, baseDef: 30, goldMin: 60, goldMax: 100, material: 'frost', matChance: 0.35 },
+                { name: '寒冰幽魂', emoji: '👻', baseHp: 130, baseAtk: 60, baseDef: 20, goldMin: 65, goldMax: 110, material: 'frost', matChance: 0.3 },
+                { name: '冰狼', emoji: '🐺', baseHp: 160, baseAtk: 58, baseDef: 25, goldMin: 62, goldMax: 105, material: 'frost', matChance: 0.35 },
+            ],
+            8: [ // 烈焰通道
+                { name: '火焰精靈', emoji: '🔥', baseHp: 150, baseAtk: 65, baseDef: 22, goldMin: 70, goldMax: 120, material: 'flame', matChance: 0.35 },
+                { name: '熔岩巨人', emoji: '🌋', baseHp: 250, baseAtk: 58, baseDef: 35, goldMin: 75, goldMax: 130, material: 'flame', matChance: 0.3 },
+                { name: '火蜥蜴', emoji: '🦎', baseHp: 180, baseAtk: 62, baseDef: 28, goldMin: 72, goldMax: 125, material: 'flame', matChance: 0.35 },
+            ],
+            9: [ // 虛空裂隙
+                { name: '虛空行者', emoji: '🌀', baseHp: 180, baseAtk: 70, baseDef: 30, goldMin: 85, goldMax: 150, material: 'void', matChance: 0.3 },
+                { name: '異界獵手', emoji: '👁️', baseHp: 200, baseAtk: 75, baseDef: 28, goldMin: 90, goldMax: 160, material: 'void', matChance: 0.3 },
+                { name: '混沌使者', emoji: '💫', baseHp: 170, baseAtk: 80, baseDef: 25, goldMin: 95, goldMax: 170, material: 'void', matChance: 0.25 },
+            ],
+            10: [ // 魔王寶座
+                { name: '魔王近衛', emoji: '⚔️', baseHp: 220, baseAtk: 85, baseDef: 35, goldMin: 100, goldMax: 180, material: 'dragon', matChance: 0.3 },
+                { name: '暗黑龍', emoji: '🐉', baseHp: 280, baseAtk: 80, baseDef: 40, goldMin: 110, goldMax: 200, material: 'dragon', matChance: 0.35 },
+                { name: '死亡騎士', emoji: '🗡️', baseHp: 250, baseAtk: 88, baseDef: 38, goldMin: 105, goldMax: 190, material: 'dragon', matChance: 0.3 },
             ]
         };
 
-        // Equipment with more balanced stats
+        // Bosses for each area (at floor 50 of each area)
+        const AREA_BOSSES = {
+            1: { name: '監獄看守長', emoji: '👹', baseHp: 200, baseAtk: 25, baseDef: 12, goldMin: 80, goldMax: 150, soulReward: 15 },
+            2: { name: '洞窟蜘蛛后', emoji: '🕷️', baseHp: 350, baseAtk: 35, baseDef: 18, goldMin: 120, goldMax: 200, soulReward: 20 },
+            3: { name: '骷髏領主', emoji: '☠️', baseHp: 500, baseAtk: 45, baseDef: 25, goldMin: 180, goldMax: 300, soulReward: 30 },
+            4: { name: '森林守護者', emoji: '🌲', baseHp: 650, baseAtk: 55, baseDef: 35, goldMin: 250, goldMax: 400, soulReward: 40 },
+            5: { name: '瘋狂鍊金術師', emoji: '🧙', baseHp: 800, baseAtk: 70, baseDef: 40, goldMin: 350, goldMax: 550, soulReward: 55 },
+            6: { name: '惡魔將軍', emoji: '👿', baseHp: 1000, baseAtk: 85, baseDef: 50, goldMin: 450, goldMax: 700, soulReward: 70 },
+            7: { name: '冰霜女王', emoji: '👸', baseHp: 1200, baseAtk: 100, baseDef: 55, goldMin: 550, goldMax: 850, soulReward: 90 },
+            8: { name: '烈焰魔君', emoji: '🔥', baseHp: 1400, baseAtk: 115, baseDef: 60, goldMin: 650, goldMax: 1000, soulReward: 110 },
+            9: { name: '虛空領主', emoji: '🌑', baseHp: 1600, baseAtk: 130, baseDef: 70, goldMin: 800, goldMax: 1200, soulReward: 140 },
+            10: { name: '魔王', emoji: '👑', baseHp: 2000, baseAtk: 150, baseDef: 80, goldMin: 1000, goldMax: 1500, soulReward: 250 }
+        };
+
+        // Equipment with HP bonus for some armors
         const EQUIPMENT = {
             weapons: [
-                { name: '生鏽的劍', rarity: 'common', attack: 3, defense: 0, dodge: 0, crit: 1 },
-                { name: '鐵劍', rarity: 'common', attack: 5, defense: 0, dodge: 0, crit: 2 },
-                { name: '獵人短刀', rarity: 'common', attack: 4, defense: 0, dodge: 2, crit: 3 },
-                { name: '鋼刃', rarity: 'uncommon', attack: 8, defense: 0, dodge: 1, crit: 3 },
-                { name: '附魔之劍', rarity: 'uncommon', attack: 10, defense: 2, dodge: 0, crit: 4 },
-                { name: '刺客匕首', rarity: 'uncommon', attack: 6, defense: 0, dodge: 4, crit: 6 },
-                { name: '烈焰之刃', rarity: 'rare', attack: 15, defense: 0, dodge: 2, crit: 5 },
-                { name: '霜寒之刃', rarity: 'rare', attack: 12, defense: 4, dodge: 0, crit: 4 },
-                { name: '暗影匕首', rarity: 'rare', attack: 10, defense: 0, dodge: 6, crit: 10 },
-                { name: '屠龍者', rarity: 'epic', attack: 25, defense: 5, dodge: 2, crit: 8 },
-                { name: '致命細劍', rarity: 'epic', attack: 18, defense: 0, dodge: 8, crit: 15 },
-                { name: '聖劍', rarity: 'legendary', attack: 40, defense: 10, dodge: 5, crit: 12 },
+                { name: '生鏽的劍', rarity: 'common', attack: 5, defense: 0, dodge: 0, crit: 1, hp: 0 },
+                { name: '鐵劍', rarity: 'common', attack: 8, defense: 0, dodge: 0, crit: 2, hp: 0 },
+                { name: '獵人短刀', rarity: 'common', attack: 6, defense: 0, dodge: 2, crit: 3, hp: 0 },
+                { name: '鋼刃', rarity: 'uncommon', attack: 15, defense: 0, dodge: 1, crit: 3, hp: 0 },
+                { name: '附魔之劍', rarity: 'uncommon', attack: 18, defense: 3, dodge: 0, crit: 4, hp: 0 },
+                { name: '刺客匕首', rarity: 'uncommon', attack: 12, defense: 0, dodge: 4, crit: 8, hp: 0 },
+                { name: '烈焰之刃', rarity: 'rare', attack: 28, defense: 0, dodge: 2, crit: 6, hp: 0 },
+                { name: '霜寒之刃', rarity: 'rare', attack: 25, defense: 5, dodge: 0, crit: 5, hp: 0 },
+                { name: '暗影匕首', rarity: 'rare', attack: 20, defense: 0, dodge: 6, crit: 12, hp: 0 },
+                { name: '屠龍者', rarity: 'epic', attack: 45, defense: 8, dodge: 2, crit: 10, hp: 0 },
+                { name: '致命細劍', rarity: 'epic', attack: 35, defense: 0, dodge: 8, crit: 18, hp: 0 },
+                { name: '聖劍', rarity: 'legendary', attack: 70, defense: 15, dodge: 5, crit: 15, hp: 30 },
             ],
             armor: [
-                { name: '布甲', rarity: 'common', attack: 0, defense: 3, dodge: 1, crit: 0 },
-                { name: '皮甲', rarity: 'common', attack: 0, defense: 5, dodge: 2, crit: 0 },
-                { name: '鎖子甲', rarity: 'uncommon', attack: 0, defense: 10, dodge: 0, crit: 0 },
-                { name: '強化皮甲', rarity: 'uncommon', attack: 2, defense: 8, dodge: 3, crit: 1 },
-                { name: '板甲', rarity: 'rare', attack: 0, defense: 18, dodge: -2, crit: 0 },
-                { name: '秘銀甲', rarity: 'rare', attack: 3, defense: 15, dodge: 3, crit: 2 },
-                { name: '龍鱗甲', rarity: 'epic', attack: 8, defense: 28, dodge: 2, crit: 3 },
-                { name: '神聖板甲', rarity: 'legendary', attack: 15, defense: 45, dodge: 3, crit: 5 },
+                { name: '布甲', rarity: 'common', attack: 0, defense: 4, dodge: 1, crit: 0, hp: 10 },
+                { name: '皮甲', rarity: 'common', attack: 0, defense: 6, dodge: 2, crit: 0, hp: 15 },
+                { name: '獵人皮甲', rarity: 'common', attack: 2, defense: 5, dodge: 3, crit: 1, hp: 12 },
+                { name: '鎖子甲', rarity: 'uncommon', attack: 0, defense: 14, dodge: 0, crit: 0, hp: 30 },
+                { name: '強化皮甲', rarity: 'uncommon', attack: 3, defense: 12, dodge: 3, crit: 2, hp: 25 },
+                { name: '刺客套裝', rarity: 'uncommon', attack: 5, defense: 8, dodge: 6, crit: 5, hp: 15 },
+                { name: '板甲', rarity: 'rare', attack: 0, defense: 25, dodge: -2, crit: 0, hp: 60 },
+                { name: '秘銀甲', rarity: 'rare', attack: 5, defense: 22, dodge: 3, crit: 3, hp: 45 },
+                { name: '暗殺者斗篷', rarity: 'rare', attack: 10, defense: 15, dodge: 10, crit: 10, hp: 20 },
+                { name: '龍鱗甲', rarity: 'epic', attack: 12, defense: 40, dodge: 2, crit: 5, hp: 100 },
+                { name: '幻影披風', rarity: 'epic', attack: 18, defense: 28, dodge: 15, crit: 12, hp: 50 },
+                { name: '神聖板甲', rarity: 'legendary', attack: 25, defense: 60, dodge: 3, crit: 8, hp: 150 },
             ],
             accessories: [
-                { name: '銅戒指', rarity: 'common', attack: 1, defense: 1, dodge: 1, crit: 1 },
-                { name: '銀護符', rarity: 'common', attack: 2, defense: 2, dodge: 0, crit: 1 },
-                { name: '紅寶石戒指', rarity: 'uncommon', attack: 4, defense: 0, dodge: 2, crit: 2 },
-                { name: '藍寶石吊墜', rarity: 'uncommon', attack: 0, defense: 4, dodge: 3, crit: 1 },
-                { name: '翡翠護符', rarity: 'rare', attack: 6, defense: 6, dodge: 4, crit: 4 },
-                { name: '鳳凰羽飾', rarity: 'epic', attack: 12, defense: 8, dodge: 6, crit: 8 },
-                { name: '時代之冠', rarity: 'legendary', attack: 20, defense: 15, dodge: 8, crit: 10 },
+                { name: '銅戒指', rarity: 'common', attack: 2, defense: 2, dodge: 1, crit: 1, hp: 5 },
+                { name: '銀護符', rarity: 'common', attack: 3, defense: 3, dodge: 0, crit: 1, hp: 8 },
+                { name: '生命墜飾', rarity: 'common', attack: 0, defense: 2, dodge: 0, crit: 0, hp: 20 },
+                { name: '紅寶石戒指', rarity: 'uncommon', attack: 8, defense: 0, dodge: 2, crit: 3, hp: 10 },
+                { name: '藍寶石吊墜', rarity: 'uncommon', attack: 0, defense: 8, dodge: 3, crit: 2, hp: 25 },
+                { name: '生命護符', rarity: 'uncommon', attack: 2, defense: 4, dodge: 0, crit: 0, hp: 40 },
+                { name: '翡翠護符', rarity: 'rare', attack: 10, defense: 10, dodge: 5, crit: 5, hp: 30 },
+                { name: '鑽石戒指', rarity: 'rare', attack: 15, defense: 5, dodge: 5, crit: 10, hp: 20 },
+                { name: '不死護符', rarity: 'rare', attack: 5, defense: 8, dodge: 2, crit: 2, hp: 70 },
+                { name: '鳳凰羽飾', rarity: 'epic', attack: 20, defense: 15, dodge: 8, crit: 12, hp: 60 },
+                { name: '龍之心', rarity: 'epic', attack: 25, defense: 20, dodge: 5, crit: 8, hp: 100 },
+                { name: '時代之冠', rarity: 'legendary', attack: 35, defense: 30, dodge: 10, crit: 15, hp: 120 },
             ]
         };
 
         // Potions
         const POTION_TYPES = {
-            small: { name: '小型生命藥水', healPercent: 0.25, basePrice: 15, emoji: '🧪' },
-            medium: { name: '中型生命藥水', healPercent: 0.50, basePrice: 35, emoji: '🧴' },
-            large: { name: '大型生命藥水', healPercent: 0.75, basePrice: 60, emoji: '⚗️' },
-            full: { name: '完全恢復藥水', healPercent: 1.0, basePrice: 100, emoji: '💊' }
+            small: { name: '小型藥水', healPercent: 0.25, basePrice: 20, emoji: '🧪' },
+            medium: { name: '中型藥水', healPercent: 0.50, basePrice: 45, emoji: '🧴' },
+            large: { name: '大型藥水', healPercent: 0.75, basePrice: 80, emoji: '⚗️' },
+            full: { name: '完全恢復', healPercent: 1.0, basePrice: 130, emoji: '💊' }
         };
 
         const RARITY_NAMES = {
@@ -1340,9 +1520,9 @@
         };
 
         const EVENTS = {
-            fight: { weight: 50, icon: '⚔️', title: '遭遇怪物！' },
-            treasure: { weight: 15, icon: '💎', title: '發現寶箱！' },
-            merchant: { weight: 12, icon: '🏪', title: '流浪商人' },
+            fight: { weight: 55, icon: '⚔️', title: '遭遇怪物！' },
+            treasure: { weight: 12, icon: '💎', title: '發現寶箱！' },
+            merchant: { weight: 10, icon: '🏪', title: '流浪商人' },
             event: { weight: 15, icon: '❓', title: '神秘事件' },
             rest: { weight: 8, icon: '🏕️', title: '安全區域' }
         };
@@ -1363,8 +1543,8 @@
                 name: '戰士雕像',
                 description: '一座古老的戰士雕像，觸碰後你感到力量湧入體內！',
                 effect: (game) => {
-                    game.addBuff('戰士祝福', 5, 'attack', 8, 'positive');
-                    return '攻擊力 +5 持續8層！';
+                    game.addBuff('戰士祝福', 8, 'attack', 15, 'positive');
+                    return '攻擊力 +8 持續15層！';
                 },
                 icon: '🗿',
                 type: 'positive'
@@ -1373,8 +1553,8 @@
                 name: '詛咒祭壇',
                 description: '你不小心觸發了古老的詛咒...',
                 effect: (game) => {
-                    game.addBuff('詛咒', -3, 'defense', 6, 'negative');
-                    return '防禦 -3 持續6層！';
+                    game.addBuff('詛咒', -5, 'defense', 10, 'negative');
+                    return '防禦 -5 持續10層！';
                 },
                 icon: '🪦',
                 type: 'negative'
@@ -1383,8 +1563,8 @@
                 name: '訓練假人',
                 description: '這裡有一個附魔的訓練假人，練習後你感覺更加專注！',
                 effect: (game) => {
-                    game.addBuff('專注', 5, 'crit', 8, 'positive');
-                    return '爆擊率 +5% 持續8層！';
+                    game.addBuff('專注', 5, 'crit', 15, 'positive');
+                    return '爆擊率 +5% 持續15層！';
                 },
                 icon: '🎯',
                 type: 'positive'
@@ -1393,7 +1573,7 @@
                 name: '毒氣陷阱',
                 description: '地板突然噴出毒氣！',
                 effect: (game) => {
-                    const damage = Math.floor(game.player.maxHp * 0.10);
+                    const damage = Math.floor(game.player.maxHp * 0.12);
                     game.player.hp = Math.max(1, game.player.hp - damage);
                     return `受到 ${damage} 點毒素傷害！`;
                 },
@@ -1404,8 +1584,8 @@
                 name: '守護光環',
                 description: '一道神聖的光芒包圍了你！',
                 effect: (game) => {
-                    game.addBuff('光之護盾', 6, 'defense', 8, 'positive');
-                    return '防禦 +6 持續8層！';
+                    game.addBuff('光之護盾', 10, 'defense', 15, 'positive');
+                    return '防禦 +10 持續15層！';
                 },
                 icon: '✨',
                 type: 'positive'
@@ -1414,9 +1594,9 @@
                 name: '隱藏寶箱',
                 description: '你在牆壁的裂縫中發現了一個小寶箱！',
                 effect: (game) => {
-                    const gold = 20 + Math.floor(game.level * 0.5);
-                    game.player.gold += gold;
-                    return `獲得 ${gold} 金幣！`;
+                    const gold = 30 + Math.floor(game.level * 0.3);
+                    game.player.gold += Math.floor(gold * game.getGoldMultiplier());
+                    return `獲得 ${Math.floor(gold * game.getGoldMultiplier())} 金幣！`;
                 },
                 icon: '💰',
                 type: 'positive'
@@ -1425,8 +1605,8 @@
                 name: '幸運四葉草',
                 description: '你發現了一片四葉草，幸運女神向你微笑！',
                 effect: (game) => {
-                    game.addBuff('幸運', 6, 'dodge', 10, 'positive');
-                    return '閃避+6% 持續10層！';
+                    game.addBuff('幸運', 5, 'dodge', 20, 'positive');
+                    return '閃避 +5% 持續20層！';
                 },
                 icon: '🍀',
                 type: 'positive'
@@ -1435,9 +1615,9 @@
                 name: '騎士遺物',
                 description: '這裡有一位陣亡騎士的遺體，他的精神鼓舞了你！',
                 effect: (game) => {
-                    game.addBuff('騎士之魂', 4, 'attack', 10, 'positive');
-                    game.addBuff('騎士意志', 4, 'defense', 10, 'positive');
-                    return '攻擊+4，防禦+4 持續10層！';
+                    game.addBuff('騎士之魂', 6, 'attack', 20, 'positive');
+                    game.addBuff('騎士意志', 6, 'defense', 20, 'positive');
+                    return '攻擊+6，防禦+6 持續20層！';
                 },
                 icon: '⚔️',
                 type: 'positive'
@@ -1446,12 +1626,12 @@
                 name: '神秘藥水',
                 description: '地上有一瓶發光的藥水...',
                 effect: (game) => {
-                    if (Math.random() < 0.6) {
-                        const heal = Math.floor(game.player.maxHp * 0.20);
+                    if (Math.random() < 0.65) {
+                                                const heal = Math.floor(game.player.maxHp * 0.25);
                         game.player.hp = Math.min(game.player.hp + heal, game.player.maxHp);
                         return `是治療藥水！恢復 ${heal} 生命！`;
                     } else {
-                        const damage = Math.floor(game.player.maxHp * 0.08);
+                        const damage = Math.floor(game.player.maxHp * 0.10);
                         game.player.hp = Math.max(1, game.player.hp - damage);
                         return `是毒藥！受到 ${damage} 傷害！`;
                     }
@@ -1476,11 +1656,11 @@
                 this.player = {
                     hp: 100 + soulBonuses.vitality,
                     maxHp: 100 + soulBonuses.vitality,
-                    baseAttack: 10 + soulBonuses.strength,
+                    baseAttack: 12 + soulBonuses.strength,
                     baseDefense: 5 + soulBonuses.resilience,
                     baseDodge: 5 + soulBonuses.agility,
                     baseCrit: 5 + soulBonuses.precision,
-                    gold: 30 + soulBonuses.startingGold,
+                    gold: 50 + soulBonuses.startingGold,
                     equipment: {
                         weapon: null,
                         armor: null,
@@ -1489,7 +1669,7 @@
                     bag: [],
                     materials: {},
                     potions: {
-                        small: 1,
+                        small: 2,
                         medium: 0,
                         large: 0,
                         full: 0
@@ -1498,27 +1678,29 @@
                 this.buffs = [];
                 this.currentEvent = null;
                 this.currentMonster = null;
-                this.combatLog = [];
+                this.lastBattleLog = null;
                 this.pendingLoot = null;
                 this.gameStarted = false;
                 this.inCombat = false;
                 this.merchantItems = [];
                 this.soulGainedThisRun = 0;
                 this.storyShown = {};
+                this.currentArea = 1;
+                this.lastArea = 0;
             }
 
             getSoulBonuses() {
                 const u = this.soulData.upgrades;
                 return {
-                    vitality: u.vitality * 10,
-                    strength: u.strength * 2,
+                    vitality: u.vitality * 15,
+                    strength: u.strength * 3,
                     resilience: u.resilience * 2,
-                    agility: u.agility * 2,
-                    precision: u.precision * 2,
+                    agility: u.agility * 1,
+                    precision: u.precision * 1,
                     fortune: u.fortune * 5,
                     soulHarvest: u.soulHarvest * 10,
                     potionMaster: u.potionMaster * 10,
-                    startingGold: u.startingGold * 20,
+                    startingGold: u.startingGold * 25,
                     secondChance: u.secondChance * 5
                 };
             }
@@ -1528,6 +1710,51 @@
                 const shopCount = document.getElementById('shop-soul-count');
                 if (menuCount) menuCount.textContent = this.soulData.souls;
                 if (shopCount) shopCount.textContent = this.soulData.souls;
+            }
+
+            // ==================== AREA FUNCTIONS ====================
+
+            getCurrentArea() {
+                for (let i = AREAS.length - 1; i >= 0; i--) {
+                    if (this.level >= AREAS[i].startFloor) {
+                        return AREAS[i];
+                    }
+                }
+                return AREAS[0];
+            }
+
+            getAreaNumber() {
+                return this.getCurrentArea().id;
+            }
+
+            isAreaBossFloor() {
+                const areaNum = this.getAreaNumber();
+                const bossFloor = areaNum * 50;
+                return this.level === bossFloor;
+            }
+
+            isNewArea() {
+                const currentAreaNum = this.getAreaNumber();
+                if (currentAreaNum !== this.lastArea) {
+                    this.lastArea = currentAreaNum;
+                    return true;
+                }
+                return false;
+            }
+
+            showAreaTransition() {
+                const area = this.getCurrentArea();
+                document.getElementById('area-icon').textContent = area.icon;
+                document.getElementById('area-name').textContent = area.name;
+                document.getElementById('area-desc').textContent = area.desc;
+                document.getElementById('area-transition').classList.remove('hidden');
+            }
+
+            closeAreaTransition() {
+                document.getElementById('area-transition').classList.add('hidden');
+                this.checkStoryDialogue();
+                this.generateEvent();
+                this.updateUI();
             }
 
             // ==================== MENU FUNCTIONS ====================
@@ -1614,12 +1841,18 @@
                         <div style="text-align: center; margin-top: 15px;">
                             <div class="princess-sprite">👸</div>
                             <p style="color: #ffd700; margin-top: 10px;">公主在魔塔頂層等待救援...</p>
+                            <p style="color: #888; margin-top: 5px; font-size: 0.8rem;">穿越10個區域，500層魔塔</p>
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="game.nextLevel()">踏入魔塔</button>
+                        <button class="btn btn-primary" onclick="game.beginAdventure()">踏入魔塔</button>
                     </div>
                 `;
+            }
+
+            beginAdventure() {
+                this.lastArea = 1;
+                this.showAreaTransition();
             }
 
             returnToMenu() {
@@ -1667,6 +1900,14 @@
                 return Math.min(60, Math.max(0, total));
             }
 
+            getMaxHp() {
+                let total = this.player.maxHp;
+                if (this.player.equipment.weapon && this.player.equipment.weapon.hp) total += this.player.equipment.weapon.hp;
+                if (this.player.equipment.armor && this.player.equipment.armor.hp) total += this.player.equipment.armor.hp;
+                if (this.player.equipment.accessory && this.player.equipment.accessory.hp) total += this.player.equipment.accessory.hp;
+                return total;
+            }
+
             getFleeChance() {
                 return Math.min(60, 25 + Math.floor(this.getDodge() * 0.6));
             }
@@ -1683,20 +1924,10 @@
                 return 1 + (this.getSoulBonuses().potionMaster / 100);
             }
 
-            getFloorName() {
-                const floors = Object.keys(FLOOR_NAMES).map(Number).sort((a, b) => b - a);
-                for (const floor of floors) {
-                    if (this.level >= floor) {
-                        return FLOOR_NAMES[floor];
-                    }
-                }
-                return FLOOR_NAMES[1];
-            }
-
             // ==================== GAME FLOW ====================
 
             nextLevel() {
-                if (this.level > 100) {
+                if (this.level > 500) {
                     this.victory();
                     return;
                 }
@@ -1707,70 +1938,52 @@
                     return b.duration > 0;
                 });
 
+                // Clear battle log for new floor
+                this.lastBattleLog = null;
+
+                // Check for new area
+                if (this.isNewArea() && this.level > 1) {
+                    this.showAreaTransition();
+                    return;
+                }
+
                 // Check for story dialogue
                 this.checkStoryDialogue();
 
-                this.combatLog = [];
-                this.pendingLoot = null;
                 this.generateEvent();
                 this.updateUI();
             }
 
             checkStoryDialogue() {
-                const dialogueFloors = [10, 25, 50, 75, 90];
-                const floorKey = `floor${this.level}`;
+                const area = this.getAreaNumber();
+                const dialogueKey = `area${area}`;
                 
-                if (dialogueFloors.includes(this.level) && !this.storyShown[floorKey]) {
-                    this.storyShown[floorKey] = true;
-                    this.showStoryDialogue(STORY_DIALOGUES[floorKey]);
-                    return true;
+                if (STORY_DIALOGUES[dialogueKey] && !this.storyShown[dialogueKey] && 
+                    this.level === AREAS[area - 1].startFloor) {
+                    this.storyShown[dialogueKey] = true;
+                    // Story will be shown in area transition
                 }
-                return false;
-            }
-
-            showStoryDialogue(dialogue) {
-                if (!dialogue) return;
-                
-                const panel = document.getElementById('event-panel');
-                panel.innerHTML = `
-                    <div class="event-header">
-                        <div class="event-icon">💬</div>
-                        <div><div class="event-title">故事進展</div></div>
-                    </div>
-                    <div class="event-content">
-                        <div class="dialog-box">
-                            <div class="dialog-speaker">${dialogue.speaker}</div>
-                            <div class="dialog-text">${dialogue.text}</div>
-                        </div>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="game.continueAfterDialogue()">繼續</button>
-                    </div>
-                `;
-            }
-
-            continueAfterDialogue() {
-                this.generateEvent();
-                this.updateUI();
             }
 
             generateEvent() {
-                // Boss every 25 levels
-                if (this.level === 25 || this.level === 50 || this.level === 75 || this.level === 100) {
+                // Boss at the end of each area (every 50 floors)
+                if (this.isAreaBossFloor()) {
                     this.currentEvent = 'fight';
                     this.generateBoss();
                     return;
                 }
 
-                // Guaranteed merchant before bosses
-                if (this.level === 24 || this.level === 49 || this.level === 74 || this.level === 99) {
+                // Guaranteed merchant 3 floors before boss
+                const areaNum = this.getAreaNumber();
+                const bossFloor = areaNum * 50;
+                if (this.level === bossFloor - 3) {
                     this.currentEvent = 'merchant';
                     this.generateMerchant();
                     return;
                 }
 
-                // Guaranteed rest area every 10 floors
-                if (this.level % 10 === 0) {
+                // Guaranteed rest every 10 floors (not on boss floor)
+                if (this.level % 10 === 0 && !this.isAreaBossFloor()) {
                     this.currentEvent = 'rest';
                     this.generateRestArea();
                     return;
@@ -1783,7 +1996,7 @@
                     if (roll < cumulative) {
                         this.currentEvent = event;
                         break;
-                                            }
+                    }
                 }
 
                 switch (this.currentEvent) {
@@ -1799,7 +2012,7 @@
 
             generateRestArea() {
                 const panel = document.getElementById('event-panel');
-                const healAmount = Math.floor(this.player.maxHp * 0.20);
+                const healAmount = Math.floor(this.getMaxHp() * 0.25);
                 
                 panel.innerHTML = `
                     <div class="event-header">
@@ -1823,9 +2036,8 @@
             }
 
             restHeal() {
-                const healAmount = Math.floor(this.player.maxHp * 0.20);
-                this.player.hp = Math.min(this.player.hp + healAmount, this.player.maxHp);
-                this.addLog(`休息恢復了 ${healAmount} 點生命`, 'heal');
+                const healAmount = Math.floor(this.getMaxHp() * 0.25);
+                this.player.hp = Math.min(this.player.hp + healAmount, this.getMaxHp());
                 this.updateUI();
                 this.level++;
                 this.nextLevel();
@@ -1835,17 +2047,17 @@
 
             generateMonster() {
                 this.inCombat = true;
-                let monsterPool;
-                if (this.level <= 20) monsterPool = MONSTERS.early;
-                else if (this.level <= 50) monsterPool = MONSTERS.mid;
-                else if (this.level <= 80) monsterPool = MONSTERS.late;
-                else monsterPool = MONSTERS.endgame;
+                const areaNum = this.getAreaNumber();
+                const monsterPool = MONSTERS_BY_AREA[areaNum] || MONSTERS_BY_AREA[1];
 
                 const base = monsterPool[Math.floor(Math.random() * monsterPool.length)];
-                const scaling = 1 + (this.level - 1) * 0.06;
                 
-                // Elite chance increases with floor
-                const eliteChance = Math.min(0.20, 0.08 + (this.level * 0.001));
+                // Scale within the area (floors 1-50 of each area)
+                const floorInArea = ((this.level - 1) % 50) + 1;
+                const scaling = 1 + (floorInArea - 1) * 0.02;
+                
+                // Elite chance
+                const eliteChance = Math.min(0.18, 0.08 + (floorInArea * 0.002));
                 const isElite = Math.random() < eliteChance;
                 const eliteMultiplier = isElite ? 1.5 : 1;
 
@@ -1859,7 +2071,7 @@
                     gold: Math.floor((base.goldMin + Math.random() * (base.goldMax - base.goldMin)) * scaling * this.getGoldMultiplier() * (isElite ? 1.5 : 1)),
                     dropChance: isElite ? 0.30 : 0.15,
                     matChance: base.matChance * (isElite ? 1.3 : 1),
-                    soulReward: isElite ? 2 : 0
+                    soulReward: isElite ? 3 : 0
                 };
 
                 this.renderCombat();
@@ -1867,24 +2079,25 @@
 
             generateBoss() {
                 this.inCombat = true;
-                const boss = MONSTERS.bosses.find(b => b.floor === this.level);
+                const areaNum = this.getAreaNumber();
+                const boss = AREA_BOSSES[areaNum];
+
                 if (!boss) {
                     this.generateMonster();
                     return;
                 }
 
-                const scaling = 1 + (this.level - 1) * 0.02;
-
                 this.currentMonster = {
                     ...boss,
                     type: 'boss',
-                    hp: Math.floor(boss.baseHp * scaling),
-                    maxHp: Math.floor(boss.baseHp * scaling),
-                    attack: Math.floor(boss.baseAtk * scaling),
-                    defense: Math.floor(boss.baseDef * scaling),
+                    hp: boss.baseHp,
+                    maxHp: boss.baseHp,
+                    attack: boss.baseAtk,
+                    defense: boss.baseDef,
                     gold: Math.floor((boss.goldMin + Math.random() * (boss.goldMax - boss.goldMin)) * this.getGoldMultiplier()),
-                    dropChance: 0.80,
-                    matChance: boss.matChance,
+                    dropChance: 0.85,
+                    matChance: 1.0,
+                    material: 'boss',
                     soulReward: Math.floor(boss.soulReward * this.getSoulMultiplier())
                 };
 
@@ -1896,25 +2109,41 @@
             performAttack() {
                 if (!this.inCombat || !this.currentMonster) return;
 
+                // Reset battle log for this round
+                this.lastBattleLog = {
+                    playerDamage: 0,
+                    playerCrit: false,
+                    monsterDamage: 0,
+                    playerDodged: false,
+                    potionUsed: null
+                };
+
                 const playerAttack = this.getAttack();
+                const monsterDefense = this.currentMonster.defense;
+                
+                // Calculate damage: attack - defense, minimum 1
                 const isCrit = Math.random() * 100 < this.getCrit();
                 const critMultiplier = isCrit ? 1.75 : 1;
-                
-                // Damage calculation with some randomness
-                const variance = 0.9 + Math.random() * 0.2; // 90% - 110%
-                const baseDamage = Math.max(1, (playerAttack - this.currentMonster.defense * 0.5) * variance);
+                const baseDamage = Math.max(1, playerAttack - monsterDefense);
                 const playerDamage = Math.floor(baseDamage * critMultiplier);
                 
                 this.currentMonster.hp -= playerDamage;
-                
-                if (isCrit) {
-                    this.addLog(`💥 爆擊！造成 ${playerDamage} 點傷害！`, 'crit');
-                } else {
-                    this.addLog(`你造成了 ${playerDamage} 點傷害`, 'damage');
-                }
+                this.lastBattleLog.playerDamage = playerDamage;
+                this.lastBattleLog.playerCrit = isCrit;
+
+                // Add attack animation
+                setTimeout(() => {
+                    const monsterSprite = document.querySelector('.combatant.monster .combatant-sprite');
+                    if (monsterSprite) monsterSprite.classList.add('attack-animation');
+                    setTimeout(() => {
+                        if (monsterSprite) monsterSprite.classList.remove('attack-animation');
+                    }, 300);
+                }, 100);
 
                 if (this.currentMonster.hp <= 0) {
-                    this.monsterDefeated();
+                    this.currentMonster.hp = 0;
+                    this.renderCombat();
+                    setTimeout(() => this.monsterDefeated(), 500);
                     return;
                 }
 
@@ -1923,16 +2152,19 @@
 
             monsterAttack() {
                 const playerDodge = this.getDodge();
+                
                 if (Math.random() * 100 < playerDodge) {
-                    this.addLog(`閃避了 ${this.currentMonster.name} 的攻擊！`, 'dodge');
+                    this.lastBattleLog.playerDodged = true;
+                    this.lastBattleLog.monsterDamage = 0;
                 } else {
                     const playerDefense = this.getDefense();
-                    const variance = 0.9 + Math.random() * 0.2;
-                    const monsterDamage = Math.max(1, Math.floor((this.currentMonster.attack - playerDefense * 0.5) * variance));
+                    const monsterAttack = this.currentMonster.attack;
                     
+                    // Calculate damage: attack - defense, minimum 1
+                    const monsterDamage = Math.max(1, monsterAttack - playerDefense);
                     this.player.hp -= monsterDamage;
-                    this.addLog(`${this.currentMonster.name} 造成 ${monsterDamage} 點傷害`, 'damage');
-                    
+                    this.lastBattleLog.monsterDamage = monsterDamage;
+
                     document.querySelector('.stats-panel').classList.add('shake');
                     setTimeout(() => document.querySelector('.stats-panel').classList.remove('shake'), 500);
                 }
@@ -1942,9 +2174,11 @@
                     const secondChance = this.getSoulBonuses().secondChance;
                     if (secondChance > 0 && Math.random() * 100 < secondChance) {
                         this.player.hp = 1;
-                        this.addLog(`💫 不死決心觸發！你奇蹟般地存活了下來！`, 'heal');
+                        this.lastBattleLog.secondChance = true;
                     } else {
-                        this.gameOver();
+                        this.player.hp = 0;
+                        this.renderCombat();
+                        setTimeout(() => this.gameOver(), 500);
                         return;
                     }
                 }
@@ -1980,14 +2214,15 @@
                     this.pendingLoot.equipment = this.generateEquipmentDrop(rarityBoost);
                 }
 
-                // Potion drop (higher for bosses)
-                const potionChance = monster.type === 'boss' ? 0.8 : (monster.type === 'elite' ? 0.3 : 0.15);
+                // Potion drop
+                const potionChance = monster.type === 'boss' ? 0.9 : (monster.type === 'elite' ? 0.35 : 0.15);
                 if (Math.random() < potionChance) {
+                    const areaNum = this.getAreaNumber();
                     const potionRoll = Math.random();
-                    if (potionRoll < 0.5) this.pendingLoot.potion = 'small';
-                    else if (potionRoll < 0.8) this.pendingLoot.potion = 'medium';
-                    else if (potionRoll < 0.95) this.pendingLoot.potion = 'large';
-                    else this.pendingLoot.potion = 'full';
+                    if (areaNum >= 8 && potionRoll < 0.1) this.pendingLoot.potion = 'full';
+                    else if (areaNum >= 5 && potionRoll < 0.3) this.pendingLoot.potion = 'large';
+                    else if (areaNum >= 3 && potionRoll < 0.5) this.pendingLoot.potion = 'medium';
+                    else this.pendingLoot.potion = 'small';
                 }
 
                 // Soul reward
@@ -1995,7 +2230,7 @@
                     this.soulGainedThisRun += this.pendingLoot.souls;
                 }
 
-                // Update best floor and bosses killed
+                // Update stats
                 if (this.level > this.soulData.bestFloor) {
                     this.soulData.bestFloor = this.level;
                 }
@@ -2004,10 +2239,8 @@
                 }
                 saveSoulData(this.soulData);
 
-                this.addLog(`擊敗了 ${monster.name}！`, 'info');
-                
                 // Special dialogue for final boss
-                if (this.level === 100 && monster.type === 'boss') {
+                if (this.level === 500 && monster.type === 'boss') {
                     this.renderFinalVictory();
                 } else {
                     this.renderVictory();
@@ -2032,10 +2265,6 @@
                     this.player.potions[this.pendingLoot.potion]++;
                 }
 
-                if (this.pendingLoot.souls > 0) {
-                    this.addLog(`💎 獲得 ${this.pendingLoot.souls} 靈魂碎片！`, 'soul');
-                }
-
                 this.pendingLoot = null;
                 this.level++;
                 this.updateUI();
@@ -2045,12 +2274,17 @@
             tryFlee() {
                 const fleeChance = this.getFleeChance();
                 if (Math.random() * 100 < fleeChance) {
-                    this.addLog('成功逃跑！', 'info');
                     this.inCombat = false;
                     this.level++;
                     this.nextLevel();
                 } else {
-                    this.addLog('逃跑失敗！', 'info');
+                    this.lastBattleLog = {
+                        playerDamage: 0,
+                        playerCrit: false,
+                        monsterDamage: 0,
+                        playerDodged: false,
+                        fleeFailed: true
+                    };
                     this.monsterAttack();
                 }
             }
@@ -2059,21 +2293,22 @@
 
             usePotion(type) {
                 if (!this.player.potions[type] || this.player.potions[type] <= 0) return;
-                if (this.player.hp >= this.player.maxHp) {
-                    this.addLog('生命值已滿！', 'info');
-                    return;
-                }
+                
+                const maxHp = this.getMaxHp();
+                if (this.player.hp >= maxHp) return;
 
                 const potion = POTION_TYPES[type];
-                const healAmount = Math.floor(this.player.maxHp * potion.healPercent * this.getPotionMultiplier());
+                const healAmount = Math.floor(maxHp * potion.healPercent * this.getPotionMultiplier());
                 
                 this.player.potions[type]--;
-                this.player.hp = Math.min(this.player.hp + healAmount, this.player.maxHp);
+                this.player.hp = Math.min(this.player.hp + healAmount, maxHp);
                 
-                this.addLog(`使用 ${potion.name}，恢復 ${healAmount} 生命！`, 'heal');
+                if (this.lastBattleLog) {
+                    this.lastBattleLog.potionUsed = { type, healAmount };
+                }
+
                 this.updateUI();
                 
-                // Update combat UI if in combat
                 if (this.inCombat) {
                     this.renderCombat();
                 }
@@ -2089,28 +2324,35 @@
                 let rarityRoll = Math.random() * 100 - (rarityBoost * 100);
                 let targetRarity;
                 
-                // Rarity based on floor
-                if (this.level >= 80) {
-                    if (rarityRoll < 5) targetRarity = 'legendary';
-                    else if (rarityRoll < 20) targetRarity = 'epic';
-                    else if (rarityRoll < 50) targetRarity = 'rare';
+                const areaNum = this.getAreaNumber();
+                
+                if (areaNum >= 9) {
+                    if (rarityRoll < 8) targetRarity = 'legendary';
+                    else if (rarityRoll < 25) targetRarity = 'epic';
+                    else if (rarityRoll < 55) targetRarity = 'rare';
+                    else if (rarityRoll < 85) targetRarity = 'uncommon';
+                    else targetRarity = 'common';
+                } else if (areaNum >= 7) {
+                    if (rarityRoll < 4) targetRarity = 'legendary';
+                    else if (rarityRoll < 18) targetRarity = 'epic';
+                    else if (rarityRoll < 45) targetRarity = 'rare';
                     else if (rarityRoll < 80) targetRarity = 'uncommon';
                     else targetRarity = 'common';
-                } else if (this.level >= 50) {
+                } else if (areaNum >= 5) {
                     if (rarityRoll < 2) targetRarity = 'legendary';
                     else if (rarityRoll < 12) targetRarity = 'epic';
                     else if (rarityRoll < 35) targetRarity = 'rare';
                     else if (rarityRoll < 70) targetRarity = 'uncommon';
                     else targetRarity = 'common';
-                } else if (this.level >= 25) {
+                } else if (areaNum >= 3) {
                     if (rarityRoll < 1) targetRarity = 'legendary';
                     else if (rarityRoll < 6) targetRarity = 'epic';
                     else if (rarityRoll < 25) targetRarity = 'rare';
                     else if (rarityRoll < 60) targetRarity = 'uncommon';
                     else targetRarity = 'common';
                 } else {
-                    if (rarityRoll < 3) targetRarity = 'rare';
-                    else if (rarityRoll < 25) targetRarity = 'uncommon';
+                    if (rarityRoll < 5) targetRarity = 'rare';
+                    else if (rarityRoll < 30) targetRarity = 'uncommon';
                     else targetRarity = 'common';
                 }
 
@@ -2132,11 +2374,22 @@
                 const item = this.player.bag[index];
                 const currentEquip = this.player.equipment[item.type];
                 
+                // Check if we need to adjust HP when changing equipment
+                const oldMaxHp = this.getMaxHp();
+                
                 this.player.equipment[item.type] = item;
                 this.player.bag.splice(index, 1);
                 
                 if (currentEquip && this.player.bag.length < 20) {
                     this.player.bag.push(currentEquip);
+                }
+                
+                // Adjust current HP if max HP changed
+                const newMaxHp = this.getMaxHp();
+                if (newMaxHp > oldMaxHp) {
+                    this.player.hp += (newMaxHp - oldMaxHp);
+                } else if (this.player.hp > newMaxHp) {
+                    this.player.hp = newMaxHp;
                 }
                 
                 this.updateUI();
@@ -2151,17 +2404,17 @@
             // ==================== TREASURE SYSTEM ====================
 
             generateTreasure() {
-                const goldAmount = Math.floor((15 + this.level * 0.6 + Math.random() * 20) * this.getGoldMultiplier());
+                const goldAmount = Math.floor((20 + this.level * 0.4 + Math.random() * 30) * this.getGoldMultiplier());
                 const hasEquipment = Math.random() < 0.35;
                 const equipment = hasEquipment ? this.generateEquipmentDrop(0.1) : null;
                 
-                // Chance for potion in treasure
                 let potion = null;
-                if (Math.random() < 0.4) {
+                if (Math.random() < 0.45) {
+                    const areaNum = this.getAreaNumber();
                     const potionRoll = Math.random();
-                    if (potionRoll < 0.5) potion = 'small';
-                    else if (potionRoll < 0.8) potion = 'medium';
-                    else potion = 'large';
+                    if (areaNum >= 7 && potionRoll < 0.15) potion = 'large';
+                    else if (areaNum >= 4 && potionRoll < 0.35) potion = 'medium';
+                    else potion = 'small';
                 }
 
                 this.pendingLoot = {
@@ -2179,12 +2432,13 @@
 
             generateMerchant() {
                 this.merchantItems = [];
-                const priceMultiplier = 1 + (this.level * 0.01);
+                const areaNum = this.getAreaNumber();
+                const priceMultiplier = 1 + (areaNum * 0.15);
 
                 // Always have potions
                 const potionTypes = ['small', 'medium'];
-                if (this.level >= 30) potionTypes.push('large');
-                if (this.level >= 60) potionTypes.push('full');
+                if (areaNum >= 4) potionTypes.push('large');
+                if (areaNum >= 7) potionTypes.push('full');
 
                 potionTypes.forEach(type => {
                     const potion = POTION_TYPES[type];
@@ -2198,10 +2452,10 @@
                     });
                 });
 
-                // Add 2-3 equipment items
-                const equipCount = 2 + Math.floor(Math.random() * 2);
+                // Add 2-4 equipment items
+                const equipCount = 2 + Math.floor(Math.random() * 3);
                 for (let i = 0; i < equipCount; i++) {
-                    const rarityBoost = this.level > 50 ? 0.2 : (this.level > 25 ? 0.1 : 0);
+                    const rarityBoost = areaNum > 6 ? 0.25 : (areaNum > 3 ? 0.15 : 0.05);
                     const equip = this.generateEquipmentDrop(rarityBoost);
                     equip.price = this.calculateEquipmentPrice(equip);
                     this.merchantItems.push({
@@ -2216,13 +2470,14 @@
             calculateEquipmentPrice(equip) {
                 const rarityMultiplier = {
                     common: 1,
-                    uncommon: 2,
-                    rare: 4,
-                    epic: 10,
-                    legendary: 25
+                    uncommon: 2.5,
+                    rare: 5,
+                    epic: 12,
+                    legendary: 30
                 };
-                const statValue = equip.attack + equip.defense + equip.dodge + equip.crit;
-                return Math.floor((25 + statValue * 3) * rarityMultiplier[equip.rarity] * (1 + this.level * 0.005));
+                const statValue = equip.attack + equip.defense + equip.dodge + equip.crit + (equip.hp || 0) * 0.5;
+                const areaNum = this.getAreaNumber();
+                return Math.floor((30 + statValue * 2.5) * rarityMultiplier[equip.rarity] * (1 + areaNum * 0.1));
             }
 
             buyItem(index) {
@@ -2233,15 +2488,31 @@
 
                 if (item.type === 'potion') {
                     this.player.potions[item.potionType]++;
-                    this.addLog(`購買了 ${item.name}`, 'gold');
                 } else if (item.type === 'equipment') {
                     if (this.player.bag.length < 20) {
-                        const equipCopy = { ...item };
-                        delete equipCopy.price;
+                        const equipCopy = { 
+                            name: item.name,
+                            rarity: item.rarity,
+                            attack: item.attack,
+                            defense: item.defense,
+                            dodge: item.dodge,
+                            crit: item.crit,
+                            hp: item.hp || 0,
+                            type: item.equipType || item.type,
+                            id: item.id
+                        };
+                        // Fix: properly set equipment type
+                        if (item.equipType) {
+                            equipCopy.type = item.equipType;
+                        } else if (EQUIPMENT.weapons.some(w => w.name === item.name)) {
+                            equipCopy.type = 'weapon';
+                        } else if (EQUIPMENT.armor.some(a => a.name === item.name)) {
+                            equipCopy.type = 'armor';
+                        } else {
+                            equipCopy.type = 'accessory';
+                        }
                         this.player.bag.push(equipCopy);
-                        this.addLog(`購買了 ${item.name}`, 'info');
                     } else {
-                        this.addLog('背包已滿！', 'info');
                         this.player.gold += item.price;
                         return;
                     }
@@ -2256,7 +2527,8 @@
                 if (!this.player.materials[matKey] || this.player.materials[matKey] <= 0) return;
                 
                 const mat = MATERIALS[matKey];
-                const price = Math.floor(mat.basePrice * (1 + this.level * 0.005) * this.getGoldMultiplier());
+                const areaNum = this.getAreaNumber();
+                const price = Math.floor(mat.basePrice * (1 + areaNum * 0.1) * this.getGoldMultiplier());
                 
                 this.player.materials[matKey]--;
                 if (this.player.materials[matKey] <= 0) {
@@ -2264,7 +2536,26 @@
                 }
                 
                 this.player.gold += price;
-                this.addLog(`賣出 ${mat.name} 獲得 ${price} 金幣`, 'gold');
+                this.updateUI();
+                this.renderMerchant();
+            }
+
+            sellAllMaterials() {
+                const matKeys = Object.keys(this.player.materials);
+                if (matKeys.length === 0) return;
+
+                let totalGold = 0;
+                const areaNum = this.getAreaNumber();
+
+                matKeys.forEach(key => {
+                    const mat = MATERIALS[key];
+                    const count = this.player.materials[key];
+                    const price = Math.floor(mat.basePrice * (1 + areaNum * 0.1) * this.getGoldMultiplier());
+                    totalGold += price * count;
+                });
+
+                this.player.materials = {};
+                this.player.gold += totalGold;
                 this.updateUI();
                 this.renderMerchant();
             }
@@ -2273,11 +2564,10 @@
                 if (index < 0 || index >= this.player.bag.length) return;
                 
                 const item = this.player.bag[index];
-                const price = Math.floor(this.calculateEquipmentPrice(item) * 0.4);
+                const price = Math.floor(this.calculateEquipmentPrice(item) * 0.35);
                 
                 this.player.bag.splice(index, 1);
                 this.player.gold += price;
-                this.addLog(`賣出 ${item.name} 獲得 ${price} 金幣`, 'gold');
                 this.updateUI();
                 this.renderMerchant();
             }
@@ -2314,9 +2604,8 @@
                         <div><div class="event-title">${this.currentRandomEvent.name}</div></div>
                     </div>
                     <div class="event-content">
-                        <div class="event-description">${this.currentRandomEvent.description}</div>
                         <div class="treasure-display">
-                            <p style="font-size: 1rem; color: ${this.currentRandomEvent.type === 'positive' ? '#4ecdc4' : this.currentRandomEvent.type === 'negative' ? '#e94560' : '#ffd700'}">${result}</p>
+                            <p style="font-size: 1.1rem; color: ${this.currentRandomEvent.type === 'positive' ? '#4ecdc4' : this.currentRandomEvent.type === 'negative' ? '#e94560' : '#ffd700'}">${result}</p>
                         </div>
                     </div>
                     <div class="action-buttons">
@@ -2343,22 +2632,6 @@
                 this.updateUI();
             }
 
-            // ==================== LOGGING ====================
-
-            addLog(text, type) {
-                this.combatLog.push({ text, type });
-                if (this.combatLog.length > 20) {
-                    this.combatLog.shift();
-                }
-                const logEl = document.getElementById('combat-log');
-                if (logEl) {
-                    logEl.innerHTML = this.combatLog.map(log => 
-                        `<div class="log-entry ${log.type}">${log.text}</div>`
-                    ).join('');
-                    logEl.scrollTop = logEl.scrollHeight;
-                }
-            }
-
             // ==================== RENDER METHODS ====================
 
             renderCombat() {
@@ -2366,20 +2639,64 @@
                 const monster = this.currentMonster;
                 const typeText = monster.type === 'elite' ? '⭐ 精英' : monster.type === 'boss' ? '👑 首領' : '';
                 const fleeChance = this.getFleeChance();
+                const maxHp = this.getMaxHp();
 
+                // Build battle log HTML
+                let battleLogHtml = '';
+                if (this.lastBattleLog) {
+                    const log = this.lastBattleLog;
+                    battleLogHtml = `<div class="battle-log">`;
+                    
+                    if (log.fleeFailed) {
+                        battleLogHtml += `<div class="battle-log-entry" style="color: #888;">逃跑失敗！</div>`;
+                    }
+                    
+                    if (log.playerDamage > 0) {
+                        if (log.playerCrit) {
+                            battleLogHtml += `<div class="battle-log-entry player-crit">💥 爆擊！你造成 <span class="damage-number">${log.playerDamage}</span> 傷害</div>`;
+                        } else {
+                            battleLogHtml += `<div class="battle-log-entry player-attack">⚔️ 你造成 <span class="damage-number">${log.playerDamage}</span> 傷害</div>`;
+                        }
+                    }
+                    
+                    if (log.playerDodged) {
+                        battleLogHtml += `<div class="battle-log-entry dodge">💨 你閃避了攻擊！</div>`;
+                    } else if (log.monsterDamage > 0) {
+                        battleLogHtml += `<div class="battle-log-entry monster-attack">💢 ${monster.name} 造成 <span class="damage-number">${log.monsterDamage}</span> 傷害</div>`;
+                    }
+                    
+                    if (log.secondChance) {
+                        battleLogHtml += `<div class="battle-log-entry heal">💫 不死決心！你存活了下來！</div>`;
+                    }
+                    
+                    if (log.potionUsed) {
+                        battleLogHtml += `<div class="battle-log-entry heal">💊 使用藥水恢復 <span class="damage-number">${log.potionUsed.healAmount}</span> 生命</div>`;
+                    }
+                    
+                    battleLogHtml += `</div>`;
+                }
+
+                // Boss dialogue
                 let bossDialogue = '';
-                if (monster.type === 'boss') {
-                    const dialogues = {
-                        25: '「哼，你竟然能走到這裡...但你的旅程到此為止了！」',
-                        50: '「區區人類，也敢挑戰我？讓你見識真正的恐懼！」',
-                        75: '「你已經走得夠遠了...但魔王大人不會讓你前進一步！」',
-                        100: '「愚蠢的騎士！公主是我的了！受死吧！」'
+                if (monster.type === 'boss' && !this.lastBattleLog) {
+                    const bossDialogues = {
+                        1: '「哼，你竟敢闖入我的領地！」',
+                        2: '「這裡將是你的葬身之地！」',
+                        3: '「活人？在我的墓地？受死吧！」',
+                        4: '「森林的怒火將吞噬你！」',
+                        5: '「成為我新實驗的材料吧！」',
+                        6: '「渺小的人類，跪下！」',
+                        7: '「讓寒冰凍結你的靈魂！」',
+                        8: '「在烈焰中化為灰燼吧！」',
+                        9: '「虛空將吞噬一切！」',
+                        10: '「公主是我的！你去死吧！」'
                     };
-                    if (dialogues[this.level]) {
+                    const areaNum = this.getAreaNumber();
+                    if (bossDialogues[areaNum]) {
                         bossDialogue = `
                             <div class="dialog-box" style="margin-bottom: 10px;">
                                 <div class="dialog-speaker">${monster.name}</div>
-                                <div class="dialog-text">${dialogues[this.level]}</div>
+                                <div class="dialog-text">${bossDialogues[areaNum]}</div>
                             </div>
                         `;
                     }
@@ -2387,31 +2704,39 @@
 
                 panel.innerHTML = `
                     <div class="event-header">
-                        <div class="event-icon">${EVENTS.fight.icon}</div>
+                        <div class="event-icon">${monster.type === 'boss' ? '👑' : '⚔️'}</div>
                         <div>
                             <div class="event-title">${monster.type === 'boss' ? '⚠️ 首領戰！' : EVENTS.fight.title}</div>
                         </div>
                     </div>
                     <div class="event-content">
                         ${bossDialogue}
-                        <div class="monster-display">
-                            <div class="monster-sprite">${monster.emoji}</div>
-                            <div class="monster-name ${monster.type}">${typeText} ${monster.name}</div>
-                            <div class="monster-stats">
-                                <span>⚔️ ${monster.attack}</span>
-                                <span>🛡️ ${monster.defense}</span>
+                        <div class="battle-arena">
+                            <div class="combatant player">
+                                <div class="combatant-sprite">🧑‍⚔️</div>
+                                <div class="combatant-name">騎士</div>
+                                <div class="combatant-hp-bar">
+                                    <div class="combatant-hp-fill" style="width: ${Math.max(0, (this.player.hp / maxHp) * 100)}%"></div>
+                                </div>
+                                <div class="combatant-hp-text">${this.player.hp} / ${maxHp}</div>
+                                <div class="combatant-stats">⚔️${this.getAttack()} 🛡️${this.getDefense()}</div>
                             </div>
-                            <div class="monster-hp-bar">
-                                <div class="monster-hp-fill" style="width: ${Math.max(0, (monster.hp / monster.maxHp) * 100)}%"></div>
+                            <div class="combatant monster">
+                                <div class="combatant-sprite">${monster.emoji}</div>
+                                <div class="combatant-name ${monster.type}">${typeText} ${monster.name}</div>
+                                <div class="combatant-hp-bar">
+                                    <div class="combatant-hp-fill" style="width: ${Math.max(0, (monster.hp / monster.maxHp) * 100)}%"></div>
+                                </div>
+                                <div class="combatant-hp-text">${Math.max(0, monster.hp)} / ${monster.maxHp}</div>
+                                <div class="combatant-stats">⚔️${monster.attack} 🛡️${monster.defense}</div>
                             </div>
-                            <div style="margin-top: 6px; color: #e94560; font-size: 0.8rem">${Math.max(0, monster.hp)} / ${monster.maxHp}</div>
                         </div>
-                        <div class="combat-log" id="combat-log">${this.combatLog.map(log => `<div class="log-entry ${log.type}">${log.text}</div>`).join('')}</div>
+                        ${battleLogHtml}
                     </div>
                     <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="game.performAttack()">⚔️ 攻擊</button>
+                        <button class="btn btn-primary" onclick="game.performAttack()" ${monster.hp <= 0 ? 'disabled' : ''}>⚔️ 攻擊</button>
                         ${monster.type !== 'boss' ? `
-                            <button class="btn btn-danger" onclick="game.tryFlee()">
+                            <button class="btn btn-danger" onclick="game.tryFlee()" ${monster.hp <= 0 ? 'disabled' : ''}>
                                 🏃 逃跑
                                 <span class="flee-info">(${fleeChance}%)</span>
                             </button>
@@ -2423,6 +2748,7 @@
             renderVictory() {
                 const panel = document.getElementById('event-panel');
                 const loot = this.pendingLoot;
+                const monster = this.currentMonster;
                 
                 let lootHtml = '';
                 if (loot) {
@@ -2445,11 +2771,10 @@
                     </div>
                     <div class="event-content">
                         <div class="treasure-display" style="padding: 10px">
-                            <div class="treasure-icon" style="font-size: 2.5rem">⚔️</div>
-                            <p>擊敗了 ${this.currentMonster.name}！</p>
+                            <div class="treasure-icon" style="font-size: 2.5rem">${monster.emoji}</div>
+                            <p>擊敗了 ${monster.name}！</p>
                         </div>
                         ${lootHtml}
-                        <div class="combat-log" id="combat-log">${this.combatLog.map(log => `<div class="log-entry ${log.type}">${log.text}</div>`).join('')}</div>
                     </div>
                     <div class="action-buttons">
                         <button class="btn btn-primary" onclick="game.collectLoot()">收集戰利品</button>
@@ -2509,7 +2834,7 @@
                                 <span style="color: #888; font-size: 0.7rem">${SLOT_NAMES[loot.equipment.type]}</span>
                             </div>
                             <div class="shop-item-description">
-                                ⚔️${loot.equipment.attack} 🛡️${loot.equipment.defense} 💨${loot.equipment.dodge}% 💥${loot.equipment.crit}%
+                                ⚔️${loot.equipment.attack} 🛡️${loot.equipment.defense} 💨${loot.equipment.dodge}% 💥${loot.equipment.crit}% ${loot.equipment.hp ? `❤️${loot.equipment.hp}` : ''}
                             </div>
                         </div>
                     `;
@@ -2560,7 +2885,7 @@
                                     <span class="shop-item-price">💰 ${item.price}</span>
                                 </div>
                                 <div class="shop-item-description">
-                                    ${SLOT_NAMES[item.type]} | ⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}% 💥${item.crit}%
+                                    ${SLOT_NAMES[item.type] || '裝備'} | ⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}% 💥${item.crit}% ${item.hp ? `❤️${item.hp}` : ''}
                                 </div>
                             </div>
                         `;
@@ -2571,17 +2896,29 @@
                 let materialsHtml = '';
                 const matKeys = Object.keys(this.player.materials);
                 if (matKeys.length > 0) {
+                    const areaNum = this.getAreaNumber();
+                    let totalValue = 0;
+                    matKeys.forEach(key => {
+                        const mat = MATERIALS[key];
+                        const count = this.player.materials[key];
+                        const price = Math.floor(mat.basePrice * (1 + areaNum * 0.1) * this.getGoldMultiplier());
+                        totalValue += price * count;
+                    });
+
                     materialsHtml = `
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1)">
-                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px">📦 出售素材：</div>
+                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                <span>📦 出售素材</span>
+                                <button class="sell-all-btn" onclick="game.sellAllMaterials()">全部賣出 (💰${totalValue})</button>
+                            </div>
                             <div style="display: flex; flex-wrap: wrap; gap: 4px">
                                 ${matKeys.map(key => {
                                     const mat = MATERIALS[key];
                                     const count = this.player.materials[key];
-                                    const price = Math.floor(mat.basePrice * (1 + this.level * 0.005) * this.getGoldMultiplier());
+                                    const price = Math.floor(mat.basePrice * (1 + areaNum * 0.1) * this.getGoldMultiplier());
                                     return `
-                                        <div class="bag-item material" onclick="game.sellMaterial('${key}')" title="點擊出售">
-                                            ${mat.emoji} ${mat.name} x${count}
+                                        <div class="bag-item material" onclick="game.sellMaterial('${key}')" title="點擊出售一個">
+                                            ${mat.emoji} x${count}
                                             <span style="color: #ffd700; margin-left: 4px">💰${price}</span>
                                         </div>
                                     `;
@@ -2596,13 +2933,13 @@
                 if (this.player.bag.length > 0) {
                     bagSellHtml = `
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1)">
-                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px">🎒 出售裝備：</div>
+                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px">🎒 出售裝備</div>
                             <div style="display: flex; flex-wrap: wrap; gap: 4px">
                                 ${this.player.bag.map((item, index) => {
-                                    const price = Math.floor(this.calculateEquipmentPrice(item) * 0.4);
+                                    const price = Math.floor(this.calculateEquipmentPrice(item) * 0.35);
                                     return `
                                         <div class="bag-item ${item.rarity}" onclick="game.sellEquipFromBag(${index})" title="點擊出售">
-                                            <span class="slot-name ${item.rarity}">${item.name}</span>
+                                            <span class="slot-name ${item.rarity}">${item.name.substring(0, 5)}..</span>
                                             <span style="color: #ffd700">💰${price}</span>
                                         </div>
                                     `;
@@ -2620,12 +2957,11 @@
                     <div class="event-content">
                         <div class="dialog-box" style="margin-bottom: 10px;">
                             <div class="dialog-speaker">神秘商人</div>
-                            <div class="dialog-text">「嘿嘿，勇敢的騎士，需要些什麼嗎？我這裡有好貨...」</div>
+                            <div class="dialog-text">「嘿嘿，勇敢的騎士，需要些什麼嗎？」</div>
                         </div>
                         <div class="shop-items">${itemsHtml}</div>
                         ${materialsHtml}
                         ${bagSellHtml}
-                        <div class="combat-log" id="combat-log" style="margin-top: 8px">${this.combatLog.map(log => `<div class="log-entry ${log.type}">${log.text}</div>`).join('')}</div>
                     </div>
                     <div class="action-buttons">
                         <button class="btn btn-secondary" onclick="game.level++; game.nextLevel()">離開商店</button>
@@ -2647,9 +2983,12 @@
             // ==================== UI UPDATE ====================
 
             updateUI() {
+                const maxHp = this.getMaxHp();
+                const area = this.getCurrentArea();
+                
                 document.getElementById('current-level').textContent = this.level;
-                document.getElementById('floor-name').textContent = this.getFloorName();
-                document.getElementById('stat-hp').textContent = this.player.hp;
+                document.getElementById('floor-name').textContent = `${area.icon} ${area.name}`;
+                document.getElementById('stat-hp').textContent = maxHp;
                 document.getElementById('stat-attack').textContent = this.getAttack();
                 document.getElementById('stat-defense').textContent = this.getDefense();
                 document.getElementById('stat-dodge').textContent = `${this.getDodge()}%`;
@@ -2657,9 +2996,9 @@
                 document.getElementById('stat-gold').textContent = this.player.gold;
 
                 // HP Bar
-                const hpPercent = Math.max(0, (this.player.hp / this.player.maxHp) * 100);
+                const hpPercent = Math.max(0, (this.player.hp / maxHp) * 100);
                 document.getElementById('hp-bar').style.width = `${hpPercent}%`;
-                document.getElementById('hp-bar-text').textContent = `${this.player.hp} / ${this.player.maxHp}`;
+                document.getElementById('hp-bar-text').textContent = `${this.player.hp} / ${maxHp}`;
 
                 // Potions Quick Panel
                 const potionsPanel = document.getElementById('potions-panel');
@@ -2669,7 +3008,7 @@
                         const potion = POTION_TYPES[type];
                         potionsHtml += `
                             <div class="potion-slot" onclick="game.usePotion('${type}')" title="點擊使用">
-                                ${potion.emoji} ${potion.name}
+                                ${potion.emoji}
                                 <span class="potion-count">x${count}</span>
                             </div>
                         `;
@@ -2682,13 +3021,14 @@
                 equipSlots.innerHTML = ['weapon', 'armor', 'accessory'].map(slot => {
                     const item = this.player.equipment[slot];
                     if (item) {
+                        const hpText = item.hp ? ` ❤️${item.hp}` : '';
                         return `
                             <div class="equipment-slot ${item.rarity}">
                                 <div class="slot-info">
                                     <span class="slot-type">${SLOT_NAMES[slot]}</span>
                                     <span class="slot-name ${item.rarity}">${item.name}</span>
                                 </div>
-                                <span class="slot-stats">⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge} 💥${item.crit}</span>
+                                <span class="slot-stats">⚔️${item.attack} 🛡️${item.defense}${hpText}</span>
                             </div>
                         `;
                     } else {
@@ -2725,8 +3065,8 @@
                     bagHtml += `
                         <div class="bag-item ${item.rarity}" 
                              onclick="game.showBagItemMenu(${index})"
-                             title="${item.name}\n⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}% 💥${item.crit}%">
-                            <span class="slot-name ${item.rarity}" style="font-size: 0.6rem">${item.name.substring(0, 4)}...</span>
+                             title="${item.name}\n⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}% 💥${item.crit}%${item.hp ? ` ❤️${item.hp}` : ''}">
+                            <span class="slot-name ${item.rarity}" style="font-size: 0.6rem">${item.name.substring(0, 4)}..</span>
                         </div>
                     `;
                 });
@@ -2740,10 +3080,12 @@
                 const buffsPanel = document.getElementById('buffs-panel');
                 const statNames = { attack: '攻擊', defense: '防禦', dodge: '閃避', crit: '爆擊' };
                 
-                // Show soul bonuses
                 let buffHtml = '';
                 const soulBonuses = this.getSoulBonuses();
-                if (soulBonuses.vitality > 0 || soulBonuses.strength > 0 || soulBonuses.resilience > 0 || soulBonuses.agility > 0 || soulBonuses.precision > 0) {
+                const hasSoulBonus = soulBonuses.vitality > 0 || soulBonuses.strength > 0 || 
+                                     soulBonuses.resilience > 0 || soulBonuses.agility > 0 || 
+                                     soulBonuses.precision > 0;
+                if (hasSoulBonus) {
                     buffHtml += `<div class="buff soul">💎 靈魂強化</div>`;
                 }
                 
@@ -2775,16 +3117,17 @@
                     border-radius: 10px;
                     padding: 15px;
                     z-index: 1000;
-                    min-width: 200px;
+                    min-width: 220px;
                     text-align: center;
                 `;
 
+                const hpText = item.hp ? ` | ❤️ ${item.hp}` : '';
                 menu.innerHTML = `
                     <div style="margin-bottom: 10px;">
                         <div class="slot-name ${item.rarity}" style="font-size: 1rem; margin-bottom: 5px;">${item.name}</div>
                         <div style="font-size: 0.75rem; color: #888; margin-bottom: 5px;">${SLOT_NAMES[item.type]} - ${RARITY_NAMES[item.rarity]}</div>
                         <div style="font-size: 0.8rem; color: #aaa;">
-                            ⚔️ ${item.attack} | 🛡️ ${item.defense} | 💨 ${item.dodge}% | 💥 ${item.crit}%
+                            ⚔️ ${item.attack} | 🛡️ ${item.defense} | 💨 ${item.dodge}% | 💥 ${item.crit}%${hpText}
                         </div>
                     </div>
                     <div style="display: flex; gap: 8px; justify-content: center;">
@@ -2809,8 +3152,7 @@
             // ==================== GAME END ====================
 
             gameOver() {
-                // Calculate soul reward based on progress
-                const floorBonus = Math.floor(this.level * 0.15);
+                const floorBonus = Math.floor(this.level * 0.1);
                 const totalSouls = Math.floor((this.soulGainedThisRun + floorBonus) * this.getSoulMultiplier());
                 
                 this.soulData.souls += totalSouls;
@@ -2823,8 +3165,9 @@
                 document.getElementById('modal-message').textContent = '你在魔塔中倒下了...但你的靈魂得到了強化。';
                 document.getElementById('soul-gained').textContent = totalSouls;
                 document.getElementById('final-stats').innerHTML = `
-                    <div>到達層數: <strong style="color: #ffd700">${this.level}</strong></div>
-                    <div>最高紀錄: <strong style="color: #c084fc">${this.soulData.bestFloor}</strong></div>
+                    <div>到達層數: <strong style="color: #ffd700">${this.level}</strong> / 500</div>
+                    <div>到達區域: <strong style="color: #c084fc">${this.getCurrentArea().name}</strong></div>
+                    <div>最高紀錄: <strong>${this.soulData.bestFloor}</strong></div>
                     <div>收集金幣: <strong>${this.player.gold}</strong></div>
                     <div>最終攻擊: <strong style="color: #ff6b35">${this.getAttack()}</strong></div>
                     <div>最終防禦: <strong style="color: #4ecdc4">${this.getDefense()}</strong></div>
@@ -2833,12 +3176,11 @@
             }
 
             victory() {
-                // Big soul reward for completing the game
-                const victoryBonus = 200;
+                const victoryBonus = 300;
                 const totalSouls = Math.floor((this.soulGainedThisRun + victoryBonus) * this.getSoulMultiplier());
                 
                 this.soulData.souls += totalSouls;
-                this.soulData.bestFloor = 100;
+                this.soulData.bestFloor = 500;
                 saveSoulData(this.soulData);
 
                 document.getElementById('modal-title').textContent = '🎉 公主得救了！ 🎉';
