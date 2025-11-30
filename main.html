@@ -13,7 +13,8 @@
 
         html, body {
             height: 100%;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         body {
@@ -22,17 +23,16 @@
             color: #e8e8e8;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
         }
 
         .game-container {
-            height: 100vh;
-            height: 100dvh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             padding: 10px;
             width: 100%;
             max-width: 600px;
-            overflow: hidden;
         }
 
         /* Main Menu Styles */
@@ -41,7 +41,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
+            height: 100vh;
             text-align: center;
             padding: 20px;
         }
@@ -236,7 +236,7 @@
         /* Header */
         .game-header {
             text-align: center;
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 2px solid #e94560;
             flex-shrink: 0;
         }
@@ -245,33 +245,42 @@
             font-size: clamp(1rem, 3.5vw, 1.5rem);
             color: #e94560;
             text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
-            margin-bottom: 3px;
+            margin-bottom: 5px;
         }
 
-        .level-display {
-            font-size: clamp(0.8rem, 2.5vw, 1rem);
-            color: #ffd700;
-        }
-
-        .floor-name {
-            font-size: 0.75rem;
+        .area-display {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
             color: #c084fc;
-            margin-top: 2px;
+            font-weight: bold;
+        }
+
+        .floor-display {
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
+            color: #ffd700;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .floor-display .area-icon {
+            font-size: 1.1rem;
         }
 
         /* HP Bar */
         .hp-bar-container {
             background: rgba(0, 0, 0, 0.5);
-            border-radius: 6px;
-            padding: 2px;
-            margin: 6px 0;
+            border-radius: 8px;
+            padding: 3px;
+            margin: 8px 0;
             flex-shrink: 0;
         }
 
         .hp-bar {
-            height: 18px;
+            height: 22px;
             background: linear-gradient(90deg, #e94560, #ff6b6b);
-            border-radius: 5px;
+            border-radius: 6px;
             transition: width 0.3s ease;
             position: relative;
         }
@@ -280,158 +289,294 @@
             position: absolute;
             width: 100%;
             text-align: center;
-            line-height: 18px;
+            line-height: 22px;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
         }
 
-        /* Stats Panel */
+        /* Stats Panel - New Layout */
         .stats-panel {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 4px;
+            display: flex;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.05);
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             flex-shrink: 0;
         }
 
+        .stats-left {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            flex: 1;
+        }
+
         .stat-box {
             text-align: center;
-            padding: 5px 2px;
+            padding: 6px 4px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 6px;
         }
 
+        .stat-box .stat-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
         .stat-icon {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .stat-label {
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             color: #888;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .stat-value {
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            font-size: clamp(0.8rem, 2.2vw, 1rem);
             font-weight: bold;
             color: #fff;
         }
 
-        .stat-box.hp .stat-value { color: #e94560; }
         .stat-box.attack .stat-value { color: #ff6b35; }
         .stat-box.defense .stat-value { color: #4ecdc4; }
         .stat-box.dodge .stat-value { color: #a8e6cf; }
         .stat-box.crit .stat-value { color: #f39c12; }
-        .stat-box.gold .stat-value { color: #ffd700; }
 
-        /* Equipment and Bag Panel */
-        .equipment-bag-panel {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 6px;
-            flex-shrink: 0;
-            max-height: 120px;
+        .stats-right {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 120px;
         }
 
-        .panel-section {
+        .gold-box {
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .gold-box .gold-icon {
+            font-size: 1.1rem;
+        }
+
+        .gold-box .gold-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .buffs-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 8px;
+            border-radius: 6px;
+            flex: 1;
+            overflow-y: auto;
+            max-height: 60px;
+        }
+
+        .buffs-box .buff {
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            margin: 2px;
+        }
+
+        .buffs-box .buff.positive {
+            background: rgba(78, 205, 196, 0.2);
+            border: 1px solid #4ecdc4;
+            color: #4ecdc4;
+        }
+
+        .buffs-box .buff.negative {
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid #e94560;
+            color: #e94560;
+        }
+
+        .buffs-box .buff.soul {
+            background: rgba(147, 51, 234, 0.2);
+            border: 1px solid #9333ea;
+            color: #c084fc;
+        }
+
+        .no-buffs {
+            font-size: 0.65rem;
+            color: #555;
+            text-align: center;
+        }
+
+        /* Potions Quick Panel */
+        .potions-panel {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .potion-slot {
+            background: rgba(78, 205, 196, 0.15);
+            border: 1px solid rgba(78, 205, 196, 0.4);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .potion-slot:hover {
+            background: rgba(78, 205, 196, 0.3);
+            transform: scale(1.05);
+        }
+
+        .potion-slot .potion-name {
+            color: #4ecdc4;
+            font-size: 0.7rem;
+        }
+
+        .potion-slot .potion-count {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+        }
+
+        /* Equipment Panel - Horizontal */
+        .equipment-panel {
             background: rgba(255, 255, 255, 0.05);
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
+            margin-bottom: 8px;
+            flex-shrink: 0;
         }
 
-        .panel-section h4 {
-            font-size: 0.7rem;
+        .equipment-panel h4 {
+            font-size: 0.75rem;
             color: #e94560;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        .equipment-slots {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
+        .equipment-slots-horizontal {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
         }
 
-        .equipment-slot {
+        .equipment-slot-h {
             background: rgba(0, 0, 0, 0.3);
-            padding: 4px 6px;
-            border-radius: 4px;
+            padding: 8px;
+            border-radius: 6px;
             border-left: 3px solid #444;
-            font-size: 0.65rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
         }
 
-        .equipment-slot.common { border-left-color: #888; }
-        .equipment-slot.uncommon { border-left-color: #4ecdc4; }
-        .equipment-slot.rare { border-left-color: #667eea; }
-        .equipment-slot.epic { border-left-color: #a855f7; }
-        .equipment-slot.legendary { border-left-color: #ffd700; }
+        .equipment-slot-h.common { border-left-color: #888; }
+        .equipment-slot-h.uncommon { border-left-color: #4ecdc4; }
+        .equipment-slot-h.rare { border-left-color: #667eea; }
+        .equipment-slot-h.epic { border-left-color: #a855f7; }
+        .equipment-slot-h.legendary { border-left-color: #ffd700; }
 
-        .slot-info {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            overflow: hidden;
-        }
-
-        .slot-type {
-            font-size: 0.55rem;
+        .equipment-slot-h .slot-type {
+            font-size: 0.6rem;
             color: #666;
-            min-width: 28px;
+            margin-bottom: 3px;
         }
 
-        .slot-name {
+        .equipment-slot-h .slot-name {
             font-weight: bold;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .slot-name.common { color: #888; }
-        .slot-name.uncommon { color: #4ecdc4; }
-        .slot-name.rare { color: #667eea; }
-        .slot-name.epic { color: #a855f7; }
-        .slot-name.legendary { color: #ffd700; }
+        .equipment-slot-h .slot-name.common { color: #888; }
+        .equipment-slot-h .slot-name.uncommon { color: #4ecdc4; }
+        .equipment-slot-h .slot-name.rare { color: #667eea; }
+        .equipment-slot-h .slot-name.epic { color: #a855f7; }
+        .equipment-slot-h .slot-name.legendary { color: #ffd700; }
 
-        .slot-stats {
-            font-size: 0.55rem;
+        .equipment-slot-h .slot-stats {
+            font-size: 0.6rem;
             color: #aaa;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+        }
+
+        .equipment-slot-h .slot-stats span {
             white-space: nowrap;
         }
 
-        /* Bag Section */
-        .bag-items {
+        /* Bag Panels - Separated */
+        .bag-panels {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .bag-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bag-section h4 {
+            font-size: 0.75rem;
+            color: #e94560;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .bag-items-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 3px;
-            max-height: 75px;
+            gap: 4px;
+            max-height: 80px;
             overflow-y: auto;
         }
 
         .bag-item {
             background: rgba(0, 0, 0, 0.4);
-            padding: 3px 6px;
+            padding: 4px 8px;
             border-radius: 4px;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             cursor: pointer;
             border: 1px solid transparent;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
         }
 
         .bag-item:hover {
@@ -450,11 +595,6 @@
             background: rgba(139, 69, 19, 0.2);
         }
 
-        .bag-item.potion {
-            border-left: 2px solid #4ecdc4;
-            background: rgba(78, 205, 196, 0.2);
-        }
-
         .bag-count {
             background: rgba(255, 255, 255, 0.2);
             padding: 1px 4px;
@@ -462,76 +602,11 @@
             font-size: 0.55rem;
         }
 
-        /* Potions Quick Panel */
-        .potions-panel {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 6px;
-            flex-shrink: 0;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .potion-slot {
-            background: rgba(78, 205, 196, 0.15);
-            border: 1px solid rgba(78, 205, 196, 0.4);
-            padding: 5px 10px;
-            border-radius: 6px;
+        .empty-bag {
+            color: #555;
             font-size: 0.7rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
-        }
-
-        .potion-slot:hover {
-            background: rgba(78, 205, 196, 0.3);
-            transform: scale(1.05);
-        }
-
-        .potion-slot .potion-count {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.65rem;
-        }
-
-        /* Buffs Panel */
-        .buffs-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-bottom: 6px;
-            flex-shrink: 0;
-            min-height: 0;
-        }
-
-        .buff {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.65rem;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-        }
-
-        .buff.positive {
-            background: rgba(78, 205, 196, 0.2);
-            border: 1px solid #4ecdc4;
-            color: #4ecdc4;
-        }
-
-        .buff.negative {
-            background: rgba(233, 69, 96, 0.2);
-            border: 1px solid #e94560;
-            color: #e94560;
-        }
-
-        .buff.soul {
-            background: rgba(147, 51, 234, 0.2);
-            border: 1px solid #9333ea;
-            color: #c084fc;
+            text-align: center;
+            padding: 10px;
         }
 
         /* Event Panel */
@@ -544,7 +619,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            min-height: 0;
+            min-height: 200px;
         }
 
         .event-header {
@@ -1104,29 +1179,6 @@
             border-radius: 2px;
         }
 
-        /* Responsive adjustments */
-        @media (max-height: 650px) {
-            .equipment-bag-panel {
-                max-height: 90px;
-            }
-            .bag-items {
-                max-height: 55px;
-            }
-        }
-
-        @media (max-height: 550px) {
-            .equipment-bag-panel {
-                max-height: 70px;
-            }
-            .game-header {
-                padding: 4px 0;
-            }
-            .stats-panel {
-                padding: 5px;
-                margin-bottom: 4px;
-            }
-        }
-
         .hidden {
             display: none !important;
         }
@@ -1175,11 +1227,15 @@
 
         <!-- Game Screen -->
         <div class="game-screen hidden" id="game-screen">
-            <!-- Header -->
+            <!-- Header - Updated Layout -->
             <div class="game-header">
                 <h1>🏰 魔塔傳說 🏰</h1>
-                <div class="level-display">第 <span id="current-level">1</span> 層 / 500</div>
-                <div class="floor-name" id="floor-name">地下監牢</div>
+                <div class="area-display" id="area-display">第一區</div>
+                <div class="floor-display">
+                    <span class="area-icon" id="floor-area-icon">⛓️</span>
+                    <span id="floor-area-name">地下監牢</span>
+                    <span>第 <span id="current-floor">1</span> 層</span>
+                </div>
             </div>
 
             <!-- HP Bar -->
@@ -1189,57 +1245,69 @@
                 </div>
             </div>
 
-            <!-- Stats Panel -->
+            <!-- Stats Panel - New Layout -->
             <div class="stats-panel">
-                <div class="stat-box hp">
-                    <div class="stat-icon">❤️</div>
-                    <div class="stat-label">生命</div>
-                    <div class="stat-value" id="stat-hp">100</div>
+                <div class="stats-left">
+                    <div class="stat-box attack">
+                        <div class="stat-row">
+                            <span class="stat-icon">⚔️</span>
+                            <span class="stat-value" id="stat-attack">10</span>
+                        </div>
+                        <div class="stat-label">攻擊</div>
+                    </div>
+                    <div class="stat-box defense">
+                        <div class="stat-row">
+                            <span class="stat-icon">🛡️</span>
+                            <span class="stat-value" id="stat-defense">5</span>
+                        </div>
+                        <div class="stat-label">防禦</div>
+                    </div>
+                    <div class="stat-box crit">
+                        <div class="stat-row">
+                            <span class="stat-icon">💥</span>
+                            <span class="stat-value" id="stat-crit">5%</span>
+                        </div>
+                        <div class="stat-label">爆擊</div>
+                    </div>
+                    <div class="stat-box dodge">
+                        <div class="stat-row">
+                            <span class="stat-icon">💨</span>
+                            <span class="stat-value" id="stat-dodge">5%</span>
+                        </div>
+                        <div class="stat-label">閃避</div>
+                    </div>
                 </div>
-                <div class="stat-box attack">
-                    <div class="stat-icon">⚔️</div>
-                    <div class="stat-label">攻擊</div>
-                    <div class="stat-value" id="stat-attack">10</div>
-                </div>
-                <div class="stat-box defense">
-                    <div class="stat-icon">🛡️</div>
-                    <div class="stat-label">防禦</div>
-                    <div class="stat-value" id="stat-defense">5</div>
-                </div>
-                <div class="stat-box dodge">
-                    <div class="stat-icon">💨</div>
-                    <div class="stat-label">閃避</div>
-                    <div class="stat-value" id="stat-dodge">5%</div>
-                </div>
-                <div class="stat-box crit">
-                    <div class="stat-icon">💥</div>
-                    <div class="stat-label">爆擊</div>
-                    <div class="stat-value" id="stat-crit">5%</div>
-                </div>
-                <div class="stat-box gold">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-label">金幣</div>
-                    <div class="stat-value" id="stat-gold">0</div>
+                <div class="stats-right">
+                    <div class="gold-box">
+                        <span class="gold-icon">💰</span>
+                        <span class="gold-value" id="stat-gold">0</span>
+                    </div>
+                    <div class="buffs-box" id="buffs-panel">
+                        <div class="no-buffs">無增益效果</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Potions Quick Panel -->
             <div class="potions-panel" id="potions-panel"></div>
 
-            <!-- Equipment and Bag Panel -->
-            <div class="equipment-bag-panel">
-                <div class="panel-section">
-                    <h4>🎖️ 裝備中</h4>
-                    <div class="equipment-slots" id="equipment-slots"></div>
-                </div>
-                <div class="panel-section">
-                    <h4>🎒 背包 (<span id="bag-count">0</span>/20)</h4>
-                    <div class="bag-items" id="bag-items"></div>
-                </div>
+            <!-- Equipment Panel - Horizontal -->
+            <div class="equipment-panel">
+                <h4>🎖️ 裝備中</h4>
+                <div class="equipment-slots-horizontal" id="equipment-slots"></div>
             </div>
 
-            <!-- Buffs Panel -->
-            <div class="buffs-panel" id="buffs-panel"></div>
+            <!-- Bag Panels - Separated -->
+            <div class="bag-panels">
+                <div class="bag-section">
+                    <h4>🎒 裝備背包 (<span id="equip-bag-count">0</span>/20)</h4>
+                    <div class="bag-items-grid" id="equip-bag-items"></div>
+                </div>
+                <div class="bag-section">
+                    <h4>📦 素材背包</h4>
+                    <div class="bag-items-grid" id="material-bag-items"></div>
+                </div>
+            </div>
 
             <!-- Event Panel -->
             <div class="event-panel" id="event-panel"></div>
@@ -1316,6 +1384,8 @@
 
         // ==================== GAME DATA ====================
         
+        const AREA_NAMES_CN = ['', '第一區', '第二區', '第三區', '第四區', '第五區', '第六區', '第七區', '第八區', '第九區', '第十區'];
+        
         // 10 Areas, 50 floors each = 500 total floors
         const AREAS = [
             { id: 1, name: '地下監牢', icon: '⛓️', desc: '陰暗潮濕的監牢，關押著被遺忘的靈魂...', startFloor: 1 },
@@ -1385,59 +1455,59 @@
 
         // Monsters by Area
         const MONSTERS_BY_AREA = {
-            1: [ // 地下監牢
+            1: [
                 { name: '史萊姆', emoji: '🟢', baseHp: 30, baseAtk: 8, baseDef: 2, goldMin: 5, goldMax: 12, material: 'slime', matChance: 0.4 },
                 { name: '老鼠', emoji: '🐀', baseHp: 25, baseAtk: 10, baseDef: 1, goldMin: 4, goldMax: 10, material: 'rat', matChance: 0.35 },
                 { name: '蝙蝠', emoji: '🦇', baseHp: 22, baseAtk: 12, baseDef: 1, goldMin: 5, goldMax: 11, material: 'bat', matChance: 0.35 },
             ],
-            2: [ // 陰暗洞窟
+            2: [
                 { name: '蜘蛛', emoji: '🕷️', baseHp: 40, baseAtk: 15, baseDef: 4, goldMin: 8, goldMax: 18, material: 'spider', matChance: 0.4 },
                 { name: '哥布林', emoji: '👺', baseHp: 50, baseAtk: 18, baseDef: 5, goldMin: 10, goldMax: 22, material: 'goblin', matChance: 0.45 },
                 { name: '洞穴蝙蝠', emoji: '🦇', baseHp: 35, baseAtk: 20, baseDef: 3, goldMin: 9, goldMax: 20, material: 'bat', matChance: 0.35 },
             ],
-            3: [ // 骷髏墓地
+            3: [
                 { name: '骷髏', emoji: '💀', baseHp: 60, baseAtk: 22, baseDef: 8, goldMin: 15, goldMax: 30, material: 'skeleton', matChance: 0.4 },
                 { name: '殭屍', emoji: '🧟', baseHp: 80, baseAtk: 20, baseDef: 10, goldMin: 18, goldMax: 35, material: 'zombie', matChance: 0.35 },
                 { name: '幽靈', emoji: '👻', baseHp: 50, baseAtk: 28, baseDef: 5, goldMin: 20, goldMax: 40, material: 'ghost', matChance: 0.3 },
             ],
-            4: [ // 幽暗森林
+            4: [
                 { name: '狼人', emoji: '🐺', baseHp: 90, baseAtk: 30, baseDef: 12, goldMin: 25, goldMax: 45, material: 'orc', matChance: 0.4 },
                 { name: '樹妖', emoji: '🌳', baseHp: 120, baseAtk: 25, baseDef: 18, goldMin: 28, goldMax: 50, material: 'treant', matChance: 0.35 },
                 { name: '毒蜘蛛', emoji: '🕷️', baseHp: 70, baseAtk: 35, baseDef: 8, goldMin: 22, goldMax: 42, material: 'spider', matChance: 0.4 },
             ],
-            5: [ // 魔法實驗室
+            5: [
                 { name: '石像鬼', emoji: '🗿', baseHp: 150, baseAtk: 32, baseDef: 25, goldMin: 35, goldMax: 60, material: 'golem', matChance: 0.35 },
                 { name: '魔偶', emoji: '🎭', baseHp: 100, baseAtk: 40, baseDef: 15, goldMin: 38, goldMax: 65, material: 'golem', matChance: 0.3 },
                 { name: '失敗實驗體', emoji: '🧪', baseHp: 130, baseAtk: 38, baseDef: 20, goldMin: 40, goldMax: 70, material: 'golem', matChance: 0.35 },
             ],
-            6: [ // 惡魔殿堂
+            6: [
                 { name: '小惡魔', emoji: '😈', baseHp: 120, baseAtk: 45, baseDef: 18, goldMin: 45, goldMax: 80, material: 'demon', matChance: 0.35 },
                 { name: '地獄犬', emoji: '🐕', baseHp: 140, baseAtk: 50, baseDef: 22, goldMin: 50, goldMax: 85, material: 'demon', matChance: 0.3 },
                 { name: '墮落天使', emoji: '👼', baseHp: 110, baseAtk: 55, baseDef: 15, goldMin: 55, goldMax: 95, material: 'demon', matChance: 0.3 },
             ],
-            7: [ // 冰霜走廊
+            7: [
                 { name: '冰霜巨人', emoji: '🧊', baseHp: 200, baseAtk: 52, baseDef: 30, goldMin: 60, goldMax: 100, material: 'frost', matChance: 0.35 },
                 { name: '寒冰幽魂', emoji: '👻', baseHp: 130, baseAtk: 60, baseDef: 20, goldMin: 65, goldMax: 110, material: 'frost', matChance: 0.3 },
                 { name: '冰狼', emoji: '🐺', baseHp: 160, baseAtk: 58, baseDef: 25, goldMin: 62, goldMax: 105, material: 'frost', matChance: 0.35 },
             ],
-            8: [ // 烈焰通道
+            8: [
                 { name: '火焰精靈', emoji: '🔥', baseHp: 150, baseAtk: 65, baseDef: 22, goldMin: 70, goldMax: 120, material: 'flame', matChance: 0.35 },
                 { name: '熔岩巨人', emoji: '🌋', baseHp: 250, baseAtk: 58, baseDef: 35, goldMin: 75, goldMax: 130, material: 'flame', matChance: 0.3 },
                 { name: '火蜥蜴', emoji: '🦎', baseHp: 180, baseAtk: 62, baseDef: 28, goldMin: 72, goldMax: 125, material: 'flame', matChance: 0.35 },
             ],
-            9: [ // 虛空裂隙
+            9: [
                 { name: '虛空行者', emoji: '🌀', baseHp: 180, baseAtk: 70, baseDef: 30, goldMin: 85, goldMax: 150, material: 'void', matChance: 0.3 },
                 { name: '異界獵手', emoji: '👁️', baseHp: 200, baseAtk: 75, baseDef: 28, goldMin: 90, goldMax: 160, material: 'void', matChance: 0.3 },
                 { name: '混沌使者', emoji: '💫', baseHp: 170, baseAtk: 80, baseDef: 25, goldMin: 95, goldMax: 170, material: 'void', matChance: 0.25 },
             ],
-            10: [ // 魔王寶座
+            10: [
                 { name: '魔王近衛', emoji: '⚔️', baseHp: 220, baseAtk: 85, baseDef: 35, goldMin: 100, goldMax: 180, material: 'dragon', matChance: 0.3 },
                 { name: '暗黑龍', emoji: '🐉', baseHp: 280, baseAtk: 80, baseDef: 40, goldMin: 110, goldMax: 200, material: 'dragon', matChance: 0.35 },
                 { name: '死亡騎士', emoji: '🗡️', baseHp: 250, baseAtk: 88, baseDef: 38, goldMin: 105, goldMax: 190, material: 'dragon', matChance: 0.3 },
             ]
         };
 
-        // Bosses for each area (at floor 50 of each area)
+        // Bosses for each area
         const AREA_BOSSES = {
             1: { name: '監獄看守長', emoji: '👹', baseHp: 200, baseAtk: 25, baseDef: 12, goldMin: 80, goldMax: 150, soulReward: 15 },
             2: { name: '洞窟蜘蛛后', emoji: '🕷️', baseHp: 350, baseAtk: 35, baseDef: 18, goldMin: 120, goldMax: 200, soulReward: 20 },
@@ -1451,7 +1521,7 @@
             10: { name: '魔王', emoji: '👑', baseHp: 2000, baseAtk: 150, baseDef: 80, goldMin: 1000, goldMax: 1500, soulReward: 250 }
         };
 
-        // Equipment with HP bonus for some armors
+        // Equipment with HP bonus
         const EQUIPMENT = {
             weapons: [
                 { name: '生鏽的劍', rarity: 'common', attack: 5, defense: 0, dodge: 0, crit: 1, hp: 0 },
@@ -1627,7 +1697,7 @@
                 description: '地上有一瓶發光的藥水...',
                 effect: (game) => {
                     if (Math.random() < 0.65) {
-                                                const heal = Math.floor(game.player.maxHp * 0.25);
+                        const heal = Math.floor(game.player.maxHp * 0.25);
                         game.player.hp = Math.min(game.player.hp + heal, game.player.maxHp);
                         return `是治療藥水！恢復 ${heal} 生命！`;
                     } else {
@@ -1725,6 +1795,11 @@
 
             getAreaNumber() {
                 return this.getCurrentArea().id;
+            }
+
+            getFloorInArea() {
+                const area = this.getCurrentArea();
+                return this.level - area.startFloor + 1;
             }
 
             isAreaBossFloor() {
@@ -1932,24 +2007,19 @@
                     return;
                 }
 
-                // Decrease buff durations
                 this.buffs = this.buffs.filter(b => {
                     b.duration--;
                     return b.duration > 0;
                 });
 
-                // Clear battle log for new floor
                 this.lastBattleLog = null;
 
-                // Check for new area
                 if (this.isNewArea() && this.level > 1) {
                     this.showAreaTransition();
                     return;
                 }
 
-                // Check for story dialogue
                 this.checkStoryDialogue();
-
                 this.generateEvent();
                 this.updateUI();
             }
@@ -1961,19 +2031,16 @@
                 if (STORY_DIALOGUES[dialogueKey] && !this.storyShown[dialogueKey] && 
                     this.level === AREAS[area - 1].startFloor) {
                     this.storyShown[dialogueKey] = true;
-                    // Story will be shown in area transition
                 }
             }
 
             generateEvent() {
-                // Boss at the end of each area (every 50 floors)
                 if (this.isAreaBossFloor()) {
                     this.currentEvent = 'fight';
                     this.generateBoss();
                     return;
                 }
 
-                // Guaranteed merchant 3 floors before boss
                 const areaNum = this.getAreaNumber();
                 const bossFloor = areaNum * 50;
                 if (this.level === bossFloor - 3) {
@@ -1982,7 +2049,6 @@
                     return;
                 }
 
-                // Guaranteed rest every 10 floors (not on boss floor)
                 if (this.level % 10 === 0 && !this.isAreaBossFloor()) {
                     this.currentEvent = 'rest';
                     this.generateRestArea();
@@ -2052,11 +2118,9 @@
 
                 const base = monsterPool[Math.floor(Math.random() * monsterPool.length)];
                 
-                // Scale within the area (floors 1-50 of each area)
                 const floorInArea = ((this.level - 1) % 50) + 1;
                 const scaling = 1 + (floorInArea - 1) * 0.02;
                 
-                // Elite chance
                 const eliteChance = Math.min(0.18, 0.08 + (floorInArea * 0.002));
                 const isElite = Math.random() < eliteChance;
                 const eliteMultiplier = isElite ? 1.5 : 1;
@@ -2109,7 +2173,6 @@
             performAttack() {
                 if (!this.inCombat || !this.currentMonster) return;
 
-                // Reset battle log for this round
                 this.lastBattleLog = {
                     playerDamage: 0,
                     playerCrit: false,
@@ -2121,7 +2184,6 @@
                 const playerAttack = this.getAttack();
                 const monsterDefense = this.currentMonster.defense;
                 
-                // Calculate damage: attack - defense, minimum 1
                 const isCrit = Math.random() * 100 < this.getCrit();
                 const critMultiplier = isCrit ? 1.75 : 1;
                 const baseDamage = Math.max(1, playerAttack - monsterDefense);
@@ -2131,7 +2193,6 @@
                 this.lastBattleLog.playerDamage = playerDamage;
                 this.lastBattleLog.playerCrit = isCrit;
 
-                // Add attack animation
                 setTimeout(() => {
                     const monsterSprite = document.querySelector('.combatant.monster .combatant-sprite');
                     if (monsterSprite) monsterSprite.classList.add('attack-animation');
@@ -2160,7 +2221,6 @@
                     const playerDefense = this.getDefense();
                     const monsterAttack = this.currentMonster.attack;
                     
-                    // Calculate damage: attack - defense, minimum 1
                     const monsterDamage = Math.max(1, monsterAttack - playerDefense);
                     this.player.hp -= monsterDamage;
                     this.lastBattleLog.monsterDamage = monsterDamage;
@@ -2170,7 +2230,6 @@
                 }
 
                 if (this.player.hp <= 0) {
-                    // Check for second chance
                     const secondChance = this.getSoulBonuses().secondChance;
                     if (secondChance > 0 && Math.random() * 100 < secondChance) {
                         this.player.hp = 1;
@@ -2191,7 +2250,6 @@
                 this.inCombat = false;
                 const monster = this.currentMonster;
                 
-                // Generate loot
                 this.pendingLoot = {
                     gold: monster.gold,
                     material: null,
@@ -2200,7 +2258,6 @@
                     potion: null
                 };
 
-                // Material drop
                 if (Math.random() < monster.matChance) {
                     this.pendingLoot.material = {
                         key: monster.material,
@@ -2208,13 +2265,11 @@
                     };
                 }
 
-                // Equipment drop
                 if (Math.random() < monster.dropChance) {
                     const rarityBoost = monster.type === 'boss' ? 0.4 : (monster.type === 'elite' ? 0.2 : 0);
                     this.pendingLoot.equipment = this.generateEquipmentDrop(rarityBoost);
                 }
 
-                // Potion drop
                 const potionChance = monster.type === 'boss' ? 0.9 : (monster.type === 'elite' ? 0.35 : 0.15);
                 if (Math.random() < potionChance) {
                     const areaNum = this.getAreaNumber();
@@ -2225,12 +2280,10 @@
                     else this.pendingLoot.potion = 'small';
                 }
 
-                // Soul reward
                 if (this.pendingLoot.souls > 0) {
                     this.soulGainedThisRun += this.pendingLoot.souls;
                 }
 
-                // Update stats
                 if (this.level > this.soulData.bestFloor) {
                     this.soulData.bestFloor = this.level;
                 }
@@ -2239,7 +2292,6 @@
                 }
                 saveSoulData(this.soulData);
 
-                // Special dialogue for final boss
                 if (this.level === 500 && monster.type === 'boss') {
                     this.renderFinalVictory();
                 } else {
@@ -2275,7 +2327,7 @@
                 const fleeChance = this.getFleeChance();
                 if (Math.random() * 100 < fleeChance) {
                     this.inCombat = false;
-                    this.renderFleeSuccess(); // Show screen instead of skipping immediately
+                    this.renderFleeSuccess();
                 } else {
                     this.lastBattleLog = {
                         playerDamage: 0,
@@ -2373,7 +2425,6 @@
                 const item = this.player.bag[index];
                 const currentEquip = this.player.equipment[item.type];
                 
-                // Check if we need to adjust HP when changing equipment
                 const oldMaxHp = this.getMaxHp();
                 
                 this.player.equipment[item.type] = item;
@@ -2383,7 +2434,6 @@
                     this.player.bag.push(currentEquip);
                 }
                 
-                // Adjust current HP if max HP changed
                 const newMaxHp = this.getMaxHp();
                 if (newMaxHp > oldMaxHp) {
                     this.player.hp += (newMaxHp - oldMaxHp);
@@ -2434,24 +2484,23 @@
                 const areaNum = this.getAreaNumber();
                 const priceMultiplier = 1 + (areaNum * 0.15);
 
-                // Always have potions
                 const potionTypes = ['small', 'medium'];
                 if (areaNum >= 4) potionTypes.push('large');
                 if (areaNum >= 7) potionTypes.push('full');
 
                 potionTypes.forEach(type => {
                     const potion = POTION_TYPES[type];
+                    const healAmount = Math.floor(this.getMaxHp() * potion.healPercent * this.getPotionMultiplier());
                     this.merchantItems.push({
                         shopType: 'potion',
                         potionType: type,
                         name: potion.name,
                         emoji: potion.emoji,
-                        description: `恢復 ${Math.floor(potion.healPercent * 100)}% 生命`,
+                        description: `恢復 ${healAmount} 點生命 (${Math.floor(potion.healPercent * 100)}%)`,
                         price: Math.floor(potion.basePrice * priceMultiplier)
                     });
                 });
 
-                // Add 2-4 equipment items
                 const equipCount = 2 + Math.floor(Math.random() * 3);
                 for (let i = 0; i < equipCount; i++) {
                     const rarityBoost = areaNum > 6 ? 0.25 : (areaNum > 3 ? 0.15 : 0.05);
@@ -2488,9 +2537,8 @@
                     this.player.potions[item.potionType]++;
                 } else if (item.shopType === 'equipment') {
                     if (this.player.bag.length < 20) {
-                        this.player.gold -= item.price; // Deduct gold here
+                        this.player.gold -= item.price;
                         
-                        // Create a clean copy of the equipment
                         const equipCopy = { 
                             name: item.name,
                             rarity: item.rarity,
@@ -2499,13 +2547,12 @@
                             dodge: item.dodge,
                             crit: item.crit,
                             hp: item.hp || 0,
-                            type: item.type, // The type (weapon/armor) is already correct from ...equip
+                            type: item.type,
                             id: Date.now() + Math.random()
                         };
                         
                         this.player.bag.push(equipCopy);
                     } else {
-                        // Bag full, do nothing (don't deduct gold)
                         return;
                     }
                 }
@@ -2631,9 +2678,7 @@
                 const monster = this.currentMonster;
                 const typeText = monster.type === 'elite' ? '⭐ 精英' : monster.type === 'boss' ? '👑 首領' : '';
                 const fleeChance = this.getFleeChance();
-                const maxHp = this.getMaxHp();
 
-                // Build battle log HTML
                 let battleLogHtml = '';
                 if (this.lastBattleLog) {
                     const log = this.lastBattleLog;
@@ -2668,7 +2713,6 @@
                     battleLogHtml += `</div>`;
                 }
 
-                // Boss dialogue
                 let bossDialogue = '';
                 if (monster.type === 'boss' && !this.lastBattleLog) {
                     const bossDialogues = {
@@ -2866,9 +2910,8 @@
             renderMerchant() {
                 const panel = document.getElementById('event-panel');
                 
-                // Shop items
                 let itemsHtml = this.merchantItems.map((item, index) => {
-                    if (item.type === 'potion') {
+                    if (item.shopType === 'potion') {
                         return `
                             <div class="shop-item ${this.player.gold >= item.price ? '' : 'disabled'}" 
                                  onclick="game.buyItem(${index})">
@@ -2895,7 +2938,6 @@
                     }
                 }).join('');
 
-                // Materials to sell
                 let materialsHtml = '';
                 const matKeys = Object.keys(this.player.materials);
                 if (matKeys.length > 0) {
@@ -2931,7 +2973,6 @@
                     `;
                 }
 
-                // Equipment to sell from bag
                 let bagSellHtml = '';
                 if (this.player.bag.length > 0) {
                     bagSellHtml = `
@@ -2988,10 +3029,16 @@
             updateUI() {
                 const maxHp = this.getMaxHp();
                 const area = this.getCurrentArea();
+                const areaNum = this.getAreaNumber();
+                const floorInArea = this.getFloorInArea();
                 
-                document.getElementById('current-level').textContent = this.level;
-                document.getElementById('floor-name').textContent = `${area.icon} ${area.name}`;
-                document.getElementById('stat-hp').textContent = maxHp;
+                // Update header with new format
+                document.getElementById('area-display').textContent = AREA_NAMES_CN[areaNum];
+                document.getElementById('floor-area-icon').textContent = area.icon;
+                document.getElementById('floor-area-name').textContent = area.name;
+                document.getElementById('current-floor').textContent = floorInArea;
+                
+                // Stats
                 document.getElementById('stat-attack').textContent = this.getAttack();
                 document.getElementById('stat-defense').textContent = this.getDefense();
                 document.getElementById('stat-dodge').textContent = `${this.getDodge()}%`;
@@ -3001,87 +3048,97 @@
                 // HP Bar
                 const hpPercent = Math.max(0, (this.player.hp / maxHp) * 100);
                 document.getElementById('hp-bar').style.width = `${hpPercent}%`;
-                document.getElementById('hp-bar-text').textContent = `${this.player.hp} / ${maxHp}`;
+                document.getElementById('hp-bar-text').textContent = `❤️ ${this.player.hp} / ${maxHp}`;
 
-                // Potions Quick Panel
+                // Potions Quick Panel with names
                 const potionsPanel = document.getElementById('potions-panel');
                 let potionsHtml = '';
                 Object.entries(this.player.potions).forEach(([type, count]) => {
                     if (count > 0) {
                         const potion = POTION_TYPES[type];
+                        const healAmount = Math.floor(maxHp * potion.healPercent * this.getPotionMultiplier());
                         potionsHtml += `
-                            <div class="potion-slot" onclick="game.usePotion('${type}')" title="點擊使用">
+                            <div class="potion-slot" onclick="game.usePotion('${type}')" title="恢復 ${healAmount} 生命">
                                 ${potion.emoji}
+                                <span class="potion-name">${potion.name}</span>
                                 <span class="potion-count">x${count}</span>
                             </div>
                         `;
                     }
                 });
-                potionsPanel.innerHTML = potionsHtml;
+                potionsPanel.innerHTML = potionsHtml || '<span style="color: #555; font-size: 0.7rem;">無藥水</span>';
 
-                // Equipment slots
+                // Equipment slots - Horizontal with all stats
                 const equipSlots = document.getElementById('equipment-slots');
                 equipSlots.innerHTML = ['weapon', 'armor', 'accessory'].map(slot => {
                     const item = this.player.equipment[slot];
                     if (item) {
-                        const hpText = item.hp ? ` ❤️${item.hp}` : '';
                         return `
-                            <div class="equipment-slot ${item.rarity}">
-                                <div class="slot-info">
-                                    <span class="slot-type">${SLOT_NAMES[slot]}</span>
-                                    <span class="slot-name ${item.rarity}">${item.name}</span>
+                            <div class="equipment-slot-h ${item.rarity}">
+                                <div class="slot-type">${SLOT_NAMES[slot]}</div>
+                                <div class="slot-name ${item.rarity}">${item.name}</div>
+                                <div class="slot-stats">
+                                    <span>⚔️${item.attack}</span>
+                                    <span>🛡️${item.defense}</span>
+                                    <span>💨${item.dodge}%</span>
+                                    <span>💥${item.crit}%</span>
+                                    ${item.hp ? `<span>❤️${item.hp}</span>` : ''}
                                 </div>
-                                <span class="slot-stats">⚔️${item.attack} 🛡️${item.defense}${hpText}</span>
                             </div>
                         `;
                     } else {
                         return `
-                            <div class="equipment-slot">
-                                <div class="slot-info">
-                                    <span class="slot-type">${SLOT_NAMES[slot]}</span>
-                                    <span class="slot-name" style="color: #555">空</span>
-                                </div>
+                            <div class="equipment-slot-h">
+                                <div class="slot-type">${SLOT_NAMES[slot]}</div>
+                                <div class="slot-name" style="color: #555">空</div>
+                                <div class="slot-stats" style="color: #444">-</div>
                             </div>
                         `;
                     }
                 }).join('');
 
-                // Bag items
-                const bagItems = document.getElementById('bag-items');
-                document.getElementById('bag-count').textContent = this.player.bag.length;
+                // Equipment bag items
+                const equipBagItems = document.getElementById('equip-bag-items');
+                document.getElementById('equip-bag-count').textContent = this.player.bag.length;
                 
-                let bagHtml = '';
-                
-                // Materials first
-                Object.keys(this.player.materials).forEach(key => {
-                    const mat = MATERIALS[key];
-                    const count = this.player.materials[key];
-                    bagHtml += `
-                        <div class="bag-item material" title="${mat.name} x${count}">
-                            ${mat.emoji} <span class="bag-count">${count}</span>
-                        </div>
-                    `;
-                });
-
-                // Then equipment
+                let equipBagHtml = '';
                 this.player.bag.forEach((item, index) => {
-                    bagHtml += `
+                    equipBagHtml += `
                         <div class="bag-item ${item.rarity}" 
                              onclick="game.showBagItemMenu(${index})"
                              title="${item.name}\n⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}% 💥${item.crit}%${item.hp ? ` ❤️${item.hp}` : ''}">
-                            <span class="slot-name ${item.rarity}" style="font-size: 0.6rem">${item.name.substring(0, 4)}..</span>
+                            <span class="slot-name ${item.rarity}" style="font-size: 0.65rem">${item.name}</span>
                         </div>
                     `;
                 });
 
-                if (bagHtml === '') {
-                    bagHtml = '<div style="color: #555; font-size: 0.7rem">空的</div>';
+                if (equipBagHtml === '') {
+                    equipBagHtml = '<div class="empty-bag">空的</div>';
                 }
-                bagItems.innerHTML = bagHtml;
+                equipBagItems.innerHTML = equipBagHtml;
 
-                // Buffs
+                // Material bag items
+                const materialBagItems = document.getElementById('material-bag-items');
+                let materialBagHtml = '';
+                
+                Object.keys(this.player.materials).forEach(key => {
+                    const mat = MATERIALS[key];
+                    const count = this.player.materials[key];
+                    materialBagHtml += `
+                        <div class="bag-item material" title="${mat.name} x${count}">
+                            ${mat.emoji} ${mat.name} <span class="bag-count">${count}</span>
+                        </div>
+                    `;
+                });
+
+                if (materialBagHtml === '') {
+                    materialBagHtml = '<div class="empty-bag">空的</div>';
+                }
+                materialBagItems.innerHTML = materialBagHtml;
+
+                // Buffs - in the right panel
                 const buffsPanel = document.getElementById('buffs-panel');
-                const statNames = { attack: '攻擊', defense: '防禦', dodge: '閃避', crit: '爆擊' };
+                const statNames = { attack: '攻', defense: '防', dodge: '閃', crit: '爆' };
                 
                 let buffHtml = '';
                 const soulBonuses = this.getSoulBonuses();
@@ -3094,9 +3151,13 @@
                 
                 buffHtml += this.buffs.map(buff => `
                     <div class="buff ${buff.type}">
-                        ${buff.name}: ${buff.value > 0 ? '+' : ''}${buff.value} ${statNames[buff.stat]} (${buff.duration})
+                        ${buff.name} ${buff.value > 0 ? '+' : ''}${buff.value}${statNames[buff.stat]} (${buff.duration})
                     </div>
                 `).join('');
+                
+                if (buffHtml === '') {
+                    buffHtml = '<div class="no-buffs">無增益效果</div>';
+                }
                 
                 buffsPanel.innerHTML = buffHtml;
             }
@@ -3120,17 +3181,20 @@
                     border-radius: 10px;
                     padding: 15px;
                     z-index: 1000;
-                    min-width: 220px;
+                    min-width: 240px;
                     text-align: center;
                 `;
 
-                const hpText = item.hp ? ` | ❤️ ${item.hp}` : '';
                 menu.innerHTML = `
                     <div style="margin-bottom: 10px;">
                         <div class="slot-name ${item.rarity}" style="font-size: 1rem; margin-bottom: 5px;">${item.name}</div>
-                        <div style="font-size: 0.75rem; color: #888; margin-bottom: 5px;">${SLOT_NAMES[item.type]} - ${RARITY_NAMES[item.rarity]}</div>
-                        <div style="font-size: 0.8rem; color: #aaa;">
-                            ⚔️ ${item.attack} | 🛡️ ${item.defense} | 💨 ${item.dodge}% | 💥 ${item.crit}%${hpText}
+                        <div style="font-size: 0.75rem; color: #888; margin-bottom: 8px;">${SLOT_NAMES[item.type]} - ${RARITY_NAMES[item.rarity]}</div>
+                        <div style="font-size: 0.8rem; color: #aaa; display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; text-align: center;">
+                            <span>⚔️ ${item.attack}</span>
+                            <span>🛡️ ${item.defense}</span>
+                            <span>💨 ${item.dodge}%</span>
+                            <span>💥 ${item.crit}%</span>
+                            ${item.hp ? `<span style="grid-column: span 2">❤️ ${item.hp}</span>` : ''}
                         </div>
                     </div>
                     <div style="display: flex; gap: 8px; justify-content: center;">
@@ -3168,8 +3232,9 @@
                 document.getElementById('modal-message').textContent = '你在魔塔中倒下了...但你的靈魂得到了強化。';
                 document.getElementById('soul-gained').textContent = totalSouls;
                 document.getElementById('final-stats').innerHTML = `
-                    <div>到達層數: <strong style="color: #ffd700">${this.level}</strong> / 500</div>
-                    <div>到達區域: <strong style="color: #c084fc">${this.getCurrentArea().name}</strong></div>
+                    <div>到達區域: <strong style="color: #c084fc">${AREA_NAMES_CN[this.getAreaNumber()]} - ${this.getCurrentArea().name}</strong></div>
+                    <div>區域層數: <strong style="color: #ffd700">${this.getFloorInArea()}</strong> / 50</div>
+                    <div>總層數: <strong>${this.level}</strong> / 500</div>
                     <div>最高紀錄: <strong>${this.soulData.bestFloor}</strong></div>
                     <div>收集金幣: <strong>${this.player.gold}</strong></div>
                     <div>最終攻擊: <strong style="color: #ff6b35">${this.getAttack()}</strong></div>
