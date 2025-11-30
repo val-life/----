@@ -1948,115 +1948,112 @@
 
         const RANDOM_EVENTS = [
             { 
-                name: '治療之泉',
-                description: '你發現了一個散發著神聖光芒的泉水！',
-                effect: (game) => {
-                    const heal = Math.floor(game.player.maxHp * 0.30);
-                    game.player.hp = Math.min(game.player.hp + heal, game.player.maxHp);
-                    return `恢復了 ${heal} 點生命！`;
-                },
+                name: '神秘泉水',
                 icon: '⛲',
-                type: 'positive'
-            },
-            {
-                name: '戰士雕像',
-                description: '一座古老的戰士雕像，觸碰後你感到力量湧入體內！',
-                effect: (game) => {
-                    game.addBuff('戰士祝福', 8, 'attack', 15, 'positive');
-                    return '攻擊力 +8 持續15層！';
-                },
-                icon: '🗿',
-                type: 'positive'
-            },
-            {
-                name: '詛咒祭壇',
-                description: '你不小心觸發了古老的詛咒...',
-                effect: (game) => {
-                    game.addBuff('詛咒', -5, 'defense', 10, 'negative');
-                    return '防禦 -5 持續10層！';
-                },
-                icon: '🪦',
-                type: 'negative'
-            },
-            {
-                name: '訓練假人',
-                description: '這裡有一個附魔的訓練假人，練習後你感覺更加專注！',
-                effect: (game) => {
-                    game.addBuff('專注', 5, 'crit', 15, 'positive');
-                    return '爆擊率 +5% 持續15層！';
-                },
-                icon: '🎯',
-                type: 'positive'
-            },
-            {
-                name: '毒氣陷阱',
-                description: '地板突然噴出毒氣！',
-                effect: (game) => {
-                    const damage = Math.floor(game.player.maxHp * 0.12);
-                    game.player.hp = Math.max(1, game.player.hp - damage);
-                    return `受到 ${damage} 點毒素傷害！`;
-                },
-                icon: '☠️',
-                type: 'negative'
-            },
-            {
-                name: '守護光環',
-                description: '一道神聖的光芒包圍了你！',
-                effect: (game) => {
-                    game.addBuff('光之護盾', 10, 'defense', 15, 'positive');
-                    return '防禦 +10 持續15層！';
-                },
-                icon: '✨',
-                type: 'positive'
-            },
-            {
-                name: '隱藏寶箱',
-                description: '你在牆壁的裂縫中發現了一個小寶箱！',
-                effect: (game) => {
-                    const gold = 30 + Math.floor(game.level * 0.3);
-                    game.player.gold += Math.floor(gold * game.getGoldMultiplier());
-                    return `獲得 ${Math.floor(gold * game.getGoldMultiplier())} 金幣！`;
-                },
-                icon: '💰',
-                type: 'positive'
-            },
-            {
-                name: '幸運四葉草',
-                description: '你發現了一片四葉草，幸運女神向你微笑！',
-                effect: (game) => {
-                    game.addBuff('幸運', 5, 'dodge', 20, 'positive');
-                    return '閃避 +5% 持續20層！';
-                },
-                icon: '🍀',
-                type: 'positive'
-            },
-            {
-                name: '騎士遺物',
-                description: '這裡有一位陣亡騎士的遺體，他的精神鼓舞了你！',
-                effect: (game) => {
-                    game.addBuff('騎士之魂', 6, 'attack', 20, 'positive');
-                    game.addBuff('騎士意志', 6, 'defense', 20, 'positive');
-                    return '攻擊+6，防禦+6 持續20層！';
-                },
-                icon: '⚔️',
-                type: 'positive'
-            },
-            {
-                name: '神秘藥水',
-                description: '地上有一瓶發光的藥水...',
-                effect: (game) => {
-                    if (Math.random() < 0.5) {
-                        const heal = Math.floor(game.player.maxHp * 0.25);
-                        game.player.hp = Math.min(game.player.hp + heal, game.player.maxHp);
-                        return `是治療藥水！恢復 ${heal} 生命！`;
+                description: '你發現了一個散發著微光的泉水。水質看起來很清澈，但周圍有一些奇怪的骨頭...',
+                resolve: (game) => {
+                    if (Math.random() < 0.6) {
+                        const heal = Math.floor(game.getMaxHp() * 0.35);
+                        game.player.hp = Math.min(game.player.hp + heal, game.getMaxHp());
+                        return { text: `泉水充滿了生命力！恢復了 ${heal} 點生命！`, type: 'positive' };
                     } else {
-                        const damage = Math.floor(game.player.maxHp * 0.10);
-                        game.player.hp = Math.max(1, game.player.hp - damage);
-                        return `是毒藥！受到 ${damage} 傷害！`;
+                        const dmg = Math.floor(game.getMaxHp() * 0.15);
+                        game.player.hp = Math.max(1, game.player.hp - dmg);
+                        return { text: `水裡有水蛭！你受到 ${dmg} 點傷害！`, type: 'negative' };
                     }
-                },
-                icon: '🧪',
-                type: 'neutral'
+                }
+            },
+            {
+                name: '古老祭壇',
+                icon: '⛩️',
+                description: '一座布滿青苔的石製祭壇，上面刻著看不懂的符文。你感覺到一股力量在呼喚你。',
+                resolve: (game) => {
+                    if (Math.random() < 0.55) {
+                        game.addBuff('古神祝福', 15, 'attack', 25, 'positive');
+                        return { text: `你感到充滿力量！攻擊力 +25 (持續15層)`, type: 'positive' };
+                    } else {
+                        game.addBuff('古神詛咒', 15, 'defense', -15, 'negative');
+                        return { text: `你不小心觸怒了神靈！防禦力 -15 (持續15層)`, type: 'negative' };
+                    }
+                }
+            },
+            {
+                name: '奇怪的蘑菇',
+                icon: '🍄',
+                description: '路邊長著一朵色彩鮮豔的巨大蘑菇，散發著甜美的香氣。',
+                resolve: (game) => {
+                    if (Math.random() < 0.5) {
+                        game.addBuff('狂暴孢子', 20, 'crit', 20, 'positive');
+                        return { text: `吃了之後感覺視野變慢了！爆擊率 +20% (持續20層)`, type: 'positive' };
+                    } else {
+                        const dmg = Math.floor(game.getMaxHp() * 0.1);
+                        game.addBuff('中毒', 10, 'attack', -10, 'negative');
+                        game.player.hp = Math.max(1, game.player.hp - dmg);
+                        return { text: `有毒！受到 ${dmg} 傷害且攻擊力下降！`, type: 'negative' };
+                    }
+                }
+            },
+            {
+                name: '陣亡騎士',
+                icon: '💀',
+                description: '一位身穿盔甲的騎士倒在路邊。他身上或許還有一些有用的裝備，但翻動屍體似乎不太尊重...',
+                resolve: (game) => {
+                    if (Math.random() < 0.6) {
+                        const gold = 50 + Math.floor(game.level * 1.5);
+                        game.player.gold += Math.floor(gold * game.getGoldMultiplier());
+                        return { text: `你在他的口袋發現了 ${gold} 金幣！`, type: 'positive' };
+                    } else {
+                        game.addBuff('亡靈怨氣', 10, 'dodge', -20, 'negative');
+                        return { text: `亡魂纏上了你！閃避率大幅下降！`, type: 'negative' };
+                    }
+                }
+            },
+            {
+                name: '飄渺迷霧',
+                icon: '🌫️',
+                description: '前方突然湧現出一團奇怪的濃霧，裡面似乎有什麼東西在閃爍。',
+                resolve: (game) => {
+                    if (Math.random() < 0.5) {
+                        game.addBuff('迷蹤步', 20, 'dodge', 15, 'positive');
+                        return { text: `你在迷霧中學會了隱藏氣息！閃避 +15% (持續20層)`, type: 'positive' };
+                    } else {
+                        // Ambush!
+                        const dmg = Math.floor(game.getMaxHp() * 0.2);
+                        game.player.hp = Math.max(1, game.player.hp - dmg);
+                        return { text: `迷霧中衝出一隻怪物襲擊了你！受到 ${dmg} 點傷害。`, type: 'negative' };
+                    }
+                }
+            },
+            {
+                name: '紅色的按鈕',
+                icon: '🔴',
+                description: '牆上有一個突兀的紅色按鈕。旁邊寫著「不要按」。',
+                resolve: (game) => {
+                    if (Math.random() < 0.4) { // High risk
+                        const gold = 200 + game.level * 2;
+                        game.player.gold += gold;
+                        return { text: `牆壁打開了，掉出一大堆金幣！(+${gold}G)`, type: 'positive' };
+                    } else {
+                        const dmg = Math.floor(game.getMaxHp() * 0.3); // High penalty
+                        game.player.hp = Math.max(1, game.player.hp - dmg);
+                        return { text: `天花板塌下來了！你受到重創 ${dmg} 點傷害！`, type: 'negative' };
+                    }
+                }
+            },
+            {
+                name: '流浪占卜師',
+                icon: '🔮',
+                description: '一位蒙面的占卜師坐在角落。「想知道你的命運嗎？靠近一點...」',
+                resolve: (game) => {
+                    if (Math.random() < 0.5) {
+                        const souls = 5 + Math.floor(game.level / 20);
+                        game.soulGainedThisRun += souls;
+                        return { text: `你看到了命運的啟示！獲得 ${souls} 靈魂碎片！`, type: 'positive' };
+                    } else {
+                         game.addBuff('厄運', 20, 'crit', -100, 'negative');
+                         return { text: `你看到了自己的死期... 爆擊率降為0 (持續20層)`, type: 'negative' };
+                    }
+                }
             }
         ];
 
@@ -3070,13 +3067,13 @@
 
             openChestRisky() {
                 // 40% chance of mimic
-                if (Math.random() < 0.4) {
+                if (Math.random() < 0.55) {
                     this.generateMimic();
                 } else {
                     // Better loot for risky choice
                     const goldAmount = Math.floor((40 + this.level * 0.6 + Math.random() * 50) * this.getGoldMultiplier());
                     const hasEquipment = Math.random() < 0.30;
-                    const equipment = hasEquipment ? this.generateEquipmentDrop(0.1) : null;
+                    const equipment = hasEquipment ? this.generateEquipmentDrop(0.15) : null;
                     
                     let potion = null;
                     if (Math.random() < 0.60) {
@@ -3308,19 +3305,31 @@
                         <div><div class="event-title">${event.name}</div></div>
                     </div>
                     <div class="event-content">
-                        <div class="event-description">${event.description}</div>
+                        <div class="event-description" style="font-size: 1rem; color: #ddd; padding: 10px;">
+                            ${event.description}
+                        </div>
+                        <div style="text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px;">
+                            (結果未知，可能獲得獎勵或懲罰)
+                        </div>
                     </div>
                     <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="game.resolveRandomEvent()">調查</button>
-                        <button class="btn btn-secondary" onclick="game.skipRandomEvent()">略過</button>
+                        <button class="btn btn-warning" onclick="game.resolveRandomEvent()">🤔 探索 (賭運氣)</button>
+                        <button class="btn btn-secondary" onclick="game.skipRandomEvent()">🏃 直接離開</button>
                     </div>
                 `;
             }
 
             resolveRandomEvent() {
-                const result = this.currentRandomEvent.effect(this);
+                // Call the resolve function defined in the event object
+                const result = this.currentRandomEvent.resolve(this);
+                
                 const panel = document.getElementById('event-panel');
                 
+                // Determine color based on result type
+                let color = '#ffd700'; // Default
+                if (result.type === 'positive') color = '#4ecdc4'; // Green/Teal
+                if (result.type === 'negative') color = '#e94560'; // Red
+
                 panel.innerHTML = `
                     <div class="event-header">
                         <div class="event-icon">${this.currentRandomEvent.icon}</div>
@@ -3328,18 +3337,26 @@
                     </div>
                     <div class="event-content">
                         <div class="treasure-display">
-                            <p style="font-size: 1.1rem; color: ${this.currentRandomEvent.type === 'positive' ? '#4ecdc4' : this.currentRandomEvent.type === 'negative' ? '#e94560' : '#ffd700'}">${result}</p>
+                             <!-- Result Animation Icon -->
+                            <div class="treasure-icon" style="font-size: 3rem; margin-bottom: 15px">
+                                ${result.type === 'positive' ? '✨' : '💢'}
+                            </div>
+                            <p style="font-size: 1.1rem; color: ${color}; font-weight: bold; line-height: 1.6;">
+                                ${result.text}
+                            </p>
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="game.level++; game.nextLevel()">繼續</button>
+                        <button class="btn btn-primary" onclick="game.level++; game.nextLevel()">繼續冒險</button>
                     </div>
                 `;
 
                 if (this.player.hp <= 0) {
-                    this.gameOver();
+                    // Slight delay to read text before game over
+                    setTimeout(() => this.gameOver(), 1500);
+                } else {
+                    this.updateUI();
                 }
-                this.updateUI();
             }
 
             skipRandomEvent() {
