@@ -2063,6 +2063,88 @@
                 this.soulData = loadSoulData();
                 this.resetRunState();
                 this.updateMenuSoulDisplay();
+
+                if (this.loadGame()) {
+                    this.restoreScreen();
+                }
+            }
+
+            saveGame() {
+                if (!this.gameStarted || this.player.hp <= 0) return;
+
+                const saveData = {
+                    level: this.level,
+                    player: this.player,
+                    buffs: this.buffs,
+                    currentArea: this.currentArea,
+                    lastArea: this.lastArea,
+                    storyShown: this.storyShown,
+                    soulGainedThisRun: this.soulGainedThisRun,
+                    inCombat: this.inCombat,
+                    isMimicFight: this.isMimicFight,
+                    mimicLootBonus: this.mimicLootBonus,
+                    currentEvent: this.currentEvent,
+                    currentMonster: this.currentMonster,
+                    merchantItems: this.merchantItems,
+                    pendingLoot: this.pendingLoot,
+                    lastBattleLog: this.lastBattleLog,
+                    // Save the name of the random event to find it later
+                    randomEventName: this.currentRandomEvent ? this.currentRandomEvent.name : null
+                };
+
+                localStorage.setItem('magicTower_autoSave', JSON.stringify(saveData));
+            }
+
+            loadGame() {
+                const dataStr = localStorage.getItem('magicTower_autoSave');
+                if (!dataStr) return false;
+
+                try {
+                    const data = JSON.parse(dataStr);
+                    
+                    // Restore data
+                    Object.assign(this, data);
+                    
+                    // Restore Random Event reference (since functions don't save in JSON)
+                    if (data.randomEventName) {
+                        this.currentRandomEvent = RANDOM_EVENTS.find(e => e.name === data.randomEventName);
+                    }
+
+                    return true;
+                } catch (e) {
+                    console.error("Save file corrupted");
+                    return false;
+                }
+            }
+
+            restoreScreen() {
+                this.gameStarted = true;
+                document.getElementById('main-menu').classList.add('hidden');
+                document.getElementById('game-screen').classList.remove('hidden');
+                this.updateUI();
+
+                // Decide what to render based on the saved state
+                if (this.currentEvent === 'fight' || (this.inCombat && this.currentMonster)) {
+                    this.renderCombat();
+                } else if (this.currentEvent === 'merchant') {
+                    this.renderMerchant();
+                } else if (this.currentEvent === 'treasure') {
+                    if (this.pendingLoot) this.renderTreasure();
+                    else this.generateTreasureChoice();
+                } else if (this.currentEvent === 'rest') {
+                    this.generateRestArea();
+                } else if (this.currentEvent === 'event' && this.currentRandomEvent) {
+                    // Re-trigger the resolution UI since we don't save the exact HTML state
+                    this.resolveRandomEvent(); 
+                } else if (this.pendingLoot && (this.currentEvent === 'fight' || !this.currentEvent)) {
+                    // Loot screen after battle
+                    if(this.level > 500) this.renderFinalVictory();
+                    else this.renderVictory();
+                } else {
+                    // Default empty state or just moved
+                    const panel = document.getElementById('event-panel');
+                    if(panel.innerHTML === '') this.generateEvent();
+                }
             }
 
             resetRunState() {
@@ -3725,11 +3807,13 @@
                 }
                 
                 buffsPanel.innerHTML = buffHtml;
+                this.saveGame();
             }
 
             // ==================== GAME END ====================
 
             gameOver() {
+                localStorage.removeItem('magicTower_autoSave');
                 const floorBonus = Math.floor(this.level * 0.1);
                 const totalSouls = Math.floor((this.soulGainedThisRun + floorBonus) * this.getSoulMultiplier());
                 
@@ -3755,6 +3839,7 @@
             }
 
             victory() {
+                localStorage.removeItem('magicTower_autoSave');
                 const victoryBonus = 300;
                 const totalSouls = Math.floor((this.soulGainedThisRun + victoryBonus) * this.getSoulMultiplier());
                 
