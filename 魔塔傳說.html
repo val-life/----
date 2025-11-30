@@ -1915,9 +1915,9 @@
         };
 
         const POTION_TYPES = {
-            small: { name: '小型藥水', healPercent: 0.25, basePrice: 20, emoji: '🧪' },
-            medium: { name: '中型藥水', healPercent: 0.50, basePrice: 45, emoji: '🧴' },
-            large: { name: '大型藥水', healPercent: 0.75, basePrice: 80, emoji: '⚗️' },
+            small: { name: '小型藥水', healPercent: 0.10, basePrice: 20, emoji: '🧪' },
+            medium: { name: '中型藥水', healPercent: 0.25, basePrice: 45, emoji: '🧴' },
+            large: { name: '大型藥水', healPercent: 0.50, basePrice: 80, emoji: '⚗️' },
             full: { name: '完全恢復', healPercent: 1.0, basePrice: 130, emoji: '💊' }
         };
 
@@ -1936,11 +1936,11 @@
         };
 
         const EVENTS = {
-            fight: { weight: 55, icon: '⚔️', title: '遭遇怪物！' },
-            treasure: { weight: 12, icon: '💎', title: '發現寶箱！' },
+            fight: { weight: 70, icon: '⚔️', title: '遭遇怪物！' },
+            treasure: { weight: 5, icon: '💎', title: '發現寶箱！' },
             merchant: { weight: 10, icon: '🏪', title: '流浪商人' },
-            event: { weight: 15, icon: '❓', title: '神秘事件' },
-            rest: { weight: 8, icon: '🏕️', title: '安全區域' }
+            event: { weight: 10, icon: '❓', title: '神秘事件' },
+            rest: { weight: 5, icon: '🏕️', title: '安全區域' }
         };
 
         const RANDOM_EVENTS = [
@@ -2042,7 +2042,7 @@
                 name: '神秘藥水',
                 description: '地上有一瓶發光的藥水...',
                 effect: (game) => {
-                    if (Math.random() < 0.65) {
+                    if (Math.random() < 0.5) {
                         const heal = Math.floor(game.player.maxHp * 0.25);
                         game.player.hp = Math.min(game.player.hp + heal, game.player.maxHp);
                         return `是治療藥水！恢復 ${heal} 生命！`;
