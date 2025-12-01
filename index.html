@@ -3015,6 +3015,7 @@
                 const difficultyTier = Math.floor((floorInArea - 1) / 10);
                 const buffPerTier = 0.125; 
                 const scaling = 1 + (difficultyTier * buffPerTier);
+                const HPscaling = 1 + (difficultyTier * (buffPerTier/2));
 
                 const eliteChance = Math.min(0.18, 0.08 + (difficultyTier * 0.025));
                 const isElite = Math.random() < eliteChance;
@@ -3023,8 +3024,8 @@
                 this.currentMonster = {
                     ...base,
                     type: isElite ? 'elite' : 'normal',
-                    hp: Math.floor(base.baseHp * scaling * eliteMultiplier),
-                    maxHp: Math.floor(base.baseHp * scaling * eliteMultiplier),
+                    hp: Math.floor(base.baseHp * HPscaling * eliteMultiplier),
+                    maxHp: Math.floor(base.baseHp * HPscaling * eliteMultiplier),
                     attack: Math.floor(base.baseAtk * scaling * eliteMultiplier),
                     defense: Math.floor(base.baseDef * scaling * eliteMultiplier),
                     gold: Math.floor((base.goldMin + Math.random() * (base.goldMax - base.goldMin)) * scaling * this.getGoldMultiplier() * (isElite ? 1.5 : 1)),
