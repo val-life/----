@@ -1811,11 +1811,11 @@
         }
 
         const SOUL_UPGRADES = [
-            { id: 'vitality', name: '生命強化', desc: '永久增加最大生命值', effect: '+15 生命', maxLevel: 20, baseCost: 10, costMult: 1.5 },
-            { id: 'strength', name: '力量強化', desc: '永久增加攻擊力', effect: '+3 攻擊', maxLevel: 20, baseCost: 12, costMult: 1.5 },
-            { id: 'resilience', name: '堅韌強化', desc: '永久增加防禦力', effect: '+2 防禦', maxLevel: 20, baseCost: 12, costMult: 1.5 },
-            { id: 'agility', name: '敏捷強化', desc: '永久增加閃避率', effect: '+1% 閃避', maxLevel: 15, baseCost: 15, costMult: 1.6 },
-            { id: 'precision', name: '精準強化', desc: '永久增加爆擊率', effect: '+1% 爆擊', maxLevel: 15, baseCost: 15, costMult: 1.6 },
+            { id: 'vitality', name: '生命強化', desc: '永久增加最大生命值', effect: '+10 生命', maxLevel: 20, baseCost: 10, costMult: 1.5 },
+            { id: 'strength', name: '力量強化', desc: '永久增加攻擊力', effect: '+2 攻擊', maxLevel: 10, baseCost: 15, costMult: 1.5 },
+            { id: 'resilience', name: '堅韌強化', desc: '永久增加防禦力', effect: '+2 防禦', maxLevel: 10, baseCost: 15, costMult: 1.5 },
+            { id: 'agility', name: '敏捷強化', desc: '永久增加閃避率', effect: '+1% 閃避', maxLevel: 5, baseCost: 15, costMult: 1.6 },
+            { id: 'precision', name: '精準強化', desc: '永久增加爆擊率', effect: '+1% 爆擊', maxLevel: 5, baseCost: 15, costMult: 1.6 },
             { id: 'fortune', name: '財運祝福', desc: '增加金幣獲取量', effect: '+5% 金幣', maxLevel: 10, baseCost: 20, costMult: 1.7 },
             { id: 'soulHarvest', name: '靈魂收割', desc: '增加靈魂碎片獲取', effect: '+10% 靈魂', maxLevel: 10, baseCost: 25, costMult: 1.8 },
             { id: 'potionMaster', name: '藥劑大師', desc: '增加藥水效果', effect: '+10% 效果', maxLevel: 10, baseCost: 18, costMult: 1.6 },
@@ -2669,8 +2669,8 @@
             getSoulBonuses() {
                 const u = this.soulData.upgrades;
                 return {
-                    vitality: u.vitality * 15,
-                    strength: u.strength * 3,
+                    vitality: u.vitality * 10,
+                    strength: u.strength * 2,
                     resilience: u.resilience * 2,
                     agility: u.agility * 1,
                     precision: u.precision * 1,
