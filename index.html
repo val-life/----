@@ -746,6 +746,20 @@
             font-size: 0.55rem;
         }
 
+        .bag-item.material.common { border-left-color: #888 !important; }
+        .bag-item.material.uncommon { border-left-color: #4ecdc4 !important; }
+        .bag-item.material.rare { border-left-color: #667eea !important; }
+        .bag-item.material.epic { border-left-color: #a855f7 !important; }
+        .bag-item.material.legendary { 
+            border-left-color: #ffd700 !important; 
+            animation: legendaryGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes legendaryGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
+        }
+
         .empty-bag {
             color: #555;
             font-size: 0.7rem;
@@ -1050,6 +1064,10 @@
             display: flex;
             align-items: center;
             gap: 4px;
+        }
+
+        .loot-item.legendary {
+            animation: legendaryGlow 2s ease-in-out infinite;
         }
 
         /* Shop Items */
@@ -1854,68 +1872,68 @@
         };
 
         const MATERIALS = {
-            // Area 1
-            slime_gel: { name: '史萊姆凝膠', emoji: '🟢', basePrice: 5 },
-            rat_tail: { name: '老鼠尾巴', emoji: '🐁', basePrice: 6 },
-            bat_fang: { name: '蝙蝠尖牙', emoji: '🦷', basePrice: 7 },
-            
-            // Area 2
-            spider_leg: { name: '蜘蛛斷腿', emoji: '🦵', basePrice: 12 },
-            goblin_ear: { name: '哥布林耳朵', emoji: '👂', basePrice: 15 },
-            cave_bat_wing: { name: '洞穴蝙蝠翼', emoji: '🦇', basePrice: 14 },
-            
-            // Area 3
-            rib_bone: { name: '腐朽肋骨', emoji: '🦴', basePrice: 25 },
-            zombie_flesh: { name: '感染腐肉', emoji: '🧟', basePrice: 28 },
-            ectoplasm: { name: '幽靈靈質', emoji: '👻', basePrice: 35 },
-            
-            // Area 4
-            wolf_pelt: { name: '狼人毛皮', emoji: '🐺', basePrice: 45 },
-            dryad_branch: { name: '樹妖枯枝', emoji: '🍂', basePrice: 50 },
-            poison_gland: { name: '劇毒囊腺', emoji: '🧪', basePrice: 48 },
-            
-            // Area 5
-            stone_heart: { name: '石像鬼之心', emoji: '🗿', basePrice: 70 },
-            puppet_gear: { name: '魔偶齒輪', emoji: '⚙️', basePrice: 75 },
-            mutant_fluid: { name: '突變體液', emoji: '🦠', basePrice: 80 },
-            
-            // Area 6
-            imp_horn: { name: '小惡魔角', emoji: '😈', basePrice: 100 },
-            hellhound_ash: { name: '地獄犬灰燼', emoji: '🐕', basePrice: 110 },
-            black_feather: { name: '墮落黑羽', emoji: '🪶', basePrice: 120 },
-            
-            // Area 7
-            frost_core: { name: '永凍核心', emoji: '❄️', basePrice: 150 },
-            wraith_dust: { name: '冤魂塵埃', emoji: '🌪️', basePrice: 160 },
-            ice_wolf_claw: { name: '冰狼利爪', emoji: '🐾', basePrice: 155 },
-            
-            // Area 8
-            ember_spark: { name: '不滅火種', emoji: '🔥', basePrice: 200 },
-            magma_rock: { name: '熔岩凝塊', emoji: '🌋', basePrice: 220 },
-            salamander_scale: { name: '火蜥蜴鱗', emoji: '🦎', basePrice: 210 },
-            
-            // Area 9
-            void_dust: { name: '虛空星塵', emoji: '✨', basePrice: 280 },
-            alien_eye: { name: '異界眼球', emoji: '👁️', basePrice: 300 },
-            chaos_shard: { name: '混沌碎片', emoji: '🌀', basePrice: 320 },
-            
-            // Area 10
-            guard_badge: { name: '近衛勳章', emoji: '🎖️', basePrice: 400 },
-            dragon_scale: { name: '黑龍逆鱗', emoji: '🐉', basePrice: 500 },
-            dark_metal: { name: '死亡金屬', emoji: '⛓️', basePrice: 450 },
+    // Area 1
+    slime_gel: { name: '史萊姆凝膠', emoji: '🟢', basePrice: 5, rarity: 'common' },
+    rat_tail: { name: '老鼠尾巴', emoji: '🐁', basePrice: 6, rarity: 'common' },
+    bat_fang: { name: '蝙蝠尖牙', emoji: '🦷', basePrice: 7, rarity: 'common' },
+    
+    // Area 2
+    spider_leg: { name: '蜘蛛斷腿', emoji: '🦵', basePrice: 12, rarity: 'common' },
+    goblin_ear: { name: '哥布林耳朵', emoji: '👂', basePrice: 15, rarity: 'common' },
+    cave_bat_wing: { name: '洞穴蝙蝠翼', emoji: '🦇', basePrice: 14, rarity: 'common' },
+    
+    // Area 3
+    rib_bone: { name: '腐朽肋骨', emoji: '🦴', basePrice: 25, rarity: 'uncommon' },
+    zombie_flesh: { name: '感染腐肉', emoji: '🧟', basePrice: 28, rarity: 'uncommon' },
+    ectoplasm: { name: '幽靈靈質', emoji: '👻', basePrice: 35, rarity: 'uncommon' },
+    
+    // Area 4
+    wolf_pelt: { name: '狼人毛皮', emoji: '🐺', basePrice: 45, rarity: 'uncommon' },
+    dryad_branch: { name: '樹妖枯枝', emoji: '🍂', basePrice: 50, rarity: 'uncommon' },
+    poison_gland: { name: '劇毒囊腺', emoji: '🧪', basePrice: 48, rarity: 'uncommon' },
+    
+    // Area 5
+    stone_heart: { name: '石像鬼之心', emoji: '🗿', basePrice: 70, rarity: 'rare' },
+    puppet_gear: { name: '魔偶齒輪', emoji: '⚙️', basePrice: 75, rarity: 'rare' },
+    mutant_fluid: { name: '突變體液', emoji: '🦠', basePrice: 80, rarity: 'rare' },
+    
+    // Area 6
+    imp_horn: { name: '小惡魔角', emoji: '😈', basePrice: 100, rarity: 'rare' },
+    hellhound_ash: { name: '地獄犬灰燼', emoji: '🐕', basePrice: 110, rarity: 'rare' },
+    black_feather: { name: '墮落黑羽', emoji: '🪶', basePrice: 120, rarity: 'rare' },
+    
+    // Area 7
+    frost_core: { name: '永凍核心', emoji: '❄️', basePrice: 150, rarity: 'rare' },
+    wraith_dust: { name: '冤魂塵埃', emoji: '🌪️', basePrice: 160, rarity: 'rare' },
+    ice_wolf_claw: { name: '冰狼利爪', emoji: '🐾', basePrice: 155, rarity: 'rare' },
+    
+    // Area 8
+    ember_spark: { name: '不滅火種', emoji: '🔥', basePrice: 200, rarity: 'epic' },
+    magma_rock: { name: '熔岩凝塊', emoji: '🌋', basePrice: 220, rarity: 'epic' },
+    salamander_scale: { name: '火蜥蜴鱗', emoji: '🦎', basePrice: 210, rarity: 'epic' },
+    
+    // Area 9
+    void_dust: { name: '虛空星塵', emoji: '✨', basePrice: 280, rarity: 'epic' },
+    alien_eye: { name: '異界眼球', emoji: '👁️', basePrice: 300, rarity: 'epic' },
+    chaos_shard: { name: '混沌碎片', emoji: '🌀', basePrice: 320, rarity: 'epic' },
+    
+    // Area 10
+    guard_badge: { name: '近衛勳章', emoji: '🎖️', basePrice: 400, rarity: 'epic' },
+    dragon_scale: { name: '黑龍逆鱗', emoji: '🐉', basePrice: 500, rarity: 'legendary' },
+    dark_metal: { name: '死亡金屬', emoji: '⛓️', basePrice: 450, rarity: 'epic' },
 
-            // Bosses
-            boss_1: { name: '看守鑰匙', emoji: '🗝️', basePrice: 100 },
-            boss_2: { name: '蛛后毒牙', emoji: '🕷️', basePrice: 150 },
-            boss_3: { name: '領主頭骨', emoji: '💀', basePrice: 250 },
-            boss_4: { name: '森林之心', emoji: '💚', basePrice: 350 },
-            boss_5: { name: '賢者之石', emoji: '💎', basePrice: 500 },
-            boss_6: { name: '惡魔之血', emoji: '🍷', basePrice: 650 },
-            boss_7: { name: '冰霜皇冠', emoji: '👑', basePrice: 850 },
-            boss_8: { name: '炎魔核心', emoji: '🌞', basePrice: 1100 },
-            boss_9: { name: '虛空水晶', emoji: '🔮', basePrice: 1500 },
-            boss_10: { name: '魔王靈魂', emoji: '👹', basePrice: 5000 }
-        };
+    // Bosses - ✅ All boss materials are legendary!
+    boss_1: { name: '看守鑰匙', emoji: '🗝️', basePrice: 100, rarity: 'rare' },
+    boss_2: { name: '蛛后毒牙', emoji: '🕷️', basePrice: 150, rarity: 'rare' },
+    boss_3: { name: '領主頭骨', emoji: '💀', basePrice: 250, rarity: 'rare' },
+    boss_4: { name: '森林之心', emoji: '💚', basePrice: 350, rarity: 'epic' },
+    boss_5: { name: '賢者之石', emoji: '💎', basePrice: 500, rarity: 'epic' },
+    boss_6: { name: '惡魔之血', emoji: '🍷', basePrice: 650, rarity: 'epic' },
+    boss_7: { name: '冰霜皇冠', emoji: '👑', basePrice: 850, rarity: 'legendary' },
+    boss_8: { name: '炎魔核心', emoji: '🌞', basePrice: 1100, rarity: 'legendary' },
+    boss_9: { name: '虛空水晶', emoji: '🔮', basePrice: 1500, rarity: 'legendary' },
+    boss_10: { name: '魔王靈魂', emoji: '👹', basePrice: 5000, rarity: 'legendary' }
+};
 
         const MONSTERS_BY_AREA = {
             1: [
@@ -4000,7 +4018,12 @@
                         <div class="loot-title">🎁 戰利品</div>
                         <div class="loot-items">
                             <div class="loot-item"><span style="color:#ffd700">💰 ${loot.gold}</span></div>
-                            ${loot.material && loot.material.name ? `<div class="loot-item"><span>${loot.material.emoji} ${loot.material.name}</span></div>` : ''}
+                            ${loot.material && loot.material.name ? `
+                                <div class="loot-item" style="border-left: 2px solid ${this.getRarityColor(loot.material.rarity || 'common')}">
+                                    <span style="color: ${this.getRarityColor(loot.material.rarity || 'common')}">${loot.material.emoji} ${loot.material.name}</span>
+                                    ${loot.material.rarity && loot.material.rarity !== 'common' ? `<span class="shop-item-rarity ${loot.material.rarity}">${RARITY_NAMES[loot.material.rarity]}</span>` : ''}
+                                </div>
+                            ` : ''}
                             ${loot.equipment ? `<div class="loot-item" style="border-left: 2px solid ${this.getRarityColor(loot.equipment.rarity)}"><span class="slot-name ${loot.equipment.rarity}">${loot.equipment.name}</span><span class="shop-item-rarity ${loot.equipment.rarity}">${RARITY_NAMES[loot.equipment.rarity]}</span></div>` : ''}
                             ${loot.potion ? `<div class="loot-item"><span>${POTION_TYPES[loot.potion].emoji} ${POTION_TYPES[loot.potion].name}</span></div>` : ''}
                             ${loot.souls > 0 ? `<div class="loot-item"><span style="color:#c084fc">💎 ${loot.souls} 靈魂碎片</span></div>` : ''}
@@ -4138,11 +4161,13 @@
                             <div style="display: flex; flex-wrap: wrap; gap: 4px">
                                 ${matKeys.map(key => {
                                     const mat = MATERIALS[key];
+                                    if (!mat) return ''; // ✅ Safety check
                                     const count = this.player.materials[key];
                                     const price = Math.floor(mat.basePrice * (1 + areaNum * 0.1) * this.getGoldMultiplier());
+                                    const rarityColor = this.getRarityColor(mat.rarity || 'common');
                                     return `
-                                        <div class="bag-item material" onclick="game.sellMaterial('${key}')" title="點擊出售一個">
-                                            ${mat.emoji} x${count}
+                                        <div class="bag-item" style="border-left: 2px solid ${rarityColor}; background: rgba(139, 69, 19, 0.2);" onclick="game.sellMaterial('${key}')" title="點擊出售一個 - ${RARITY_NAMES[mat.rarity] || '普通'}">
+                                            <span style="color: ${rarityColor}">${mat.emoji} x${count}</span>
                                             <span style="color: #ffd700; margin-left: 4px">💰${price}</span>
                                         </div>
                                     `;
@@ -4305,13 +4330,18 @@
                 // Material bag items
                 const materialBagItems = document.getElementById('material-bag-items');
                 let materialBagHtml = '';
-                
+
                 Object.keys(this.player.materials).forEach(key => {
                     const mat = MATERIALS[key];
+                    if (!mat) return; // ✅ Safety check
                     const count = this.player.materials[key];
+                    const rarityColor = this.getRarityColor(mat.rarity || 'common');
+                    const rarityName = mat.rarity ? RARITY_NAMES[mat.rarity] : '';
+                    
                     materialBagHtml += `
-                        <div class="bag-item material" title="${mat.name} x${count}">
-                            ${mat.emoji} ${mat.name} <span class="bag-count">${count}</span>
+                        <div class="bag-item" style="border-left: 2px solid ${rarityColor}; background: rgba(139, 69, 19, 0.2);" title="${mat.name} x${count}${rarityName ? ' - ' + rarityName : ''}">
+                            <span style="color: ${rarityColor}">${mat.emoji} ${mat.name}</span>
+                            <span class="bag-count">${count}</span>
                         </div>
                     `;
                 });
