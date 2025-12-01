@@ -1678,14 +1678,11 @@
     <script>
         // ==================== PERSISTENT DATA ====================
         const SAVE_KEY = 'magicTower_soulData_v2';
-        const GAME_VERSION = '0.3';
+        const GAME_VERSION = '0.5a';
 
-        function loadSoulData() {
-            const data = localStorage.getItem(SAVE_KEY);
-            if (data) {
-                return JSON.parse(data);
-            }
+        function getNewSoulData() {
             return {
+                version: GAME_VERSION, 
                 souls: 0,
                 upgrades: {
                     vitality: 0,
@@ -1705,7 +1702,93 @@
             };
         }
 
+        function calculateTotalLifetimeSouls(oldData) {
+            let total = oldData.souls || 0; // Start with currently held souls
+
+            // Add up cost of every purchased upgrade
+            if (oldData.upgrades) {
+                Object.keys(oldData.upgrades).forEach(key => {
+                    const level = oldData.upgrades[key];
+                    const upgradeDef = SOUL_UPGRADES.find(u => u.id === key);
+                    
+                    if (upgradeDef && level > 0) {
+                        // Sum cost for levels 0 to current_level-1
+                        for (let i = 0; i < level; i++) {
+                            total += Math.floor(upgradeDef.baseCost * Math.pow(upgradeDef.costMult, i));
+                        }
+                    }
+                });
+            }
+            return total;
+        }
+
+        function loadSoulData() {
+            const dataStr = localStorage.getItem(SAVE_KEY);
+            
+            // Default empty data if new player
+            let data = dataStr ? JSON.parse(dataStr) : getNewSoulData();
+
+            // --- VERSION CHECK & MIGRATION ---
+            if (data.version !== GAME_VERSION) {
+                console.log(`Version update detected: ${data.version || 'Unknown'} -> ${GAME_VERSION}`);
+                
+                // 1. Calculate Permanent Souls (Current + Spent on Upgrades)
+                let totalVal = calculateTotalLifetimeSouls(data);
+
+                // 2. [NEW] Check Active Run for Unbanked Souls
+                const runStr = localStorage.getItem('magicTower_autoSave');
+                if (runStr) {
+                    try {
+                        const runData = JSON.parse(runStr);
+                        
+                        // Add souls collected so far in this run
+                        if (runData.soulGainedThisRun) {
+                            totalVal += runData.soulGainedThisRun;
+                        }
+                        
+                        // Add souls waiting in a loot box (if you just killed a mob but didn't collect yet)
+                        if (runData.pendingLoot && runData.pendingLoot.souls) {
+                            totalVal += runData.pendingLoot.souls;
+                        }
+                        
+                        console.log(`Recovered unbanked souls from active run. New Total: ${totalVal}`);
+                    } catch (e) {
+                        console.error("Could not recover active run souls", e);
+                    }
+                }
+                
+                // 3. Calculate 50% Refund
+                const refundAmount = Math.floor(totalVal * 0.5);
+                
+                // 4. Wipe Old Data
+                localStorage.removeItem('magicTower_autoSave'); // Delete the run
+                
+                // 5. Create Fresh Soul Data with Refund
+                const newData = getNewSoulData();
+                newData.souls = refundAmount; 
+                
+                // 6. Save immediately
+                saveSoulData(newData);
+
+                // 7. Notify User
+                alert(
+                    `🎉 遊戲版本更新至 v${GAME_VERSION}！\n\n` +
+                    `為了平衡性調整，進度已重置。\n` +
+                    `\n💰 靈魂計算：\n` +
+                    `包含您正在進行的冒險，總資產為 ${totalVal} 靈魂。\n` +
+                    `已為您保留 50% (${refundAmount} 靈魂)！`
+                );
+                
+                return newData;
+            }
+            // ---------------------------------
+
+            return data;
+        }
+
         function saveSoulData(data) {
+            // Ensure the version is always the current one when saving
+            data.version = GAME_VERSION; 
             localStorage.setItem(SAVE_KEY, JSON.stringify(data));
         }
 
