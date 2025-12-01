@@ -1771,75 +1771,119 @@
         };
 
         const MATERIALS = {
-            slime: { name: '史萊姆凝膠', emoji: '🟢', basePrice: 5 },
-            rat: { name: '鼠牙', emoji: '🦷', basePrice: 4 },
-            bat: { name: '蝙蝠翼膜', emoji: '🦇', basePrice: 6 },
-            spider: { name: '蜘蛛絲', emoji: '🕸️', basePrice: 7 },
-            goblin: { name: '哥布林耳朵', emoji: '👂', basePrice: 10 },
-            skeleton: { name: '骨頭碎片', emoji: '🦴', basePrice: 15 },
-            zombie: { name: '腐肉', emoji: '🧟', basePrice: 12 },
-            ghost: { name: '幽魂精華', emoji: '👻', basePrice: 25 },
-            orc: { name: '獸人獠牙', emoji: '🐗', basePrice: 30 },
-            treant: { name: '古樹心材', emoji: '🌳', basePrice: 35 },
-            golem: { name: '魔力核心', emoji: '💎', basePrice: 40 },
-            demon: { name: '惡魔之角', emoji: '😈', basePrice: 50 },
-            frost: { name: '寒冰結晶', emoji: '❄️', basePrice: 55 },
-            flame: { name: '烈焰精華', emoji: '🔥', basePrice: 60 },
-            void: { name: '虛空碎片', emoji: '🌀', basePrice: 70 },
-            dragon: { name: '龍鱗', emoji: '🐉', basePrice: 100 },
-            boss: { name: '魔王碎片', emoji: '👑', basePrice: 200 }
+            // Area 1
+            slime_gel: { name: '史萊姆凝膠', emoji: '🟢', basePrice: 5 },
+            rat_tail: { name: '老鼠尾巴', emoji: '🐁', basePrice: 6 },
+            bat_fang: { name: '蝙蝠尖牙', emoji: '🦷', basePrice: 7 },
+            
+            // Area 2
+            spider_leg: { name: '蜘蛛斷腿', emoji: '🦵', basePrice: 12 },
+            goblin_ear: { name: '哥布林耳朵', emoji: '👂', basePrice: 15 },
+            cave_bat_wing: { name: '洞穴蝙蝠翼', emoji: '🦇', basePrice: 14 },
+            
+            // Area 3
+            rib_bone: { name: '腐朽肋骨', emoji: '🦴', basePrice: 25 },
+            zombie_flesh: { name: '感染腐肉', emoji: '🧟', basePrice: 28 },
+            ectoplasm: { name: '幽靈靈質', emoji: '👻', basePrice: 35 },
+            
+            // Area 4
+            wolf_pelt: { name: '狼人毛皮', emoji: '🐺', basePrice: 45 },
+            dryad_branch: { name: '樹妖枯枝', emoji: '🍂', basePrice: 50 },
+            poison_gland: { name: '劇毒囊腺', emoji: '🧪', basePrice: 48 },
+            
+            // Area 5
+            stone_heart: { name: '石像鬼之心', emoji: '🗿', basePrice: 70 },
+            puppet_gear: { name: '魔偶齒輪', emoji: '⚙️', basePrice: 75 },
+            mutant_fluid: { name: '突變體液', emoji: '🦠', basePrice: 80 },
+            
+            // Area 6
+            imp_horn: { name: '小惡魔角', emoji: '😈', basePrice: 100 },
+            hellhound_ash: { name: '地獄犬灰燼', emoji: '🐕', basePrice: 110 },
+            black_feather: { name: '墮落黑羽', emoji: '🪶', basePrice: 120 },
+            
+            // Area 7
+            frost_core: { name: '永凍核心', emoji: '❄️', basePrice: 150 },
+            wraith_dust: { name: '冤魂塵埃', emoji: '🌪️', basePrice: 160 },
+            ice_wolf_claw: { name: '冰狼利爪', emoji: '🐾', basePrice: 155 },
+            
+            // Area 8
+            ember_spark: { name: '不滅火種', emoji: '🔥', basePrice: 200 },
+            magma_rock: { name: '熔岩凝塊', emoji: '🌋', basePrice: 220 },
+            salamander_scale: { name: '火蜥蜴鱗', emoji: '🦎', basePrice: 210 },
+            
+            // Area 9
+            void_dust: { name: '虛空星塵', emoji: '✨', basePrice: 280 },
+            alien_eye: { name: '異界眼球', emoji: '👁️', basePrice: 300 },
+            chaos_shard: { name: '混沌碎片', emoji: '🌀', basePrice: 320 },
+            
+            // Area 10
+            guard_badge: { name: '近衛勳章', emoji: '🎖️', basePrice: 400 },
+            dragon_scale: { name: '黑龍逆鱗', emoji: '🐉', basePrice: 500 },
+            dark_metal: { name: '死亡金屬', emoji: '⛓️', basePrice: 450 },
+
+            // Bosses
+            boss_1: { name: '看守鑰匙', emoji: '🗝️', basePrice: 100 },
+            boss_2: { name: '蛛后毒牙', emoji: '🕷️', basePrice: 150 },
+            boss_3: { name: '領主頭骨', emoji: '💀', basePrice: 250 },
+            boss_4: { name: '森林之心', emoji: '💚', basePrice: 350 },
+            boss_5: { name: '賢者之石', emoji: '💎', basePrice: 500 },
+            boss_6: { name: '惡魔之血', emoji: '🍷', basePrice: 650 },
+            boss_7: { name: '冰霜皇冠', emoji: '👑', basePrice: 850 },
+            boss_8: { name: '炎魔核心', emoji: '🌞', basePrice: 1100 },
+            boss_9: { name: '虛空水晶', emoji: '🔮', basePrice: 1500 },
+            boss_10: { name: '魔王靈魂', emoji: '👹', basePrice: 5000 }
         };
 
         const MONSTERS_BY_AREA = {
             1: [
-                { name: '史萊姆', emoji: '🟢', baseHp: 30, baseAtk: 8, baseDef: 2, goldMin: 5, goldMax: 12, material: 'slime', matChance: 0.4 },
-                { name: '老鼠', emoji: '🐀', baseHp: 25, baseAtk: 10, baseDef: 1, goldMin: 4, goldMax: 10, material: 'rat', matChance: 0.35 },
-                { name: '蝙蝠', emoji: '🦇', baseHp: 22, baseAtk: 12, baseDef: 1, goldMin: 5, goldMax: 11, material: 'bat', matChance: 0.35 },
+                { name: '史萊姆', emoji: '🟢', baseHp: 30, baseAtk: 8, baseDef: 2, goldMin: 5, goldMax: 12, material: 'slime_gel', matChance: 0.4 },
+                { name: '老鼠', emoji: '🐀', baseHp: 25, baseAtk: 10, baseDef: 1, goldMin: 4, goldMax: 10, material: 'rat_tail', matChance: 0.35 },
+                { name: '蝙蝠', emoji: '🦇', baseHp: 22, baseAtk: 12, baseDef: 1, goldMin: 5, goldMax: 11, material: 'bat_fang', matChance: 0.35 },
             ],
             2: [
-                { name: '蜘蛛', emoji: '🕷️', baseHp: 40, baseAtk: 15, baseDef: 4, goldMin: 8, goldMax: 18, material: 'spider', matChance: 0.4 },
-                { name: '哥布林', emoji: '👺', baseHp: 50, baseAtk: 18, baseDef: 5, goldMin: 10, goldMax: 22, material: 'goblin', matChance: 0.45 },
-                { name: '洞穴蝙蝠', emoji: '🦇', baseHp: 35, baseAtk: 20, baseDef: 3, goldMin: 9, goldMax: 20, material: 'bat', matChance: 0.35 },
+                { name: '蜘蛛', emoji: '🕷️', baseHp: 40, baseAtk: 15, baseDef: 4, goldMin: 8, goldMax: 18, material: 'spider_leg', matChance: 0.4 },
+                { name: '哥布林', emoji: '👺', baseHp: 50, baseAtk: 18, baseDef: 5, goldMin: 10, goldMax: 22, material: 'goblin_ear', matChance: 0.45 },
+                { name: '洞穴蝙蝠', emoji: '🦇', baseHp: 35, baseAtk: 20, baseDef: 3, goldMin: 9, goldMax: 20, material: 'cave_bat_wing', matChance: 0.35 },
             ],
             3: [
-                { name: '骷髏', emoji: '💀', baseHp: 60, baseAtk: 22, baseDef: 8, goldMin: 15, goldMax: 30, material: 'skeleton', matChance: 0.4 },
-                { name: '殭屍', emoji: '🧟', baseHp: 80, baseAtk: 20, baseDef: 10, goldMin: 18, goldMax: 35, material: 'zombie', matChance: 0.35 },
-                { name: '幽靈', emoji: '👻', baseHp: 50, baseAtk: 28, baseDef: 5, goldMin: 20, goldMax: 40, material: 'ghost', matChance: 0.3 },
+                { name: '骷髏', emoji: '💀', baseHp: 60, baseAtk: 22, baseDef: 8, goldMin: 15, goldMax: 30, material: 'rib_bone', matChance: 0.4 },
+                { name: '殭屍', emoji: '🧟', baseHp: 80, baseAtk: 20, baseDef: 10, goldMin: 18, goldMax: 35, material: 'zombie_flesh', matChance: 0.35 },
+                { name: '幽靈', emoji: '👻', baseHp: 50, baseAtk: 28, baseDef: 5, goldMin: 20, goldMax: 40, material: 'ectoplasm', matChance: 0.3 },
             ],
             4: [
-                { name: '狼人', emoji: '🐺', baseHp: 90, baseAtk: 30, baseDef: 12, goldMin: 25, goldMax: 45, material: 'orc', matChance: 0.4 },
-                { name: '樹妖', emoji: '🌳', baseHp: 120, baseAtk: 25, baseDef: 18, goldMin: 28, goldMax: 50, material: 'treant', matChance: 0.35 },
-                { name: '毒蜘蛛', emoji: '🕷️', baseHp: 70, baseAtk: 35, baseDef: 8, goldMin: 22, goldMax: 42, material: 'spider', matChance: 0.4 },
+                { name: '狼人', emoji: '🐺', baseHp: 90, baseAtk: 30, baseDef: 12, goldMin: 25, goldMax: 45, material: 'wolf_pelt', matChance: 0.4 },
+                { name: '樹妖', emoji: '🌳', baseHp: 120, baseAtk: 25, baseDef: 18, goldMin: 28, goldMax: 50, material: 'dryad_branch', matChance: 0.35 },
+                { name: '毒蜘蛛', emoji: '🕷️', baseHp: 70, baseAtk: 35, baseDef: 8, goldMin: 22, goldMax: 42, material: 'poison_gland', matChance: 0.4 },
             ],
-            5: [ // Significant jump in stats here
-                { name: '石像鬼', emoji: '🗿', baseHp: 200, baseAtk: 45, baseDef: 25, goldMin: 40, goldMax: 65, material: 'golem', matChance: 0.35 },
-                { name: '魔偶', emoji: '🎭', baseHp: 180, baseAtk: 50, baseDef: 20, goldMin: 45, goldMax: 70, material: 'golem', matChance: 0.3 },
-                { name: '失敗實驗體', emoji: '🧪', baseHp: 220, baseAtk: 48, baseDef: 22, goldMin: 45, goldMax: 75, material: 'golem', matChance: 0.35 },
+            5: [
+                { name: '石像鬼', emoji: '🗿', baseHp: 200, baseAtk: 45, baseDef: 25, goldMin: 40, goldMax: 65, material: 'stone_heart', matChance: 0.35 },
+                { name: '魔偶', emoji: '🎭', baseHp: 180, baseAtk: 50, baseDef: 20, goldMin: 45, goldMax: 70, material: 'puppet_gear', matChance: 0.3 },
+                { name: '失敗實驗體', emoji: '🧪', baseHp: 220, baseAtk: 48, baseDef: 22, goldMin: 45, goldMax: 75, material: 'mutant_fluid', matChance: 0.35 },
             ],
             6: [
-                { name: '小惡魔', emoji: '😈', baseHp: 300, baseAtk: 65, baseDef: 30, goldMin: 60, goldMax: 90, material: 'demon', matChance: 0.35 },
-                { name: '地獄犬', emoji: '🐕', baseHp: 320, baseAtk: 70, baseDef: 28, goldMin: 65, goldMax: 100, material: 'demon', matChance: 0.3 },
-                { name: '墮落天使', emoji: '👼', baseHp: 280, baseAtk: 75, baseDef: 25, goldMin: 70, goldMax: 110, material: 'demon', matChance: 0.3 },
+                { name: '小惡魔', emoji: '😈', baseHp: 300, baseAtk: 65, baseDef: 30, goldMin: 60, goldMax: 90, material: 'imp_horn', matChance: 0.35 },
+                { name: '地獄犬', emoji: '🐕', baseHp: 320, baseAtk: 70, baseDef: 28, goldMin: 65, goldMax: 100, material: 'hellhound_ash', matChance: 0.3 },
+                { name: '墮落天使', emoji: '👼', baseHp: 280, baseAtk: 75, baseDef: 25, goldMin: 70, goldMax: 110, material: 'black_feather', matChance: 0.3 },
             ],
             7: [
-                { name: '冰霜巨人', emoji: '🧊', baseHp: 450, baseAtk: 85, baseDef: 40, goldMin: 80, goldMax: 130, material: 'frost', matChance: 0.35 },
-                { name: '寒冰幽魂', emoji: '👻', baseHp: 300, baseAtk: 95, baseDef: 25, goldMin: 85, goldMax: 140, material: 'frost', matChance: 0.3 },
-                { name: '冰狼', emoji: '🐺', baseHp: 380, baseAtk: 90, baseDef: 35, goldMin: 80, goldMax: 135, material: 'frost', matChance: 0.35 },
+                { name: '冰霜巨人', emoji: '🧊', baseHp: 450, baseAtk: 85, baseDef: 40, goldMin: 80, goldMax: 130, material: 'frost_core', matChance: 0.35 },
+                { name: '寒冰幽魂', emoji: '👻', baseHp: 300, baseAtk: 95, baseDef: 25, goldMin: 85, goldMax: 140, material: 'wraith_dust', matChance: 0.3 },
+                { name: '冰狼', emoji: '🐺', baseHp: 380, baseAtk: 90, baseDef: 35, goldMin: 80, goldMax: 135, material: 'ice_wolf_claw', matChance: 0.35 },
             ],
             8: [
-                { name: '火焰精靈', emoji: '🔥', baseHp: 400, baseAtk: 110, baseDef: 35, goldMin: 100, goldMax: 160, material: 'flame', matChance: 0.35 },
-                { name: '熔岩巨人', emoji: '🌋', baseHp: 650, baseAtk: 100, baseDef: 55, goldMin: 110, goldMax: 180, material: 'flame', matChance: 0.3 },
-                { name: '火蜥蜴', emoji: '🦎', baseHp: 480, baseAtk: 105, baseDef: 45, goldMin: 105, goldMax: 170, material: 'flame', matChance: 0.35 },
+                { name: '火焰精靈', emoji: '🔥', baseHp: 400, baseAtk: 110, baseDef: 35, goldMin: 100, goldMax: 160, material: 'ember_spark', matChance: 0.35 },
+                { name: '熔岩巨人', emoji: '🌋', baseHp: 650, baseAtk: 100, baseDef: 55, goldMin: 110, goldMax: 180, material: 'magma_rock', matChance: 0.3 },
+                { name: '火蜥蜴', emoji: '🦎', baseHp: 480, baseAtk: 105, baseDef: 45, goldMin: 105, goldMax: 170, material: 'salamander_scale', matChance: 0.35 },
             ],
             9: [
-                { name: '虛空行者', emoji: '🌀', baseHp: 700, baseAtk: 130, baseDef: 50, goldMin: 140, goldMax: 220, material: 'void', matChance: 0.3 },
-                { name: '異界獵手', emoji: '👁️', baseHp: 600, baseAtk: 145, baseDef: 40, goldMin: 150, goldMax: 240, material: 'void', matChance: 0.3 },
-                { name: '混沌使者', emoji: '💫', baseHp: 650, baseAtk: 150, baseDef: 45, goldMin: 160, goldMax: 250, material: 'void', matChance: 0.25 },
+                { name: '虛空行者', emoji: '🌀', baseHp: 700, baseAtk: 130, baseDef: 50, goldMin: 140, goldMax: 220, material: 'void_dust', matChance: 0.3 },
+                { name: '異界獵手', emoji: '👁️', baseHp: 600, baseAtk: 145, baseDef: 40, goldMin: 150, goldMax: 240, material: 'alien_eye', matChance: 0.3 },
+                { name: '混沌使者', emoji: '💫', baseHp: 650, baseAtk: 150, baseDef: 45, goldMin: 160, goldMax: 250, material: 'chaos_shard', matChance: 0.25 },
             ],
             10: [
-                { name: '魔王近衛', emoji: '⚔️', baseHp: 900, baseAtk: 170, baseDef: 60, goldMin: 200, goldMax: 300, material: 'dragon', matChance: 0.3 },
-                { name: '暗黑龍', emoji: '🐉', baseHp: 1200, baseAtk: 180, baseDef: 70, goldMin: 250, goldMax: 400, material: 'dragon', matChance: 0.35 },
-                { name: '死亡騎士', emoji: '🗡️', baseHp: 1000, baseAtk: 190, baseDef: 65, goldMin: 220, goldMax: 350, material: 'dragon', matChance: 0.3 },
+                { name: '魔王近衛', emoji: '⚔️', baseHp: 900, baseAtk: 170, baseDef: 60, goldMin: 200, goldMax: 300, material: 'guard_badge', matChance: 0.3 },
+                { name: '暗黑龍', emoji: '🐉', baseHp: 1200, baseAtk: 180, baseDef: 70, goldMin: 250, goldMax: 400, material: 'dragon_scale', matChance: 0.35 },
+                { name: '死亡騎士', emoji: '🗡️', baseHp: 1000, baseAtk: 190, baseDef: 65, goldMin: 220, goldMax: 350, material: 'dark_metal', matChance: 0.3 },
             ]
         };
 
@@ -1858,16 +1902,16 @@
         };
 
         const AREA_BOSSES = {
-            1: { name: '監獄看守長', emoji: '👹', baseHp: 400, baseAtk: 35, baseDef: 15, goldMin: 100, goldMax: 200, soulReward: 15 },
-            2: { name: '洞窟蜘蛛后', emoji: '🕷️', baseHp: 700, baseAtk: 50, baseDef: 25, goldMin: 150, goldMax: 250, soulReward: 25 },
-            3: { name: '骷髏領主', emoji: '☠️', baseHp: 1000, baseAtk: 70, baseDef: 35, goldMin: 250, goldMax: 400, soulReward: 40 },
-            4: { name: '森林守護者', emoji: '🌲', baseHp: 1500, baseAtk: 85, baseDef: 45, goldMin: 400, goldMax: 600, soulReward: 60 },
-            5: { name: '瘋狂鍊金術師', emoji: '🧙', baseHp: 2000, baseAtk: 100, baseDef: 55, goldMin: 600, goldMax: 900, soulReward: 80 },
-            6: { name: '惡魔將軍', emoji: '👿', baseHp: 2800, baseAtk: 130, baseDef: 70, goldMin: 800, goldMax: 1200, soulReward: 120 },
-            7: { name: '冰霜女王', emoji: '👸', baseHp: 3500, baseAtk: 160, baseDef: 85, goldMin: 1000, goldMax: 1500, soulReward: 160 },
-            8: { name: '烈焰魔君', emoji: '🔥', baseHp: 4200, baseAtk: 200, baseDef: 100, goldMin: 1500, goldMax: 2200, soulReward: 220 },
-            9: { name: '虛空領主', emoji: '🌑', baseHp: 5000, baseAtk: 240, baseDef: 115, goldMin: 2000, goldMax: 3000, soulReward: 300 },
-            10: { name: '魔王', emoji: '👑', baseHp: 8000, baseAtk: 300, baseDef: 140, goldMin: 5000, goldMax: 10000, soulReward: 500 }
+            1: { name: '監獄看守長', emoji: '👹', baseHp: 400, baseAtk: 35, baseDef: 15, goldMin: 100, goldMax: 200, soulReward: 15, material: 'boss_1' },
+            2: { name: '洞窟蜘蛛后', emoji: '🕷️', baseHp: 700, baseAtk: 50, baseDef: 25, goldMin: 150, goldMax: 250, soulReward: 25, material: 'boss_2' },
+            3: { name: '骷髏領主', emoji: '☠️', baseHp: 1000, baseAtk: 70, baseDef: 35, goldMin: 250, goldMax: 400, soulReward: 40, material: 'boss_3' },
+            4: { name: '森林守護者', emoji: '🌲', baseHp: 1500, baseAtk: 85, baseDef: 45, goldMin: 400, goldMax: 600, soulReward: 60, material: 'boss_4' },
+            5: { name: '瘋狂鍊金術師', emoji: '🧙', baseHp: 2000, baseAtk: 100, baseDef: 55, goldMin: 600, goldMax: 900, soulReward: 80, material: 'boss_5' },
+            6: { name: '惡魔將軍', emoji: '👿', baseHp: 2800, baseAtk: 130, baseDef: 70, goldMin: 800, goldMax: 1200, soulReward: 120, material: 'boss_6' },
+            7: { name: '冰霜女王', emoji: '👸', baseHp: 3500, baseAtk: 160, baseDef: 85, goldMin: 1000, goldMax: 1500, soulReward: 160, material: 'boss_7' },
+            8: { name: '烈焰魔君', emoji: '🔥', baseHp: 4200, baseAtk: 200, baseDef: 100, goldMin: 1500, goldMax: 2200, soulReward: 220, material: 'boss_8' },
+            9: { name: '虛空領主', emoji: '🌑', baseHp: 5000, baseAtk: 240, baseDef: 115, goldMin: 2000, goldMax: 3000, soulReward: 300, material: 'boss_9' },
+            10: { name: '魔王', emoji: '👑', baseHp: 8000, baseAtk: 300, baseDef: 140, goldMin: 5000, goldMax: 10000, soulReward: 500, material: 'boss_10' }
         };
 
         const EQUIPMENT = {
@@ -3740,14 +3784,20 @@
                 // Potions Quick Panel with names
                 const potionsPanel = document.getElementById('potions-panel');
                 let potionsHtml = '';
+                const potionMult = this.getPotionMultiplier(); 
                 Object.entries(this.player.potions).forEach(([type, count]) => {
                     if (count > 0) {
                         const potion = POTION_TYPES[type];
-                        const healAmount = Math.floor(maxHp * potion.healPercent * this.getPotionMultiplier());
+                        // Calculate actual heal amount with upgrade logic
+                        const healAmount = Math.floor(maxHp * potion.healPercent * potionMult);
+                        
                         potionsHtml += `
-                            <div class="potion-slot" onclick="game.usePotion('${type}')" title="恢復 ${healAmount} 生命">
+                            <div class="potion-slot" onclick="game.usePotion('${type}')" title="使用後恢復 ${healAmount} 點生命">
                                 ${potion.emoji}
-                                <span class="potion-name">${potion.name}</span>
+                                <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                                    <span class="potion-name">${potion.name}</span>
+                                    <span style="font-size: 0.65rem; color: #4ecdc4;">+${healAmount} HP</span>
+                                </div>
                                 <span class="potion-count">x${count}</span>
                             </div>
                         `;
