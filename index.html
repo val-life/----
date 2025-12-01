@@ -3009,13 +3009,14 @@
                 this.inCombat = true;
                 const areaNum = this.getAreaNumber();
                 const monsterPool = MONSTERS_BY_AREA[areaNum] || MONSTERS_BY_AREA[1];
-
                 const base = monsterPool[Math.floor(Math.random() * monsterPool.length)];
-                
+
                 const floorInArea = ((this.level - 1) % 50) + 1;
-                const scaling = 1 + (floorInArea - 1) * 0.04;
-                
-                const eliteChance = Math.min(0.18, 0.08 + (floorInArea * 0.002));
+                const difficultyTier = Math.floor((floorInArea - 1) / 10);
+                const buffPerTier = 0.125; 
+                const scaling = 1 + (difficultyTier * buffPerTier);
+
+                const eliteChance = Math.min(0.18, 0.08 + (difficultyTier * 0.025));
                 const isElite = Math.random() < eliteChance;
                 const eliteMultiplier = isElite ? 1.5 : 1;
 
