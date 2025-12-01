@@ -1678,6 +1678,7 @@
     <script>
         // ==================== PERSISTENT DATA ====================
         const SAVE_KEY = 'magicTower_soulData_v2';
+        const GAME_VERSION = '1.0';
 
         function loadSoulData() {
             const data = localStorage.getItem(SAVE_KEY);
@@ -2073,6 +2074,7 @@
                 if (!this.gameStarted || this.player.hp <= 0) return;
 
                 const saveData = {
+                    version: GAME_VERSION,
                     level: this.level,
                     player: this.player,
                     buffs: this.buffs,
@@ -2101,7 +2103,15 @@
 
                 try {
                     const data = JSON.parse(dataStr);
-                    
+                    // --- VERSION CHECK ---
+                    if (data.version !== GAME_VERSION) {
+                        console.log("Save file is from an old version. Resetting run.");
+                        localStorage.removeItem('magicTower_autoSave'); // Delete old save
+                        alert("遊戲已更新！由於平衡調整，您的舊存檔已重置。請開始新的冒險！"); // Optional: Notify user
+                        return false; // Force new game
+                    }
+                    // ---------------------
+
                     // Restore data
                     Object.assign(this, data);
                     
