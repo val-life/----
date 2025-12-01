@@ -2081,14 +2081,18 @@
                     name: '生鏽的牢門', icon: '🚪', description: '一扇半掩的牢門，裡面黑漆漆的。',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { const g = 30 + game.level; game.player.gold += g; return `你在稻草堆下找到了 ${g} 金幣！`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.1); game.player.hp -= d; return `門軸斷了！砸到你的腳，受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.1); game.player.hp = Math.max(0, game.player.hp - d); return `門軸斷了！砸到你的腳，受到 ${d} 傷害。`; }
                     )
                 },
                 {
                     name: '發霉的麵包', icon: '🍞', description: '桌上放著一塊發霉的麵包，你肚子正好餓了...',
                     resolve: (game) => game.gambleEvent(0.4, 
-                        () => { const h = Math.floor(game.getMaxHp() * 0.2); game.player.hp += h; return `雖然味道怪怪的，但意外地恢復了 ${h} 體力。`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp -= d; return `嘔...這麵包壞了，你食物中毒受到 ${d} 傷害。`; }
+                        () => { 
+                            const h = Math.floor(game.getMaxHp() * 0.2); 
+                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                            return `雖然味道怪怪的，但意外地恢復了 ${h} 體力。`; 
+                        },
+                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp = Math.max(0, game.player.hp - d); return `嘔...這麵包壞了，你食物中毒受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2102,7 +2106,7 @@
                     name: '老鼠洞', icon: '🕳️', description: '牆角有個老鼠洞，裡面似乎有東西在閃光。',
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { game.player.materials['rat_tail'] = (game.player.materials['rat_tail']||0)+1; return `你抓到了一隻老鼠！獲得 [老鼠尾巴]`; },
-                        () => { const d = 10; game.player.hp -= d; return `哎唷！手指被老鼠咬了一口，受到 ${d} 傷害。`; }
+                        () => { const d = 10; game.player.hp = Math.max(0, game.player.hp - d); return `哎唷！手指被老鼠咬了一口，受到 ${d} 傷害。`; }
                     )
                 },
                 {   // Positive
@@ -2117,14 +2121,14 @@
                     name: '發光苔蘚', icon: '🌿', description: '牆上長滿了發出幽光的苔蘚。',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.addBuff('夜視', 20, 'dodge', 10, 'positive'); return `吃了之後視力變好了！閃避 +10% (20層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.1); game.player.hp -= d; return `有毒！舌頭麻痺了，受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.1); game.player.hp = Math.max(0, game.player.hp - d); return `有毒！舌頭麻痺了，受到 ${d} 傷害。`; }
                     )
                 },
                 {
                     name: '廢棄礦車', icon: '🛒', description: '一輛翻倒的礦車，或許還能用。',
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { game.player.materials['goblin_ear'] = (game.player.materials['goblin_ear']||0)+1; return `在車底發現了哥布林的藏寶！獲得 [哥布林耳朵]`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp -= d; return `礦車滑動撞到了你！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp = Math.max(0, game.player.hp - d); return `礦車滑動撞到了你！受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2138,12 +2142,16 @@
                     name: '神秘礦石', icon: '🪨', description: '牆壁上嵌著一塊奇怪的石頭。',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.addBuff('硬化皮膚', 15, 'defense', 5, 'positive'); return `觸摸後皮膚變硬了！防禦 +5 (15層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.1); game.player.hp -= d; return `石頭突然爆炸了！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.1); game.player.hp = Math.max(0, game.player.hp - d); return `石頭突然爆炸了！受到 ${d} 傷害。`; }
                     )
                 },
-                {   // Positive
+                {   // Positive - ✅ FIX
                     name: '地下清泉', icon: '💧', description: '一股清澈的泉水從岩縫中流出。',
-                    resolve: (game) => { const h = Math.floor(game.getMaxHp() * 0.3); game.player.hp += h; return { text: `清涼的泉水！恢復了 ${h} 生命。`, type: 'positive' }; }
+                    resolve: (game) => { 
+                        const h = Math.floor(game.getMaxHp() * 0.3); 
+                        game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                        return { text: `清涼的泉水！恢復了 ${h} 生命。`, type: 'positive' }; 
+                    }
                 }
             ],
 
@@ -2160,21 +2168,21 @@
                     name: '供品盤', icon: '🥣', description: '放在墓前的供品盤，裡面有一些金幣。',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { const g = 80; game.player.gold += g; return `拿走了供品。獲得 ${g} 金幣。`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp -= d; return `供品盤咬了你的手！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `供品盤咬了你的手！受到 ${d} 傷害。`; }
                     )
                 },
                 {
                     name: '鬼火', icon: '🔥', description: '一團藍色的火焰在空中漂浮。',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.addBuff('幽冥火', 15, 'crit', 10, 'positive'); return `火焰附著在武器上！爆擊 +10% (15層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp -= d; return `靈魂被灼燒了！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp = Math.max(0, game.player.hp - d); return `靈魂被灼燒了！受到 ${d} 傷害。`; }
                     )
                 },
                 {
                     name: '散落的骨頭', icon: '🦴', description: '一堆白骨。看起來可以拼湊成什麼。',
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { game.player.materials['rib_bone'] = (game.player.materials['rib_bone']||0)+1; return `找到了一根堅固的肋骨！獲得 [腐朽肋骨]`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.1); game.player.hp -= d; return `骨頭突然刺向你！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.1); game.player.hp = Math.max(0, game.player.hp - d); return `骨頭突然刺向你！受到 ${d} 傷害。`; }
                     )
                 },
                 {   // Positive
@@ -2188,7 +2196,11 @@
                 {
                     name: '奇異果實', icon: '🍒', description: '樹上長著鮮豔的果實。',
                     resolve: (game) => game.gambleEvent(0.5, 
-                        () => { const h = Math.floor(game.getMaxHp() * 0.4); game.player.hp += h; return `美味多汁！恢復了 ${h} 生命。`; },
+                        () => { 
+                            const h = Math.floor(game.getMaxHp() * 0.4); 
+                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                            return `美味多汁！恢復了 ${h} 生命。`; 
+                        },
                         () => { game.addBuff('致幻', 15, 'dodge', -10, 'negative'); return `吃了之後天旋地轉... 閃避 -10% (15層)`; }
                     )
                 },
@@ -2196,7 +2208,7 @@
                     name: '獵人陷阱', icon: '🕸️', description: '地上有個舊的捕獸夾。試著拆除它？',
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { const g = 100; game.player.gold += g; return `拆除成功！將廢鐵賣掉獲得 ${g} 金幣。`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp -= d; return `夾到手了！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `夾到手了！受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2210,12 +2222,16 @@
                     name: '精靈光環', icon: '✨', description: '一圈奇怪的蘑菇形成的圓環。',
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { game.addBuff('自然之力', 20, 'attack', 15, 'positive'); return `獲得了森林的祝福！攻擊 +15 (20層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp -= d; return `被精靈惡作劇了！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp = Math.max(0, game.player.hp - d); return `被精靈惡作劇了！受到 ${d} 傷害。`; }
                     )
                 },
-                {   // Positive
+                {   // Positive - ✅ FIX
                     name: '月光空地', icon: '🌙', description: '月光灑落在這片寧靜的空地上。',
-                    resolve: (game) => { const h = Math.floor(game.getMaxHp() * 0.3); game.player.hp += h; return { text: `心靈得到了平靜。恢復 ${h} 生命。`, type: 'positive' }; }
+                    resolve: (game) => { 
+                        const h = Math.floor(game.getMaxHp() * 0.3); 
+                        game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                        return { text: `心靈得到了平靜。恢復 ${h} 生命。`, type: 'positive' }; 
+                    }
                 }
             ],
 
@@ -2225,7 +2241,7 @@
                     name: '冒泡的坩堝', icon: '🍲', description: '一鍋顏色詭異的液體正在沸騰。喝一口？',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.addBuff('巨人之力', 20, 'attack', 25, 'positive'); return `感覺力量湧上來了！攻擊 +25 (20層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.25); game.player.hp -= d; return `爆炸了！你被炸飛，受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.25); game.player.hp = Math.max(0, game.player.hp - d); return `爆炸了！你被炸飛，受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2239,7 +2255,7 @@
                     name: '不穩定的魔偶', icon: '🤖', description: '一個半成品的魔偶在抽搐。',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.player.materials['puppet_gear'] = (game.player.materials['puppet_gear']||0)+1; return `拆下了一個零件！獲得 [魔偶齒輪]`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp -= d; return `魔偶放出了電流！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `魔偶放出了電流！受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2261,7 +2277,7 @@
                     name: '鮮血噴泉', icon: '🩸', description: '噴泉裡流淌著鮮紅的液體。',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.addBuff('嗜血', 20, 'attack', 30, 'positive'); return `喝下惡魔之血！攻擊 +30 (20層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.3); game.player.hp -= d; return `血液在燃燒！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.3); game.player.hp = Math.max(0, game.player.hp - d); return `血液在燃燒！受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2275,7 +2291,7 @@
                     name: '刑具', icon: '⛓️', description: '一套沾滿血跡的刑具。',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.player.materials['imp_horn'] = (game.player.materials['imp_horn']||0)+1; return `在旁邊撿到了戰利品！獲得 [小惡魔角]`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp -= d; return `不小心觸發了機關！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `不小心觸發了機關！受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2304,26 +2320,30 @@
                     name: '冰晶簇', icon: '💎', description: '美麗但鋒利的冰晶。試著採集？',
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { game.player.materials['frost_core'] = (game.player.materials['frost_core']||0)+1; return `採集成功！獲得 [永凍核心]`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp -= d; return `手被割傷了！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `手被割傷了！受到 ${d} 傷害。`; }
                     )
                 },
                 {
                     name: '暴風雪', icon: '🌨️', description: '前方刮起了暴風雪。要強行通過嗎？',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.addBuff('寒冰護甲', 20, 'defense', 30, 'positive'); return `冰雪覆蓋了盔甲！防禦 +30 (20層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.25); game.player.hp -= d; return `好冷！體溫流失，受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.25); game.player.hp = Math.max(0, game.player.hp - d); return `好冷！體溫流失，受到 ${d} 傷害。`; }
                     )
                 },
                 {
                     name: '滑溜地面', icon: '⛸️', description: '地面結冰了，非常滑。',
                     resolve: (game) => game.gambleEvent(0.6, 
                         () => { game.addBuff('滑行', 20, 'dodge', 20, 'positive'); return `你掌握了滑行的技巧！閃避 +20% (20層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp -= d; return `滑倒了！摔得不輕，受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp = Math.max(0, game.player.hp - d); return `滑倒了！摔得不輕，受到 ${d} 傷害。`; }
                     )
                 },
-                {   // Positive
+                {   // Positive - ✅ FIX
                     name: '地熱溫泉', icon: '♨️', description: '在這冰天雪地中竟然有一處溫泉。',
-                    resolve: (game) => { const h = Math.floor(game.getMaxHp() * 0.4); game.player.hp += h; return { text: `溫暖了身心。恢復 ${h} 生命。`, type: 'positive' }; }
+                    resolve: (game) => { 
+                        const h = Math.floor(game.getMaxHp() * 0.4); 
+                        game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                        return { text: `溫暖了身心。恢復 ${h} 生命。`, type: 'positive' }; 
+                    }
                 }
             ],
 
@@ -2333,7 +2353,7 @@
                     name: '岩漿池', icon: '🌋', description: '滾燙的岩漿。裡面好像有東西？',
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { game.player.materials['ember_spark'] = (game.player.materials['ember_spark']||0)+1; return `用武器撈出了寶物！獲得 [不滅火種]`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.3); game.player.hp -= d; return `太燙了！被嚴重燒傷，受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.3); game.player.hp = Math.max(0, game.player.hp - d); return `太燙了！被嚴重燒傷，受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2353,8 +2373,12 @@
                 {
                     name: '烈焰花', icon: '🌺', description: '在火中盛開的花朵。',
                     resolve: (game) => game.gambleEvent(0.5, 
-                        () => { game.addBuff('浴火重生', 20, 'hp', 0, 'positive'); const h = Math.floor(game.getMaxHp()*0.2); game.player.hp += h; return `充滿活力的能量！恢復 ${h} 生命。`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp -= d; return `花朵噴出了火焰！受到 ${d} 傷害。`; }
+                        () => { 
+                            const h = Math.floor(game.getMaxHp() * 0.2); 
+                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                            return `充滿活力的能量！恢復 ${h} 生命。`; 
+                        },
+                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `花朵噴出了火焰！受到 ${d} 傷害。`; }
                     )
                 },
                 {   // Positive
@@ -2376,7 +2400,7 @@
                     name: '空間裂縫', icon: '🌀', description: '空間出現了裂痕。伸手進去？',
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { game.player.materials['void_dust'] = (game.player.materials['void_dust']||0)+1; return `抓住了虛空的物質！獲得 [虛空星塵]`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.35); game.player.hp -= d; return `手臂差點被切斷！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.35); game.player.hp = Math.max(0, game.player.hp - d); return `手臂差點被切斷！受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2390,7 +2414,7 @@
                     name: '重力井', icon: '🌌', description: '這裡的重力異常強大。',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.addBuff('輕盈', 20, 'dodge', 30, 'positive'); return `適應了重力變化！閃避 +30% (20層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp -= d; return `被重力壓垮了！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `被重力壓垮了！受到 ${d} 傷害。`; }
                     )
                 },
                 {   // Positive
@@ -2405,7 +2429,7 @@
                     name: '皇家旗幟', icon: '🚩', description: '魔王的旗幟。撕毀它？',
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { game.addBuff('士氣大振', 30, 'attack', 50, 'positive'); return `勇氣倍增！攻擊 +50 (30層)`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.3); game.player.hp -= d; return `旗桿倒下砸中了你！受到 ${d} 傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.3); game.player.hp = Math.max(0, game.player.hp - d); return `旗桿倒下砸中了你！受到 ${d} 傷害。`; }
                     )
                 },
                 {
@@ -2418,7 +2442,11 @@
                 {
                     name: '黃金酒杯', icon: '🍷', description: '桌上有一杯未喝完的酒。',
                     resolve: (game) => game.gambleEvent(0.4, 
-                        () => { const h = Math.floor(game.getMaxHp() * 0.5); game.player.hp += h; return `是魔力的瓊漿！恢復 ${h} 生命。`; },
+                        () => { 
+                            const h = Math.floor(game.getMaxHp() * 0.5); 
+                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                            return `是魔力的瓊漿！恢復 ${h} 生命。`; 
+                        },
                         () => { game.addBuff('劇毒', 20, 'attack', -40, 'negative'); return `是毒酒！攻擊 -40 (20層)`; }
                     )
                 },
@@ -2426,7 +2454,7 @@
                     name: '黑暗王座', icon: '👑', description: '空蕩蕩的王座。坐上去試試？',
                     resolve: (game) => game.gambleEvent(0.3, 
                         () => { const s = 50; game.soulGainedThisRun += s; return `感受到王者的氣息！獲得 ${s} 靈魂。`; },
-                        () => { const d = Math.floor(game.getMaxHp() * 0.4); game.player.hp -= d; return `被王座拒絕了！受到 ${d} 雷擊傷害。`; }
+                        () => { const d = Math.floor(game.getMaxHp() * 0.4); game.player.hp = Math.max(0, game.player.hp - d); return `被王座拒絕了！受到 ${d} 雷擊傷害。`; }
                     )
                 },
                 {   // Positive
@@ -2478,8 +2506,8 @@
                     merchantItems: this.merchantItems,
                     pendingLoot: this.pendingLoot,
                     lastBattleLog: this.lastBattleLog,
-                    // Save the name of the random event to find it later
-                    randomEventName: this.currentRandomEvent ? this.currentRandomEvent.name : null
+                    randomEventName: this.currentRandomEvent ? this.currentRandomEvent.name : null,
+                    isActionLocked: false  // ✅ Always save as false (reset on load)
                 };
 
                 localStorage.setItem('magicTower_autoSave', JSON.stringify(saveData));
@@ -2538,17 +2566,42 @@
                 } else if (this.currentEvent === 'rest') {
                     this.generateRestArea();
                 } else if (this.currentEvent === 'event' && this.currentRandomEvent) {
-                    // Re-trigger the resolution UI since we don't save the exact HTML state
-                    this.resolveRandomEvent(); 
-                } else if (this.pendingLoot && (this.currentEvent === 'fight' || !this.currentEvent)) {
+                    // Re-render the event choice UI since we can't restore mid-resolution
+                    this.renderRandomEventChoice();
+                } else if (this.pendingLoot) {
                     // Loot screen after battle
-                    if(this.level > 500) this.renderFinalVictory();
+                    if (this.level > 500) this.renderFinalVictory();
                     else this.renderVictory();
                 } else {
-                    // Default empty state or just moved
-                    const panel = document.getElementById('event-panel');
-                    if(panel.innerHTML === '') this.generateEvent();
+                    // ✅ FIX: Always generate a new event if no valid state exists
+                    // This is safer than checking innerHTML
+                    this.generateEvent();
                 }
+            }
+
+            // ✅ NEW: Add helper method to re-render random event choice
+            renderRandomEventChoice() {
+                const event = this.currentRandomEvent;
+                const panel = document.getElementById('event-panel');
+                
+                panel.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-icon">${event.icon}</div>
+                        <div><div class="event-title">${event.name}</div></div>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-description" style="font-size: 1rem; color: #ddd; padding: 10px;">
+                            ${event.description}
+                        </div>
+                        <div style="text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px;">
+                            (結果未知，可能獲得獎勵或懲罰)
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-warning" onclick="game.resolveRandomEvent()">🤔 探索 (賭運氣)</button>
+                        <button class="btn btn-secondary" onclick="game.skipRandomEvent()">🏃 直接離開</button>
+                    </div>
+                `;
             }
 
             resetRunState() {
@@ -2591,6 +2644,8 @@
                 this.lastArea = 0;
                 this.selectedBagIndex = -1;
                 this.isMimicFight = false;
+                this.mimicLootBonus = false;  // ✅ FIX: Was missing
+                this.isActionLocked = false;  // ✅ NEW: Debounce flag
             }
 
             getSoulBonuses() {
@@ -3025,7 +3080,11 @@
             // ==================== COMBAT SYSTEM ====================
 
             performAttack() {
-                if (!this.inCombat || !this.currentMonster) return;
+                // ✅ FIX: Add debounce check
+                if (!this.inCombat || !this.currentMonster || this.isActionLocked) return;
+                
+                // Lock actions
+                this.isActionLocked = true;
 
                 this.lastBattleLog = {
                     playerDamage: 0,
@@ -3058,7 +3117,10 @@
                 if (this.currentMonster.hp <= 0) {
                     this.currentMonster.hp = 0;
                     this.renderCombat();
-                    setTimeout(() => this.monsterDefeated(), 500);
+                    setTimeout(() => {
+                        this.isActionLocked = false; // ✅ Unlock after victory
+                        this.monsterDefeated();
+                    }, 500);
                     return;
                 }
 
@@ -3091,13 +3153,21 @@
                     } else {
                         this.player.hp = 0;
                         this.renderCombat();
-                        setTimeout(() => this.gameOver(), 500);
+                        setTimeout(() => {
+                            this.isActionLocked = false; // ✅ Unlock after game over
+                            this.gameOver();
+                        }, 500);
                         return;
                     }
                 }
 
                 this.updateUI();
                 this.renderCombat();
+                
+                // ✅ FIX: Unlock actions after a short delay
+                setTimeout(() => {
+                    this.isActionLocked = false;
+                }, 400);
             }
 
             monsterDefeated() {
@@ -3182,10 +3252,15 @@
             }
 
             tryFlee() {
+                // ✅ FIX: Add debounce check
+                if (this.isActionLocked) return;
+                this.isActionLocked = true;
+                
                 const fleeChance = this.getFleeChance();
                 if (Math.random() * 100 < fleeChance) {
                     this.inCombat = false;
                     this.isMimicFight = false;
+                    this.isActionLocked = false; // ✅ Unlock on success
                     this.renderFleeSuccess();
                 } else {
                     this.lastBattleLog = {
@@ -3403,6 +3478,17 @@
 
             discardFromBag(index) {
                 if (index < 0 || index >= this.player.bag.length) return;
+                
+                const item = this.player.bag[index];
+                
+                // ✅ FIX: Add confirmation for rare+ equipment
+                if (item.rarity === 'rare' || item.rarity === 'epic' || item.rarity === 'legendary') {
+                    const rarityName = RARITY_NAMES[item.rarity];
+                    if (!confirm(`⚠️ 確定要丟棄【${rarityName}】${item.name} 嗎？\n\n這個動作無法復原！`)) {
+                        return;
+                    }
+                }
+                
                 this.player.bag.splice(index, 1);
                 this.updateUI();
             }
@@ -3689,6 +3775,14 @@
                 
                 const item = this.player.bag[index];
                 const price = Math.floor(this.calculateEquipmentPrice(item) * 0.35);
+                
+                // ✅ FIX: Add confirmation for rare+ equipment
+                if (item.rarity === 'rare' || item.rarity === 'epic' || item.rarity === 'legendary') {
+                    const rarityName = RARITY_NAMES[item.rarity];
+                    if (!confirm(`⚠️ 確定要賣掉【${rarityName}】${item.name} 嗎？\n\n售價: ${price} 金幣\n這個動作無法復原！`)) {
+                        return;
+                    }
+                }
                 
                 this.player.bag.splice(index, 1);
                 this.player.gold += price;
