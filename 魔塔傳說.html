@@ -1678,7 +1678,7 @@
     <script>
         // ==================== PERSISTENT DATA ====================
         const SAVE_KEY = 'magicTower_soulData_v2';
-        const GAME_VERSION = '0.5a';
+        const GAME_VERSION = '0.5c';
 
         function getNewSoulData() {
             return {
@@ -2494,23 +2494,29 @@
                     // --- VERSION CHECK ---
                     if (data.version !== GAME_VERSION) {
                         console.log("Save file is from an old version. Resetting run.");
-                        localStorage.removeItem('magicTower_autoSave'); // Delete old save
-                        alert("遊戲已更新！由於平衡調整，您的舊存檔已重置。請開始新的冒險！"); // Optional: Notify user
-                        return false; // Force new game
+                        localStorage.removeItem('magicTower_autoSave');
+                        alert("遊戲已更新！由於平衡調整，您的舊存檔已重置。請開始新的冒險！");
+                        return false;
                     }
                     // ---------------------
 
                     // Restore data
                     Object.assign(this, data);
                     
+                    // ✅ FIX: Explicitly set gameStarted to true when loading a valid save
+                    this.gameStarted = true;
+                    
                     // Restore Random Event reference (since functions don't save in JSON)
                     if (data.randomEventName) {
-                        this.currentRandomEvent = RANDOM_EVENTS.find(e => e.name === data.randomEventName);
+                        const areaNum = this.getAreaNumber();
+                        const pool = AREA_EVENTS[areaNum] || AREA_EVENTS[1];
+                        this.currentRandomEvent = pool.find(e => e.name === data.randomEventName);
                     }
 
                     return true;
                 } catch (e) {
-                    console.error("Save file corrupted");
+                    console.error("Save file corrupted", e);
+                    localStorage.removeItem('magicTower_autoSave'); // ✅ Clean up corrupted save
                     return false;
                 }
             }
@@ -3009,7 +3015,7 @@
                     gold: Math.floor((boss.goldMin + Math.random() * (boss.goldMax - boss.goldMin)) * this.getGoldMultiplier()),
                     dropChance: 0.85,
                     matChance: 1.0,
-                    material: 'boss',
+                    material: boss.material, 
                     soulReward: Math.floor(boss.soulReward * this.getSoulMultiplier())
                 };
 
@@ -3109,7 +3115,7 @@
                     potion: null
                 };
 
-                if (Math.random() < monster.matChance) {
+                if (Math.random() < monster.matChance && monster.material && MATERIALS[monster.material]) {
                     this.pendingLoot.material = {
                         key: monster.material,
                         ...MATERIALS[monster.material]
@@ -3768,9 +3774,9 @@
 
             // ==================== BUFF SYSTEM ====================
 
-            addBuff(name, value, stat, duration, type) {
+            addBuff(name, duration, stat, value, type) {
                 this.buffs = this.buffs.filter(b => b.name !== name);
-                this.buffs.push({ name, value, stat, duration, type });
+                this.buffs.push({ name, duration, stat, value, type });
                 this.updateUI();
             }
 
@@ -3900,7 +3906,7 @@
                         <div class="loot-title">🎁 戰利品</div>
                         <div class="loot-items">
                             <div class="loot-item"><span style="color:#ffd700">💰 ${loot.gold}</span></div>
-                            ${loot.material ? `<div class="loot-item"><span>${loot.material.emoji} ${loot.material.name}</span></div>` : ''}
+                            ${loot.material && loot.material.name ? `<div class="loot-item"><span>${loot.material.emoji} ${loot.material.name}</span></div>` : ''}
                             ${loot.equipment ? `<div class="loot-item" style="border-left: 2px solid ${this.getRarityColor(loot.equipment.rarity)}"><span class="slot-name ${loot.equipment.rarity}">${loot.equipment.name}</span><span class="shop-item-rarity ${loot.equipment.rarity}">${RARITY_NAMES[loot.equipment.rarity]}</span></div>` : ''}
                             ${loot.potion ? `<div class="loot-item"><span>${POTION_TYPES[loot.potion].emoji} ${POTION_TYPES[loot.potion].name}</span></div>` : ''}
                             ${loot.souls > 0 ? `<div class="loot-item"><span style="color:#c084fc">💎 ${loot.souls} 靈魂碎片</span></div>` : ''}
