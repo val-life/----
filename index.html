@@ -281,51 +281,72 @@ body {
     font-weight: bold;
 }
 
-/* 2. Event Panel - Now part of scroll area */
+/* ==================== FIXED EVENT PANEL CSS ==================== */
+
+/* 1. Make the panel a fixed height flex container */
 .event-panel {
     display: flex;
     flex-direction: column;
     background: rgba(255, 255, 255, 0.03);
     border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+    
+    /* NEW: Fixed height logic */
+    height: 40vh;         /* Occupy 40% of viewport height */
+    min-height: 300px;    /* Minimum height for safety */
+    max-height: 400px;    /* Maximum height */
+    flex-shrink: 0;       /* Prevent it from shrinking */
+    position: relative;
 }
 
+/* 2. Header stays at the top */
 .event-header {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
     background: rgba(0, 0, 0, 0.2);
-    flex-shrink: 0;
+    flex-shrink: 0;       /* Don't shrink header */
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-.event-icon {
-    font-size: 1.5rem;
-}
-
-.event-title {
-    font-size: 1rem;
-    color: #e94560;
-    font-weight: bold;
-}
-
+/* 3. Content area takes available space and SCROLLS internally */
 .event-content {
-    padding: 8px 12px;
+    padding: 10px 12px;
+    flex: 1;              /* Take all remaining height */
+    overflow-y: auto;     /* Scrollbar appears here */
+    overflow-x: hidden;
+    
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
 }
 
-.event-description {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    color: #ccc;
-    margin-bottom: 8px;
+/* Custom Scrollbar for the event window */
+.event-content::-webkit-scrollbar {
+    width: 6px;
+}
+.event-content::-webkit-scrollbar-thumb {
+    background: #4ecdc4;
+    border-radius: 3px;
 }
 
+/* 4. Buttons stay pinned to the bottom */
 .action-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
-    padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.25);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;       /* Don't shrink buttons */
+}
+
+/* Landscape Mobile Adjustment */
+@media (orientation: landscape) and (max-height: 500px) {
+    .event-panel {
+        height: 100vh; /* Full height in landscape side-by-side mode if you ever add it */
+        min-height: 200px;
+    }
 }
 
 /* 3. HP Bar */
@@ -3906,7 +3927,7 @@ body {
                             <div class="event-title">${eventTitle}</div>
                         </div>
                     </div>
-                    <div class="event-content">
+                    <div class="event-content" id="event-content-area"> <!-- Added ID here -->
                         ${bossDialogue}
                         ${mimicDialogue}
                         <div class="battle-arena" style="justify-content: center;">
@@ -3932,6 +3953,13 @@ body {
                         ` : ''}
                     </div>
                 `;
+
+                // === NEW CODE: AUTO SCROLL TO BOTTOM ===
+                // This ensures the battle log is always visible
+                const contentArea = document.getElementById('event-content-area');
+                if (contentArea) {
+                    contentArea.scrollTop = contentArea.scrollHeight;
+                }
             }
 
             renderVictory() {
