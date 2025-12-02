@@ -13,8 +13,8 @@
 
         html, body {
             height: 100%;
-            overflow-x: hidden;
-            overflow-y: auto;
+            overflow: hidden;
+            touch-action: manipulation;
         }
 
         body {
@@ -23,27 +23,28 @@
             color: #e8e8e8;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
         }
 
         .game-container {
-            min-height: 100vh;
+            height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
-            padding: 10px;
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
+            overflow: hidden;
         }
 
-        /* Main Menu Styles */
+        /* ==================== MAIN MENU ==================== */
         .main-menu {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            height: 100%;
             text-align: center;
             padding: 20px;
+            overflow-y: auto;
         }
 
         .main-menu h1 {
@@ -122,9 +123,8 @@
             letter-spacing: 1px;
         }
 
-        .menu-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        .menu-btn:active {
+            transform: scale(0.98);
         }
 
         .menu-btn.start {
@@ -137,7 +137,7 @@
             color: white;
         }
 
-        /* Soul Shop Styles */
+        /* ==================== SOUL SHOP ==================== */
         .soul-shop-container {
             display: none;
             flex-direction: column;
@@ -150,6 +150,7 @@
             padding: 15px;
             border-bottom: 2px solid #9333ea;
             margin-bottom: 15px;
+            flex-shrink: 0;
         }
 
         .soul-shop-header h2 {
@@ -176,10 +177,6 @@
             justify-content: space-between;
             align-items: center;
             transition: all 0.2s;
-        }
-
-        .soul-upgrade:hover {
-            background: rgba(147, 51, 234, 0.25);
         }
 
         .soul-upgrade.maxed {
@@ -219,7 +216,7 @@
             transition: all 0.2s;
         }
 
-        .upgrade-cost:hover:not(.disabled) {
+        .upgrade-cost:active:not(.disabled) {
             background: rgba(147, 51, 234, 0.4);
         }
 
@@ -233,106 +230,33 @@
             cursor: default;
         }
 
-        /* Story Transition Overlay */
-        .story-transition {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+        /* ==================== GAME SCREEN ==================== */
+        .game-screen {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.5s ease;
-            padding: 20px;
+            height: 100%;
+            overflow: hidden;
         }
 
-        .story-transition .story-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .story-transition h2 {
-            font-size: 1.5rem;
-            color: #ffd700;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-
-        .story-transition .dialog-box {
-            background: rgba(0, 0, 0, 0.6);
-            border-left: 4px solid #ffd700;
-            padding: 15px 20px;
-            margin: 15px 0;
-            border-radius: 0 10px 10px 0;
-            max-width: 350px;
-            width: 100%;
-        }
-
-        .story-transition .dialog-speaker {
-            color: #ffd700;
-            font-weight: bold;
-            font-size: 1rem;
-            margin-bottom: 8px;
-        }
-
-        .story-transition .dialog-text {
-            color: #ddd;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            font-style: italic;
-        }
-
-        .story-transition .princess-display {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .story-transition .princess-display .princess-sprite {
-            font-size: 3.5rem;
-            animation: princessFloat 2s ease-in-out infinite;
-        }
-
-        .story-transition .princess-display p {
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-
-        .story-transition .story-info {
-            color: #888;
-            font-size: 0.8rem;
-            margin-top: 10px;
-        }
-
-        /* Header */
+        /* 1. Title/Header */
         .game-header {
             text-align: center;
-            padding: 8px 0;
+            padding: 6px 10px;
+            background: rgba(0, 0, 0, 0.3);
             border-bottom: 2px solid #e94560;
             flex-shrink: 0;
         }
 
         .game-header h1 {
-            font-size: clamp(1rem, 3.5vw, 1.5rem);
+            font-size: 1rem;
             color: #e94560;
             text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
-            margin-bottom: 5px;
-        }
-
-        .area-display {
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-            color: #c084fc;
-            font-weight: bold;
+            margin-bottom: 2px;
         }
 
         .floor-display {
-            font-size: clamp(0.8rem, 2vw, 0.95rem);
+            font-size: 0.8rem;
             color: #ffd700;
-            margin-top: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -340,16 +264,79 @@
         }
 
         .floor-display .area-icon {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
-        /* HP Bar */
+        .floor-display .area-name {
+            color: #c084fc;
+            font-weight: bold;
+        }
+
+        /* 2. Event Panel */
+        .event-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 0;
+        }
+
+        .event-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .event-icon {
+            font-size: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1rem;
+            color: #e94560;
+            font-weight: bold;
+        }
+
+        .event-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+            min-height: 0;
+        }
+
+        .event-description {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #ccc;
+            margin-bottom: 8px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        /* 3. HP Bar */
+        .hp-section {
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
         .hp-bar-container {
             background: rgba(0, 0, 0, 0.5);
             border-radius: 8px;
             padding: 3px;
-            margin: 8px 0;
-            flex-shrink: 0;
         }
 
         .hp-bar {
@@ -366,19 +353,17 @@
             text-align: center;
             line-height: 22px;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
         }
 
-        /* Stats Panel - New Layout */
+        /* 4. Stats Panel - Original 2x2 Layout */
         .stats-panel {
             display: flex;
             gap: 8px;
             background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             flex-shrink: 0;
         }
 
@@ -429,13 +414,13 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            min-width: 120px;
+            min-width: 110px;
         }
 
         .gold-box {
             background: rgba(255, 215, 0, 0.15);
             border: 1px solid rgba(255, 215, 0, 0.3);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             display: flex;
             align-items: center;
@@ -444,32 +429,32 @@
         }
 
         .gold-box .gold-icon {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .gold-box .gold-value {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             color: #ffd700;
         }
 
         .buffs-box {
             background: rgba(0, 0, 0, 0.3);
-            padding: 6px 8px;
+            padding: 5px 8px;
             border-radius: 6px;
             flex: 1;
             overflow-y: auto;
-            max-height: 60px;
+            max-height: 50px;
         }
 
         .buffs-box .buff {
             padding: 2px 6px;
             border-radius: 8px;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             display: inline-flex;
             align-items: center;
             gap: 2px;
-            margin: 2px;
+            margin: 1px;
         }
 
         .buffs-box .buff.positive {
@@ -491,25 +476,33 @@
         }
 
         .no-buffs {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #555;
             text-align: center;
         }
 
-        /* Potions Quick Panel */
+        /* 5. Potions Panel */
         .potions-panel {
             display: flex;
             gap: 6px;
-            margin-bottom: 8px;
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.2);
             flex-shrink: 0;
             flex-wrap: wrap;
             align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .potions-label {
+            font-size: 0.7rem;
+            color: #888;
+            margin-right: 4px;
         }
 
         .potion-slot {
             background: rgba(78, 205, 196, 0.15);
             border: 1px solid rgba(78, 205, 196, 0.4);
-            padding: 6px 10px;
+            padding: 5px 10px;
             border-radius: 6px;
             font-size: 0.75rem;
             cursor: pointer;
@@ -519,9 +512,9 @@
             transition: all 0.2s;
         }
 
-        .potion-slot:hover {
-            background: rgba(78, 205, 196, 0.3);
-            transform: scale(1.05);
+        .potion-slot:active {
+            background: rgba(78, 205, 196, 0.4);
+            transform: scale(0.98);
         }
 
         .potion-slot .potion-name {
@@ -536,86 +529,78 @@
             font-size: 0.65rem;
         }
 
-        /* Event Panel */
-        .event-panel {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .potion-slot .potion-heal {
+            font-size: 0.6rem;
+            color: #aaa;
+        }
+
+        .no-potions {
+            font-size: 0.7rem;
+            color: #555;
+        }
+
+        /* 6. Bottom Tabs */
+        .bottom-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
             flex: 1;
+            padding: 10px 5px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #888;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            min-height: 200px;
-            margin-bottom: 8px;
-        }
-
-        .event-header {
-            display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            flex-shrink: 0;
+            gap: 2px;
         }
 
-        .event-icon {
-            font-size: 1.8rem;
+        .tab-btn:active {
+            background: rgba(233, 69, 96, 0.1);
         }
 
-        .event-title {
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        .tab-btn.active {
             color: #e94560;
+            background: rgba(233, 69, 96, 0.15);
+            border-top: 2px solid #e94560;
         }
 
-        .event-description {
-            font-size: clamp(0.75rem, 2vw, 0.9rem);
-            line-height: 1.4;
-            margin-bottom: 8px;
-            color: #ccc;
-            flex-shrink: 0;
+        .tab-btn .tab-icon {
+            font-size: 1.2rem;
         }
 
-        .event-content {
-            flex: 1;
+        .tab-btn .tab-label {
+            font-size: 0.65rem;
+        }
+
+        /* Tab Panels */
+        .tab-panel {
+            display: none;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.4);
+            max-height: 40vh;
             overflow-y: auto;
-            min-height: 0;
-        }
-
-        /* Dialog Box */
-        .dialog-box {
-            background: rgba(0, 0, 0, 0.5);
-            border-left: 3px solid #ffd700;
-            padding: 10px 12px;
-            margin: 8px 0;
-            border-radius: 0 8px 8px 0;
-            font-style: italic;
-        }
-
-        .dialog-speaker {
-            color: #ffd700;
-            font-weight: bold;
-            font-style: normal;
-            margin-bottom: 4px;
-            font-size: 0.8rem;
-        }
-
-        .dialog-text {
-            color: #ddd;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        /* Equipment Panel - Horizontal */
-        .equipment-panel {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 8px;
             flex-shrink: 0;
         }
 
-        .equipment-panel h4 {
+        .tab-panel.active {
+            display: flex;
+        }
+
+        /* Equipment Tab Panel - Combined */
+        .equipment-tab-content {
+            padding: 10px 12px;
+        }
+
+        .equipment-tab-content h4 {
             font-size: 0.75rem;
             color: #e94560;
             margin-bottom: 8px;
@@ -624,15 +609,21 @@
             gap: 4px;
         }
 
+        .equipment-wearing-section {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         .equipment-slots-horizontal {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 6px;
         }
 
         .equipment-slot-h {
             background: rgba(0, 0, 0, 0.3);
-            padding: 8px;
+            padding: 8px 6px;
             border-radius: 6px;
             border-left: 3px solid #444;
             text-align: center;
@@ -647,13 +638,13 @@
         .equipment-slot-h .slot-type {
             font-size: 0.6rem;
             color: #666;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .equipment-slot-h .slot-name {
             font-weight: bold;
             font-size: 0.75rem;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -666,34 +657,96 @@
         .equipment-slot-h .slot-name.legendary { color: #ffd700; }
 
         .equipment-slot-h .slot-stats {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #aaa;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        /* Bag Grid - 3 columns */
+        .bag-section h4 {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .bag-grid-3col {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
         }
 
-        .equipment-slot-h .slot-stats span {
-            white-space: nowrap;
-        }
-
-        /* Bag Panels - Separated */
-        .bag-panels {
+        .bag-slot {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px 6px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 60px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-bottom: 8px;
-            flex-shrink: 0;
+            justify-content: center;
+            align-items: center;
         }
 
-        .bag-section {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .bag-slot:active {
+            background: rgba(233, 69, 96, 0.2);
+            border-color: #e94560;
         }
 
-        .bag-section h4 {
+        .bag-slot.empty {
+            border-style: dashed;
+            opacity: 0.5;
+        }
+
+        .bag-slot.common { border-left: 3px solid #888; }
+        .bag-slot.uncommon { border-left: 3px solid #4ecdc4; }
+        .bag-slot.rare { border-left: 3px solid #667eea; }
+        .bag-slot.epic { border-left: 3px solid #a855f7; }
+        .bag-slot.legendary { border-left: 3px solid #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
+
+        .bag-slot .item-type {
+            font-size: 0.55rem;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .bag-slot .item-name {
+            font-size: 0.7rem;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .bag-slot .item-name.common { color: #888; }
+        .bag-slot .item-name.uncommon { color: #4ecdc4; }
+        .bag-slot .item-name.rare { color: #667eea; }
+        .bag-slot .item-name.epic { color: #a855f7; }
+        .bag-slot .item-name.legendary { color: #ffd700; }
+
+        .bag-slot .item-stats {
+            font-size: 0.5rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .bag-slot.empty .empty-text {
+            font-size: 0.6rem;
+            color: #444;
+        }
+
+        /* Materials Tab */
+        .materials-tab-content {
+            padding: 10px 12px;
+        }
+
+        .materials-tab-content h4 {
             font-size: 0.75rem;
             color: #e94560;
             margin-bottom: 8px;
@@ -702,57 +755,41 @@
             gap: 4px;
         }
 
-        .bag-items-grid {
+        .materials-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
-            max-height: 80px;
-            overflow-y: auto;
+            gap: 6px;
         }
 
-        .bag-item {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s;
+        .material-item {
+            background: rgba(139, 69, 19, 0.2);
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
-            gap: 4px;
-        }
-
-        .bag-item:hover {
-            border-color: #e94560;
-            transform: scale(1.05);
-        }
-
-        .bag-item.common { border-left: 2px solid #888; }
-        .bag-item.uncommon { border-left: 2px solid #4ecdc4; }
-        .bag-item.rare { border-left: 2px solid #667eea; }
-        .bag-item.epic { border-left: 2px solid #a855f7; }
-        .bag-item.legendary { border-left: 2px solid #ffd700; }
-
-        .bag-item.material {
+            gap: 6px;
             border-left: 2px solid #8b4513;
-            background: rgba(139, 69, 19, 0.2);
         }
 
-        .bag-count {
+        .material-item.common { border-left-color: #888; }
+        .material-item.uncommon { border-left-color: #4ecdc4; }
+        .material-item.rare { border-left-color: #667eea; }
+        .material-item.epic { border-left-color: #a855f7; }
+        .material-item.legendary { border-left-color: #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
+
+        .material-count {
             background: rgba(255, 255, 255, 0.2);
-            padding: 1px 4px;
-            border-radius: 3px;
-            font-size: 0.55rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
         }
 
-        .bag-item.material.common { border-left-color: #888 !important; }
-        .bag-item.material.uncommon { border-left-color: #4ecdc4 !important; }
-        .bag-item.material.rare { border-left-color: #667eea !important; }
-        .bag-item.material.epic { border-left-color: #a855f7 !important; }
-        .bag-item.material.legendary { 
-            border-left-color: #ffd700 !important; 
-            animation: legendaryGlow 2s ease-in-out infinite;
+        .empty-materials {
+            color: #555;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 20px;
         }
 
         @keyframes legendaryGlow {
@@ -760,49 +797,24 @@
             50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
         }
 
-        .empty-bag {
-            color: #555;
-            font-size: 0.7rem;
-            text-align: center;
-            padding: 10px;
-        }
-
-        /* Battle Arena */
+        /* ==================== BATTLE ARENA ==================== */
         .battle-arena {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 12px;
             background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
-            border-radius: 12px;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .battle-arena::before {
-            content: '⚔️';
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.5rem;
-            opacity: 0.3;
+            border-radius: 10px;
+            margin-bottom: 8px;
         }
 
         .combatant {
             text-align: center;
-            flex: 1;
-            max-width: 45%;
         }
 
         .combatant-sprite {
-            font-size: 3rem;
-            margin-bottom: 8px;
+            font-size: 3.5rem;
             animation: combatantIdle 1.5s ease-in-out infinite;
-        }
-
-        .combatant.player .combatant-sprite {
-            animation-delay: 0.2s;
         }
 
         @keyframes combatantIdle {
@@ -812,225 +824,150 @@
 
         .combatant-name {
             font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
+            font-size: 1rem;
+            margin: 4px 0;
         }
 
-        .combatant.player .combatant-name {
-            color: #4ecdc4;
-        }
-
-        .combatant.monster .combatant-name.normal {
-            color: #888;
-        }
-
-        .combatant.monster .combatant-name.elite {
-            color: #667eea;
-        }
-
-        .combatant.monster .combatant-name.boss {
-            color: #ffd700;
-        }
+        .combatant-name.normal { color: #888; }
+        .combatant-name.elite { color: #667eea; }
+        .combatant-name.boss { color: #ffd700; }
 
         .combatant-hp-bar {
-            width: 100%;
-            height: 12px;
+            width: 160px;
+            height: 14px;
             background: rgba(0, 0, 0, 0.5);
-            border-radius: 6px;
+            border-radius: 7px;
             overflow: hidden;
-            margin-bottom: 4px;
+            margin: 4px auto;
         }
 
         .combatant-hp-fill {
             height: 100%;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
             transition: width 0.3s ease;
         }
 
-        .combatant.player .combatant-hp-fill {
-            background: linear-gradient(90deg, #4ecdc4, #44a08d);
-        }
-
-        .combatant.monster .combatant-hp-fill {
-            background: linear-gradient(90deg, #e94560, #ff6b6b);
-        }
-
         .combatant-hp-text {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #aaa;
         }
 
         .combatant-stats {
-            font-size: 0.65rem;
-            color: #888;
-            margin-top: 4px;
-        }
-
-        /* Battle Log - Single Round */
-        .battle-log {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        .battle-log-title {
             font-size: 0.7rem;
             color: #888;
-            margin-bottom: 6px;
-            text-align: center;
+            margin-top: 2px;
+        }
+
+        /* Battle Log */
+        .battle-log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 8px;
+            margin-top: 8px;
         }
 
         .battle-log-entry {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 4px 0;
+            gap: 6px;
+            padding: 3px 0;
             font-size: 0.8rem;
         }
 
-        .battle-log-entry.player-attack {
-            color: #4ecdc4;
-        }
-
-        .battle-log-entry.player-crit {
-            color: #f39c12;
-        }
-
-        .battle-log-entry.monster-attack {
-            color: #e94560;
-        }
-
-        .battle-log-entry.dodge {
-            color: #a8e6cf;
-        }
-
-        .battle-log-entry.heal {
-            color: #4ecdc4;
-        }
+        .battle-log-entry.player-attack { color: #4ecdc4; }
+        .battle-log-entry.player-crit { color: #f39c12; }
+        .battle-log-entry.monster-attack { color: #e94560; }
+        .battle-log-entry.dodge { color: #a8e6cf; }
+        .battle-log-entry.heal { color: #4ecdc4; }
 
         .damage-number {
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
-        /* Area Transition */
-        .area-transition {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.5s ease;
+        /* ==================== DIALOG BOX ==================== */
+        .dialog-box {
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 3px solid #ffd700;
+            padding: 10px 12px;
+            margin: 8px 0;
+            border-radius: 0 8px 8px 0;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .area-transition h2 {
-            font-size: 1.8rem;
-            color: #e94560;
-            margin-bottom: 15px;
-            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
-        }
-
-        .area-transition .area-name {
-            font-size: 1.3rem;
+        .dialog-speaker {
             color: #ffd700;
-            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
         }
 
-        .area-transition .area-desc {
-            font-size: 0.9rem;
-            color: #aaa;
+        .dialog-text {
+            color: #ddd;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        /* ==================== TREASURE ==================== */
+        .treasure-display {
             text-align: center;
-            max-width: 300px;
-            line-height: 1.5;
-            margin-bottom: 25px;
+            padding: 15px;
         }
 
-        .area-transition .area-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            animation: pulse 2s ease-in-out infinite;
+        .treasure-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: treasureGlow 1.5s ease-in-out infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+        @keyframes treasureGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px #ffd700); }
+            50% { filter: drop-shadow(0 0 20px #ffd700); }
         }
 
-        /* Chest Choice */
         .chest-choice {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
-            margin-top: 15px;
+            margin-top: 12px;
         }
 
         .chest-option {
             background: rgba(0, 0, 0, 0.4);
             border: 2px solid #444;
             border-radius: 10px;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
             flex: 1;
-            max-width: 150px;
+            max-width: 140px;
+            transition: all 0.2s;
         }
 
-        .chest-option:hover {
-            transform: translateY(-3px);
+        .chest-option:active {
+            transform: scale(0.98);
         }
 
-        .chest-option.safe {
-            border-color: #4ecdc4;
-        }
-
-        .chest-option.safe:hover {
-            background: rgba(78, 205, 196, 0.2);
-            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
-        }
-
-        .chest-option.risky {
-            border-color: #e94560;
-        }
-
-        .chest-option.risky:hover {
-            background: rgba(233, 69, 96, 0.2);
-            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
-        }
+        .chest-option.safe { border-color: #4ecdc4; }
+        .chest-option.risky { border-color: #e94560; }
 
         .chest-option .option-icon {
-            font-size: 2.5rem;
-            margin-bottom: 8px;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
         }
 
         .chest-option .option-title {
             font-weight: bold;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
         }
 
-        .chest-option.safe .option-title {
-            color: #4ecdc4;
-        }
-
-        .chest-option.risky .option-title {
-            color: #e94560;
-        }
+        .chest-option.safe .option-title { color: #4ecdc4; }
+        .chest-option.risky .option-title { color: #e94560; }
 
         .chest-option .option-desc {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #aaa;
         }
 
@@ -1052,45 +989,38 @@
         .loot-items {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
+            gap: 6px;
             justify-content: center;
         }
 
         .loot-item {
             background: rgba(255, 255, 255, 0.1);
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 4px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        .loot-item.legendary {
-            animation: legendaryGlow 2s ease-in-out infinite;
-        }
-
-        /* Shop Items */
+        /* ==================== SHOP ==================== */
         .shop-items {
-            display: grid;
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 6px;
-            max-height: 100%;
-            overflow-y: auto;
         }
 
         .shop-item {
             background: rgba(0, 0, 0, 0.3);
-            padding: 8px;
+            padding: 10px;
             border-radius: 6px;
-            border: 2px solid transparent;
+            border-left: 3px solid #444;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .shop-item:hover:not(.disabled) {
-            transform: translateY(-2px);
-            border-color: #e94560;
+        .shop-item:active:not(.disabled) {
+            background: rgba(233, 69, 96, 0.2);
         }
 
         .shop-item.disabled {
@@ -1098,48 +1028,28 @@
             cursor: not-allowed;
         }
 
-        /* Shop item rarity borders */
-        .shop-item.potion-item {
-            border-left: 3px solid #4ecdc4;
-        }
-
-        .shop-item.common {
-            border-left: 3px solid #888;
-        }
-
-        .shop-item.uncommon {
-            border-left: 3px solid #4ecdc4;
-        }
-
-        .shop-item.rare {
-            border-left: 3px solid #667eea;
-        }
-
-        .shop-item.epic {
-            border-left: 3px solid #a855f7;
-        }
-
-        .shop-item.legendary {
-            border-left: 3px solid #ffd700;
-        }
+        .shop-item.potion-item { border-left-color: #4ecdc4; }
+        .shop-item.common { border-left-color: #888; }
+        .shop-item.uncommon { border-left-color: #4ecdc4; }
+        .shop-item.rare { border-left-color: #667eea; }
+        .shop-item.epic { border-left-color: #a855f7; }
+        .shop-item.legendary { border-left-color: #ffd700; }
 
         .shop-item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             flex-wrap: wrap;
             gap: 4px;
         }
 
         .shop-item-name {
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
-        .shop-item-name.potion {
-            color: #4ecdc4;
-        }
+        .shop-item-name.potion { color: #4ecdc4; }
 
         .shop-item-price {
             color: #ffd700;
@@ -1156,35 +1066,14 @@
             font-size: 0.6rem;
             padding: 2px 6px;
             border-radius: 4px;
-            margin-left: 5px;
         }
 
-        .shop-item-rarity.common {
-            background: rgba(136, 136, 136, 0.3);
-            color: #888;
-        }
+        .shop-item-rarity.common { background: rgba(136, 136, 136, 0.3); color: #888; }
+        .shop-item-rarity.uncommon { background: rgba(78, 205, 196, 0.3); color: #4ecdc4; }
+        .shop-item-rarity.rare { background: rgba(102, 126, 234, 0.3); color: #667eea; }
+        .shop-item-rarity.epic { background: rgba(168, 85, 247, 0.3); color: #a855f7; }
+        .shop-item-rarity.legendary { background: rgba(255, 215, 0, 0.3); color: #ffd700; }
 
-        .shop-item-rarity.uncommon {
-            background: rgba(78, 205, 196, 0.3);
-            color: #4ecdc4;
-        }
-
-        .shop-item-rarity.rare {
-            background: rgba(102, 126, 234, 0.3);
-            color: #667eea;
-        }
-
-        .shop-item-rarity.epic {
-            background: rgba(168, 85, 247, 0.3);
-            color: #a855f7;
-        }
-
-        .shop-item-rarity.legendary {
-            background: rgba(255, 215, 0, 0.3);
-            color: #ffd700;
-        }
-
-        /* Sell All Button */
         .sell-all-btn {
             background: linear-gradient(135deg, #f39c12, #e67e22);
             color: white;
@@ -1193,44 +1082,140 @@
             border-radius: 4px;
             font-size: 0.7rem;
             cursor: pointer;
-            margin-left: auto;
+        }
+
+        .sell-all-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn {
+            padding: 12px 24px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
             transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .sell-all-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(243, 156, 18, 0.4);
+        .btn:active:not(:disabled) {
+            transform: scale(0.96);
         }
 
-        /* Treasure Display */
-        .treasure-display {
-            text-align: center;
-            padding: 15px;
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .treasure-icon {
-            font-size: clamp(2.5rem, 8vw, 3.5rem);
-            margin-bottom: 10px;
-            animation: treasureGlow 1.5s ease-in-out infinite;
+        .btn-primary {
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            color: white;
         }
 
-        @keyframes treasureGlow {
-            0%, 100% { filter: drop-shadow(0 0 8px #ffd700); }
-            50% { filter: drop-shadow(0 0 20px #ffd700); }
+        .btn-secondary {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
         }
 
-        .treasure-rewards {
-            font-size: 0.9rem;
+        .btn-warning {
+            background: linear-gradient(135deg, #ffd700, #ff9500);
+            color: #1a1a2e;
         }
 
-        /* Equipment Comparison Modal */
-        .equip-compare-modal {
+        .btn-danger {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.75rem;
+        }
+
+        .flee-info {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.7);
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* ==================== MODALS ==================== */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+            border: 2px solid #e94560;
+        }
+
+        .modal-content h2 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #e94560;
+        }
+
+        .modal-content p {
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .final-stats {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+
+        .final-stats div {
+            padding: 3px 0;
+        }
+
+        .soul-reward {
+            background: rgba(147, 51, 234, 0.3);
+            border: 1px solid #9333ea;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .soul-reward-text {
+            color: #c084fc;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        /* Equipment Compare Modal */
+        .equip-compare-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1242,7 +1227,7 @@
             background: linear-gradient(135deg, #1a1a2e, #16213e);
             border-radius: 12px;
             padding: 20px;
-            max-width: 400px;
+            max-width: 380px;
             width: 100%;
             border: 2px solid #e94560;
         }
@@ -1316,13 +1301,8 @@
             margin-left: 5px;
         }
 
-        .stat-change.positive {
-            color: #4ecdc4;
-        }
-
-        .stat-change.negative {
-            color: #e94560;
-        }
+        .stat-change.positive { color: #4ecdc4; }
+        .stat-change.negative { color: #e94560; }
 
         .equip-compare-buttons {
             display: flex;
@@ -1330,138 +1310,96 @@
             justify-content: center;
         }
 
-        /* Buttons */
-        .action-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            justify-content: center;
-            margin-top: auto;
-            padding-top: 8px;
-            flex-shrink: 0;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #e94560, #ff6b6b);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
-            color: white;
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, #ffd700, #ff9500);
-            color: #1a1a2e;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 0.7rem;
-        }
-
-        .flee-info {
-            font-size: 0.65rem;
-            color: rgba(255,255,255,0.7);
-            display: block;
-            margin-top: 2px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
+        /* ==================== OVERLAYS ==================== */
+        .area-transition, .story-transition {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             z-index: 1000;
+            animation: fadeIn 0.5s ease;
             padding: 20px;
         }
 
-        .modal.active {
-            display: flex;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .modal-content {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            max-width: 350px;
-            width: 100%;
-            border: 2px solid #e94560;
-        }
-
-        .modal-content h2 {
-            font-size: 1.3rem;
-            margin-bottom: 12px;
+        .area-transition h2 {
+            font-size: 1.8rem;
             color: #e94560;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
         }
 
-        .modal-content p {
-            margin-bottom: 12px;
+        .area-transition .area-name {
+            font-size: 1.3rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .area-transition .area-desc {
             font-size: 0.9rem;
+            color: #aaa;
+            text-align: center;
+            max-width: 300px;
+            line-height: 1.5;
+            margin-bottom: 25px;
         }
 
-        .final-stats {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            font-size: 0.85rem;
+        .area-transition .area-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        .final-stats div {
-            padding: 3px 0;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
         }
 
-        .soul-reward {
-            background: rgba(147, 51, 234, 0.3);
-            border: 1px solid #9333ea;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
+        .story-transition .story-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        .soul-reward-text {
-            color: #c084fc;
-            font-size: 1.1rem;
-            font-weight: bold;
+        .story-transition h2 {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
         }
 
-        /* Animations */
+        .story-transition .princess-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .story-transition .princess-display .princess-sprite {
+            font-size: 3.5rem;
+            animation: princessFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes princessFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .story-transition .story-info {
+            color: #888;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        /* ==================== ANIMATIONS ==================== */
         .shake {
             animation: shake 0.5s ease-in-out;
         }
@@ -1484,15 +1422,9 @@
 
         .princess-sprite {
             font-size: 3rem;
-            animation: princessFloat 2s ease-in-out infinite;
         }
 
-        @keyframes princessFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        /* Scrollbar */
+        /* ==================== SCROLLBAR ==================== */
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -1509,6 +1441,33 @@
 
         .hidden {
             display: none !important;
+        }
+
+        /* Landscape adjustments */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .event-panel {
+                min-height: 100px;
+            }
+            
+            .combatant-sprite {
+                font-size: 2.5rem;
+            }
+            
+            .treasure-icon {
+                font-size: 2rem;
+            }
+            
+            .tab-panel {
+                max-height: 35vh;
+            }
+            
+            .stats-panel {
+                padding: 4px 12px;
+            }
+            
+            .stat-box {
+                padding: 4px;
+            }
         }
     </style>
 </head>
@@ -1555,25 +1514,29 @@
 
         <!-- Game Screen -->
         <div class="game-screen hidden" id="game-screen">
-            <!-- Header - Updated Layout -->
+            <!-- 1. Title/Header -->
             <div class="game-header">
                 <h1>🏰 魔塔傳說 🏰</h1>
-                <div class="area-display" id="area-display">第一區</div>
                 <div class="floor-display">
                     <span class="area-icon" id="floor-area-icon">⛓️</span>
-                    <span id="floor-area-name">地下監牢</span>
+                    <span class="area-name" id="floor-area-name">地下監牢</span>
                     <span>第 <span id="current-floor">1</span> 層</span>
                 </div>
             </div>
 
-            <!-- HP Bar -->
-            <div class="hp-bar-container">
-                <div class="hp-bar" id="hp-bar">
-                    <span class="hp-bar-text" id="hp-bar-text">100 / 100</span>
+            <!-- 2. Event Panel -->
+            <div class="event-panel" id="event-panel"></div>
+
+            <!-- 3. HP Bar -->
+            <div class="hp-section">
+                <div class="hp-bar-container">
+                    <div class="hp-bar" id="hp-bar">
+                        <span class="hp-bar-text" id="hp-bar-text">100 / 100</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Stats Panel - New Layout -->
+            <!-- 4. Stats Panel - 2x2 Matrix with Gold and Buffs -->
             <div class="stats-panel">
                 <div class="stats-left">
                     <div class="stat-box attack">
@@ -1616,44 +1579,48 @@
                 </div>
             </div>
 
-            <!-- Potions Quick Panel -->
-            <div class="potions-panel" id="potions-panel"></div>
-
-            <!-- Event Panel (Moved before equipment) -->
-            <div class="event-panel" id="event-panel"></div>
-
-            <!-- Equipment Panel - Horizontal -->
-            <div class="equipment-panel">
-                <h4>🎖️ 裝備中</h4>
-                <div class="equipment-slots-horizontal" id="equipment-slots"></div>
+            <!-- 5. Potions -->
+            <div class="potions-panel" id="potions-panel">
+                <span class="potions-label">💊 藥水:</span>
             </div>
 
-            <!-- Bag Panels - Separated -->
-            <div class="bag-panels">
-                <div class="bag-section">
-                    <h4>🎒 裝備背包 (<span id="equip-bag-count">0</span>/20)</h4>
-                    <div class="bag-items-grid" id="equip-bag-items"></div>
+            <!-- 6. Bottom Tabs -->
+            <div class="bottom-tabs">
+                <button class="tab-btn" onclick="game.toggleTab('equipment')" id="tab-equipment">
+                    <span class="tab-icon">⚔️</span>
+                    <span class="tab-label">裝備 (<span id="equip-bag-count">0</span>/20)</span>
+                </button>
+                <button class="tab-btn" onclick="game.toggleTab('materials')" id="tab-materials">
+                    <span class="tab-icon">📦</span>
+                    <span class="tab-label">素材</span>
+                </button>
+            </div>
+
+            <!-- Equipment Tab Panel (Combined: Wearing + Bag) -->
+            <div class="tab-panel" id="panel-equipment">
+                <div class="equipment-tab-content">
+                    <!-- Wearing Section -->
+                    <div class="equipment-wearing-section">
+                        <h4>🎖️ 裝備中</h4>
+                        <div class="equipment-slots-horizontal" id="equipment-slots"></div>
+                    </div>
+                    
+                    <!-- Bag Section - 3 Column Grid -->
+                    <div class="bag-section">
+                        <h4>🎒 裝備背包</h4>
+                        <div class="bag-grid-3col" id="equip-bag-grid"></div>
+                    </div>
                 </div>
-                <div class="bag-section">
+            </div>
+
+            <!-- Materials Tab Panel -->
+            <div class="tab-panel" id="panel-materials">
+                <div class="materials-tab-content">
                     <h4>📦 素材背包</h4>
-                    <div class="bag-items-grid" id="material-bag-items"></div>
+                    <div class="materials-grid" id="material-bag-items"></div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Game Over Modal -->
-    <div class="modal" id="game-over-modal">
-        <div class="modal-content">
-            <h2 id="modal-title">遊戲結束</h2>
-            <p id="modal-message">你在戰鬥中倒下了...</p>
-            <div class="soul-reward" id="soul-reward">
-                <div class="soul-reward-text">💎 獲得靈魂碎片：<span id="soul-gained">0</span></div>
-            </div>
-            <div class="final-stats" id="final-stats"></div>
-            <button class="btn btn-primary" onclick="game.returnToMenu()">返回主選單</button>
-        </div>
-    </div>
 
     <!-- Area Transition Overlay -->
     <div class="area-transition hidden" id="area-transition">
@@ -2494,6 +2461,31 @@
                 }
             }
             
+            toggleTab(tabName) {
+            const tabs = ['equipment', 'materials'];
+            const wasActive = document.getElementById(`tab-${tabName}`).classList.contains('active');
+            
+            // Close all tabs first
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.remove('active');
+                document.getElementById(`panel-${t}`).classList.remove('active');
+            });
+            
+            // If it wasn't active, open it
+            if (!wasActive) {
+                document.getElementById(`tab-${tabName}`).classList.add('active');
+                document.getElementById(`panel-${tabName}`).classList.add('active');
+            }
+        }
+
+        closeAllTabs() {
+            const tabs = ['equipment', 'materials'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.remove('active');
+                document.getElementById(`panel-${t}`).classList.remove('active');
+            });
+        }
+
             gambleEvent(chance, successFn, failFn) {
                 if (Math.random() < chance) {
                     const text = successFn();
@@ -2929,6 +2921,9 @@
             }
 
             generateEvent() {
+                // Close tabs when generating new event
+                this.closeAllTabs();
+                
                 if (this.isAreaBossFloor()) {
                     this.currentEvent = 'fight';
                     this.generateBoss();
@@ -3161,8 +3156,8 @@
                     this.player.hp -= monsterDamage;
                     this.lastBattleLog.monsterDamage = monsterDamage;
 
-                    document.querySelector('.stats-panel').classList.add('shake');
-                    setTimeout(() => document.querySelector('.stats-panel').classList.remove('shake'), 500);
+                    document.querySelector('.hp-section').classList.add('shake');
+                    setTimeout(() => document.querySelector('.hp-section').classList.remove('shake'), 500);
                 }
 
                 if (this.player.hp <= 0) {
@@ -4233,152 +4228,163 @@
             // ==================== UI UPDATE ====================
 
             updateUI() {
-                const maxHp = this.getMaxHp();
-                const area = this.getCurrentArea();
-                const areaNum = this.getAreaNumber();
-                const floorInArea = this.getFloorInArea();
-                
-                // Update header with new format
-                document.getElementById('area-display').textContent = AREA_NAMES_CN[areaNum];
-                document.getElementById('floor-area-icon').textContent = area.icon;
-                document.getElementById('floor-area-name').textContent = area.name;
-                document.getElementById('current-floor').textContent = floorInArea;
-                
-                // Stats
-                document.getElementById('stat-attack').textContent = this.getAttack();
-                document.getElementById('stat-defense').textContent = this.getDefense();
-                document.getElementById('stat-dodge').textContent = `${this.getDodge()}%`;
-                document.getElementById('stat-crit').textContent = `${this.getCrit()}%`;
-                document.getElementById('stat-gold').textContent = this.player.gold;
+            const maxHp = this.getMaxHp();
+            const area = this.getCurrentArea();
+            const areaNum = this.getAreaNumber();
+            const floorInArea = this.getFloorInArea();
+            
+            // Update header
+            document.getElementById('floor-area-icon').textContent = area.icon;
+            document.getElementById('floor-area-name').textContent = area.name;
+            document.getElementById('current-floor').textContent = floorInArea;
+            
+            // Stats
+            document.getElementById('stat-attack').textContent = this.getAttack();
+            document.getElementById('stat-defense').textContent = this.getDefense();
+            document.getElementById('stat-dodge').textContent = `${this.getDodge()}%`;
+            document.getElementById('stat-crit').textContent = `${this.getCrit()}%`;
+            document.getElementById('stat-gold').textContent = this.player.gold;
 
-                // HP Bar
-                const hpPercent = Math.max(0, (this.player.hp / maxHp) * 100);
-                document.getElementById('hp-bar').style.width = `${hpPercent}%`;
-                document.getElementById('hp-bar-text').textContent = `❤️ ${this.player.hp} / ${maxHp}`;
+            // HP Bar
+            const hpPercent = Math.max(0, (this.player.hp / maxHp) * 100);
+            document.getElementById('hp-bar').style.width = `${hpPercent}%`;
+            document.getElementById('hp-bar-text').textContent = `❤️ ${this.player.hp} / ${maxHp}`;
 
-                // Potions Quick Panel with names
-                const potionsPanel = document.getElementById('potions-panel');
-                let potionsHtml = '';
-                const potionMult = this.getPotionMultiplier(); 
-                Object.entries(this.player.potions).forEach(([type, count]) => {
-                    if (count > 0) {
-                        const potion = POTION_TYPES[type];
-                        // Calculate actual heal amount with upgrade logic
-                        const healAmount = Math.floor(maxHp * potion.healPercent * potionMult);
-                        
-                        potionsHtml += `
-                            <div class="potion-slot" onclick="game.usePotion('${type}')" title="使用後恢復 ${healAmount} 點生命">
-                                ${potion.emoji}
-                                <div style="display: flex; flex-direction: column; line-height: 1.1;">
-                                    <span class="potion-name">${potion.name}</span>
-                                    <span style="font-size: 0.65rem; color: #4ecdc4;">+${healAmount} HP</span>
-                                </div>
-                                <span class="potion-count">x${count}</span>
-                            </div>
-                        `;
-                    }
-                });
-                potionsPanel.innerHTML = potionsHtml || '<span style="color: #555; font-size: 0.7rem;">無藥水</span>';
-
-                // Equipment slots - Horizontal with all stats
-                const equipSlots = document.getElementById('equipment-slots');
-                equipSlots.innerHTML = ['weapon', 'armor', 'accessory'].map(slot => {
-                    const item = this.player.equipment[slot];
-                    if (item) {
-                        return `
-                            <div class="equipment-slot-h ${item.rarity}">
-                                <div class="slot-type">${SLOT_NAMES[slot]}</div>
-                                <div class="slot-name ${item.rarity}">${item.name}</div>
-                                <div class="slot-stats">
-                                    <span>⚔️${item.attack}</span>
-                                    <span>🛡️${item.defense}</span>
-                                    <span>💨${item.dodge}%</span>
-                                    <span>💥${item.crit}%</span>
-                                    ${item.hp ? `<span>❤️${item.hp}</span>` : ''}
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        return `
-                            <div class="equipment-slot-h">
-                                <div class="slot-type">${SLOT_NAMES[slot]}</div>
-                                <div class="slot-name" style="color: #555">空</div>
-                                <div class="slot-stats" style="color: #444">-</div>
-                            </div>
-                        `;
-                    }
-                }).join('');
-
-                // Equipment bag items
-                const equipBagItems = document.getElementById('equip-bag-items');
-                document.getElementById('equip-bag-count').textContent = this.player.bag.length;
-                
-                let equipBagHtml = '';
-                this.player.bag.forEach((item, index) => {
-                    equipBagHtml += `
-                        <div class="bag-item ${item.rarity}" 
-                             onclick="game.showEquipCompare(${index})"
-                             title="${item.name}\n${RARITY_NAMES[item.rarity]}\n⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}% 💥${item.crit}%${item.hp ? ` ❤️${item.hp}` : ''}">
-                            <span class="slot-name ${item.rarity}" style="font-size: 0.65rem">${item.name}</span>
+            // Potions Panel
+            const potionsPanel = document.getElementById('potions-panel');
+            const potionMult = this.getPotionMultiplier();
+            let potionsHtml = '<span class="potions-label">💊 藥水:</span>';
+            let hasPotions = false;
+            
+            Object.entries(this.player.potions).forEach(([type, count]) => {
+                if (count > 0) {
+                    hasPotions = true;
+                    const potion = POTION_TYPES[type];
+                    const healAmount = Math.floor(maxHp * potion.healPercent * potionMult);
+                    potionsHtml += `
+                        <div class="potion-slot" onclick="game.usePotion('${type}')" title="使用後恢復 ${healAmount} 點生命">
+                            ${potion.emoji}
+                            <span class="potion-name">${potion.name}</span>
+                            <span class="potion-heal">+${healAmount}</span>
+                            <span class="potion-count">x${count}</span>
                         </div>
                     `;
-                });
-
-                if (equipBagHtml === '') {
-                    equipBagHtml = '<div class="empty-bag">空的</div>';
                 }
-                equipBagItems.innerHTML = equipBagHtml;
-
-                // Material bag items
-                const materialBagItems = document.getElementById('material-bag-items');
-                let materialBagHtml = '';
-
-                Object.keys(this.player.materials).forEach(key => {
-                    const mat = MATERIALS[key];
-                    if (!mat) return; // ✅ Safety check
-                    const count = this.player.materials[key];
-                    const rarityColor = this.getRarityColor(mat.rarity || 'common');
-                    const rarityName = mat.rarity ? RARITY_NAMES[mat.rarity] : '';
-                    
-                    materialBagHtml += `
-                        <div class="bag-item" style="border-left: 2px solid ${rarityColor}; background: rgba(139, 69, 19, 0.2);" title="${mat.name} x${count}${rarityName ? ' - ' + rarityName : ''}">
-                            <span style="color: ${rarityColor}">${mat.emoji} ${mat.name}</span>
-                            <span class="bag-count">${count}</span>
-                        </div>
-                    `;
-                });
-
-                if (materialBagHtml === '') {
-                    materialBagHtml = '<div class="empty-bag">空的</div>';
-                }
-                materialBagItems.innerHTML = materialBagHtml;
-
-                // Buffs - in the right panel
-                const buffsPanel = document.getElementById('buffs-panel');
-                const statNames = { attack: '攻', defense: '防', dodge: '閃', crit: '爆' };
-                
-                let buffHtml = '';
-                const soulBonuses = this.getSoulBonuses();
-                const hasSoulBonus = soulBonuses.vitality > 0 || soulBonuses.strength > 0 || 
-                                     soulBonuses.resilience > 0 || soulBonuses.agility > 0 || 
-                                     soulBonuses.precision > 0;
-                if (hasSoulBonus) {
-                    buffHtml += `<div class="buff soul">💎 靈魂強化</div>`;
-                }
-                
-                buffHtml += this.buffs.map(buff => `
-                    <div class="buff ${buff.type}">
-                        ${buff.name} ${buff.value > 0 ? '+' : ''}${buff.value}${statNames[buff.stat]} (${buff.duration})
-                    </div>
-                `).join('');
-                
-                if (buffHtml === '') {
-                    buffHtml = '<div class="no-buffs">無增益效果</div>';
-                }
-                
-                buffsPanel.innerHTML = buffHtml;
-                this.saveGame();
+            });
+            
+            if (!hasPotions) {
+                potionsHtml += '<span class="no-potions">無藥水</span>';
             }
+            potionsPanel.innerHTML = potionsHtml;
+
+            // Buffs Panel
+            const buffsPanel = document.getElementById('buffs-panel');
+            const statNames = { attack: '攻', defense: '防', dodge: '閃', crit: '爆' };
+            
+            let buffHtml = '';
+            const soulBonuses = this.getSoulBonuses();
+            const hasSoulBonus = soulBonuses.vitality > 0 || soulBonuses.strength > 0 || 
+                                soulBonuses.resilience > 0 || soulBonuses.agility > 0 || 
+                                soulBonuses.precision > 0;
+            if (hasSoulBonus) {
+                buffHtml += `<div class="buff soul">💎 靈魂強化</div>`;
+            }
+            
+            buffHtml += this.buffs.map(buff => `
+                <div class="buff ${buff.type}">
+                    ${buff.name} ${buff.value > 0 ? '+' : ''}${buff.value}${statNames[buff.stat]} (${buff.duration})
+                </div>
+            `).join('');
+            
+            if (buffHtml === '') {
+                buffHtml = '<div class="no-buffs">無增益效果</div>';
+            }
+            buffsPanel.innerHTML = buffHtml;
+
+            // Equipment Slots (Wearing)
+            const equipSlots = document.getElementById('equipment-slots');
+            equipSlots.innerHTML = ['weapon', 'armor', 'accessory'].map(slot => {
+                const item = this.player.equipment[slot];
+                if (item) {
+                    return `
+                        <div class="equipment-slot-h ${item.rarity}">
+                            <div class="slot-type">${SLOT_NAMES[slot]}</div>
+                            <div class="slot-name ${item.rarity}">${item.name}</div>
+                            <div class="slot-stats">
+                                <span>⚔️${item.attack}</span>
+                                <span>🛡️${item.defense}</span>
+                                <span>💨${item.dodge}%</span>
+                                <span>💥${item.crit}%</span>
+                                ${item.hp ? `<span>❤️${item.hp}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="equipment-slot-h">
+                            <div class="slot-type">${SLOT_NAMES[slot]}</div>
+                            <div class="slot-name" style="color: #555">空</div>
+                            <div class="slot-stats" style="color: #444">-</div>
+                        </div>
+                    `;
+                }
+            }).join('');
+
+            // Equipment Bag - 3 Column Grid (20 slots)
+            const equipBagGrid = document.getElementById('equip-bag-grid');
+            document.getElementById('equip-bag-count').textContent = this.player.bag.length;
+            
+            let bagHtml = '';
+            
+            // Render existing items
+            this.player.bag.forEach((item, index) => {
+                bagHtml += `
+                    <div class="bag-slot ${item.rarity}" onclick="game.showEquipCompare(${index})">
+                        <div class="item-type">${SLOT_NAMES[item.type]}</div>
+                        <div class="item-name ${item.rarity}">${item.name}</div>
+                        <div class="item-stats">⚔️${item.attack} 🛡️${item.defense}</div>
+                    </div>
+                `;
+            });
+            
+            // Fill remaining empty slots (up to 20)
+            const emptySlots = 20 - this.player.bag.length;
+            for (let i = 0; i < emptySlots; i++) {
+                bagHtml += `
+                    <div class="bag-slot empty">
+                        <span class="empty-text">空</span>
+                    </div>
+                `;
+            }
+            
+            equipBagGrid.innerHTML = bagHtml;
+
+            // Material Bag Items
+            const materialBagItems = document.getElementById('material-bag-items');
+            let materialBagHtml = '';
+
+            Object.keys(this.player.materials).forEach(key => {
+                const mat = MATERIALS[key];
+                if (!mat) return;
+                const count = this.player.materials[key];
+                const rarityColor = this.getRarityColor(mat.rarity || 'common');
+                const rarityClass = mat.rarity || 'common';
+                
+                materialBagHtml += `
+                    <div class="material-item ${rarityClass}">
+                        <span style="color: ${rarityColor}">${mat.emoji} ${mat.name}</span>
+                        <span class="material-count">x${count}</span>
+                    </div>
+                `;
+            });
+
+            if (materialBagHtml === '') {
+                materialBagHtml = '<div class="empty-materials">空的</div>';
+            }
+            materialBagItems.innerHTML = materialBagHtml;
+
+            this.saveGame();
+        }
 
             // ==================== GAME END ====================
 
