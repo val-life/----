@@ -1621,11 +1621,24 @@
                 </div>
             </div>
         </div>
-
+    
+    <!-- Game Over Modal -->
+    <div class="modal" id="game-over-modal">
+        <div class="modal-content">
+            <h2 id="modal-title">遊戲結束</h2>
+            <p id="modal-message">你在戰鬥中倒下了...</p>
+            <div class="soul-reward" id="soul-reward">
+                <div class="soul-reward-text">💎 獲得靈魂碎片：<span id="soul-gained">0</span></div>
+            </div>
+            <div class="final-stats" id="final-stats"></div>
+            <button class="btn btn-primary" onclick="game.returnToMenu()">返回主選單</button>
+        </div>
+    </div>
+    
     <!-- Area Transition Overlay -->
     <div class="area-transition hidden" id="area-transition">
         <div class="area-icon" id="area-icon">🏰</div>
-        <h2>進入新區域</h2>
+        <h2 id="area-transition-title">進入第1區域</h2>
         <div class="area-name" id="area-name">地下監牢</div>
         <div class="area-desc" id="area-desc">陰暗潮濕的監牢，關押著被遺忘的靈魂...</div>
         <button class="btn btn-primary" onclick="game.closeAreaTransition()">繼續前進</button>
@@ -2718,9 +2731,11 @@
 
             showAreaTransition() {
                 const area = this.getCurrentArea();
+                const areaNum = this.getAreaNumber();
                 document.getElementById('area-icon').textContent = area.icon;
                 document.getElementById('area-name').textContent = area.name;
                 document.getElementById('area-desc').textContent = area.desc;
+                document.getElementById('area-transition-title').textContent = `進入第${areaNum}區域`;
                 document.getElementById('area-transition').classList.remove('hidden');
             }
 
@@ -4107,12 +4122,13 @@
 
             renderMerchant() {
                 const panel = document.getElementById('event-panel');
+                const areaNum = this.getAreaNumber();
                 
                 let itemsHtml = this.merchantItems.map((item, index) => {
                     if (item.shopType === 'potion') {
                         return `
                             <div class="shop-item potion-item ${this.player.gold >= item.price ? '' : 'disabled'}" 
-                                 onclick="game.buyItem(${index})">
+                                onclick="game.buyItem(${index})">
                                 <div class="shop-item-header">
                                     <span class="shop-item-name potion">${item.emoji} ${item.name}</span>
                                     <span class="shop-item-price">💰 ${item.price}</span>
@@ -4123,30 +4139,29 @@
                     } else {
                         return `
                             <div class="shop-item ${item.rarity} ${this.player.gold >= item.price ? '' : 'disabled'}" 
-                                 onclick="game.buyItem(${index})">
+                                onclick="game.buyItem(${index})">
                                 <div class="shop-item-header">
                                     <span class="shop-item-name slot-name ${item.rarity}">${item.name}</span>
                                     <span class="shop-item-rarity ${item.rarity}">${RARITY_NAMES[item.rarity]}</span>
                                     <span class="shop-item-price">💰 ${item.price}</span>
                                 </div>
                                 <div class="shop-item-description">
-                                    ${SLOT_NAMES[item.type] || '裝備'} | ⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}% 💥${item.crit}% ${item.hp ? `❤️${item.hp}` : ''}
+                                    ${SLOT_NAMES[item.type]} | ⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}% 💥${item.crit}% ${item.hp ? `❤️${item.hp}` : ''}
                                 </div>
                             </div>
                         `;
                     }
                 }).join('');
 
+                // Materials to sell
                 let materialsHtml = '';
                 const matKeys = Object.keys(this.player.materials);
                 if (matKeys.length > 0) {
-                    const areaNum = this.getAreaNumber();
                     let totalValue = 0;
                     matKeys.forEach(key => {
                         const mat = MATERIALS[key];
                         const count = this.player.materials[key];
-                        const price = Math.floor(mat.basePrice * (1 + areaNum * 0.1) * this.getGoldMultiplier());
-                        totalValue += price * count;
+                        totalValue += Math.floor(mat.basePrice * (1 + areaNum * 0.1) * this.getGoldMultiplier()) * count;
                     });
 
                     materialsHtml = `
@@ -4158,12 +4173,12 @@
                             <div style="display: flex; flex-wrap: wrap; gap: 4px">
                                 ${matKeys.map(key => {
                                     const mat = MATERIALS[key];
-                                    if (!mat) return ''; // ✅ Safety check
+                                    if (!mat) return '';
                                     const count = this.player.materials[key];
                                     const price = Math.floor(mat.basePrice * (1 + areaNum * 0.1) * this.getGoldMultiplier());
                                     const rarityColor = this.getRarityColor(mat.rarity || 'common');
                                     return `
-                                        <div class="bag-item" style="border-left: 2px solid ${rarityColor}; background: rgba(139, 69, 19, 0.2);" onclick="game.sellMaterial('${key}')" title="點擊出售一個 - ${RARITY_NAMES[mat.rarity] || '普通'}">
+                                        <div class="bag-item material" style="border-left: 2px solid ${rarityColor}; background: rgba(139, 69, 19, 0.2);" onclick="game.sellMaterial('${key}')" title="點擊出售一個 - ${RARITY_NAMES[mat.rarity] || '普通'}">
                                             <span style="color: ${rarityColor}">${mat.emoji} x${count}</span>
                                             <span style="color: #ffd700; margin-left: 4px">💰${price}</span>
                                         </div>
@@ -4174,18 +4189,20 @@
                     `;
                 }
 
+                // Equipment to sell - with colored boxes
                 let bagSellHtml = '';
                 if (this.player.bag.length > 0) {
                     bagSellHtml = `
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1)">
                             <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px">🎒 出售裝備</div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 4px">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
                                 ${this.player.bag.map((item, index) => {
                                     const price = Math.floor(this.calculateEquipmentPrice(item) * 0.35);
                                     return `
-                                        <div class="bag-item ${item.rarity}" onclick="game.sellEquipFromBag(${index})" title="點擊出售" style="border-left-color: ${this.getRarityColor(item.rarity)}">
-                                            <span class="slot-name ${item.rarity}">${item.name.substring(0, 5)}..</span>
-                                            <span style="color: #ffd700">💰${price}</span>
+                                        <div class="bag-slot ${item.rarity}" onclick="game.sellEquipFromBag(${index})" style="min-height: 50px; cursor: pointer;">
+                                            <div class="item-type">${SLOT_NAMES[item.type]}</div>
+                                            <div class="item-name ${item.rarity}" style="font-size: 0.65rem;">${item.name}</div>
+                                            <div style="color: #ffd700; font-size: 0.6rem; margin-top: 2px;">💰${price}</div>
                                         </div>
                                     `;
                                 }).join('')}
@@ -4196,14 +4213,10 @@
 
                 panel.innerHTML = `
                     <div class="event-header">
-                        <div class="event-icon">${EVENTS.merchant.icon}</div>
-                        <div><div class="event-title">${EVENTS.merchant.title}</div></div>
+                        <div class="event-icon">🏪</div>
+                        <div class="event-title">神秘商人 - 「嘿嘿，勇敢的騎士，需要些什麼嗎？」</div>
                     </div>
                     <div class="event-content">
-                        <div class="dialog-box" style="margin-bottom: 10px;">
-                            <div class="dialog-speaker">神秘商人</div>
-                            <div class="dialog-text">「嘿嘿，勇敢的騎士，需要些什麼嗎？」</div>
-                        </div>
                         <div class="shop-items">${itemsHtml}</div>
                         ${materialsHtml}
                         ${bagSellHtml}
