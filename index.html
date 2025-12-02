@@ -6,1469 +6,1405 @@
     <title>魔塔傳說 - 拯救公主</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            touch-action: manipulation;
-        }
-
-        body {
-            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: #e8e8e8;
-            display: flex;
-            justify-content: center;
-        }
-
-        .game-container {
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 500px;
-            overflow: hidden;
-        }
-
-        /* ==================== MAIN MENU ==================== */
-        .main-menu {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .main-menu h1 {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
-            color: #e94560;
-            text-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
-            margin-bottom: 10px;
-        }
-
-        .main-menu .subtitle {
-            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-            color: #ffd700;
-            margin-bottom: 30px;
-        }
-
-        .menu-story {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            max-width: 400px;
-            border: 1px solid rgba(233, 69, 96, 0.3);
-        }
-
-        .menu-story p {
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #ccc;
-            margin-bottom: 10px;
-        }
-
-        .menu-story p:last-child {
-            margin-bottom: 0;
-            color: #e94560;
-            font-weight: bold;
-        }
-
-        .soul-display {
-            background: rgba(147, 51, 234, 0.2);
-            border: 1px solid #9333ea;
-            padding: 10px 25px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .soul-display .soul-icon {
-            font-size: 1.3rem;
-        }
-
-        .soul-display .soul-count {
-            font-size: 1.2rem;
-            color: #c084fc;
-            font-weight: bold;
-        }
-
-        .menu-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            max-width: 250px;
-        }
-
-        .menu-btn {
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .menu-btn:active {
-            transform: scale(0.98);
-        }
-
-        .menu-btn.start {
-            background: linear-gradient(135deg, #e94560, #ff6b6b);
-            color: white;
-        }
-
-        .menu-btn.soul-shop {
-            background: linear-gradient(135deg, #9333ea, #c084fc);
-            color: white;
-        }
-
-        /* ==================== SOUL SHOP ==================== */
-        .soul-shop-container {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            padding: 10px;
-        }
-
-        .soul-shop-header {
-            text-align: center;
-            padding: 15px;
-            border-bottom: 2px solid #9333ea;
-            margin-bottom: 15px;
-            flex-shrink: 0;
-        }
-
-        .soul-shop-header h2 {
-            font-size: 1.5rem;
-            color: #c084fc;
-            margin-bottom: 8px;
-        }
-
-        .soul-shop-items {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 10px;
-        }
-
-        .soul-upgrade {
-            background: rgba(147, 51, 234, 0.15);
-            border: 1px solid rgba(147, 51, 234, 0.4);
-            padding: 12px 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.2s;
-        }
-
-        .soul-upgrade.maxed {
-            opacity: 0.6;
-            border-color: #4ecdc4;
-        }
-
-        .upgrade-info {
-            flex: 1;
-        }
-
-        .upgrade-name {
-            font-weight: bold;
-            color: #c084fc;
-            margin-bottom: 4px;
-        }
-
-        .upgrade-desc {
-            font-size: 0.8rem;
-            color: #aaa;
-        }
-
-        .upgrade-level {
-            font-size: 0.75rem;
-            color: #ffd700;
-            margin-top: 4px;
-        }
-
-        .upgrade-cost {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .upgrade-cost:active:not(.disabled) {
-            background: rgba(147, 51, 234, 0.4);
-        }
-
-        .upgrade-cost.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .upgrade-cost.maxed {
-            background: rgba(78, 205, 196, 0.3);
-            cursor: default;
-        }
-
-        /* ==================== GAME SCREEN ==================== */
-        .game-screen {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        /* 1. Title/Header */
-        .game-header {
-            text-align: center;
-            padding: 6px 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 2px solid #e94560;
-            flex-shrink: 0;
-        }
-
-        .game-header h1 {
-            font-size: 1rem;
-            color: #e94560;
-            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
-            margin-bottom: 2px;
-        }
-
-        .floor-display {
-            font-size: 0.8rem;
-            color: #ffd700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .floor-display .area-icon {
-            font-size: 1rem;
-        }
-
-        .floor-display .area-name {
-            color: #c084fc;
-            font-weight: bold;
-        }
-
-        /* 2. Event Panel */
-        .event-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            min-height: 0;
-        }
-
-        .event-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.2);
-            flex-shrink: 0;
-        }
-
-        .event-icon {
-            font-size: 1.5rem;
-        }
-
-        .event-title {
-            font-size: 1rem;
-            color: #e94560;
-            font-weight: bold;
-        }
-
-        .event-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 12px;
-            min-height: 0;
-        }
-
-        .event-description {
-            font-size: 0.85rem;
-            line-height: 1.4;
-            color: #ccc;
-            margin-bottom: 8px;
-        }
-
-        .action-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.2);
-            flex-shrink: 0;
-        }
-
-        /* 3. HP Bar */
-        .hp-section {
-            padding: 6px 12px;
-            background: rgba(0, 0, 0, 0.3);
-            flex-shrink: 0;
-        }
-
-        .hp-bar-container {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 8px;
-            padding: 3px;
-        }
-
-        .hp-bar {
-            height: 22px;
-            background: linear-gradient(90deg, #e94560, #ff6b6b);
-            border-radius: 6px;
-            transition: width 0.3s ease;
-            position: relative;
-        }
-
-        .hp-bar-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            line-height: 22px;
-            font-weight: bold;
-            font-size: 0.8rem;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        }
-
-        /* 4. Stats Panel - Original 2x2 Layout */
-        .stats-panel {
-            display: flex;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            flex-shrink: 0;
-        }
-
-        .stats-left {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-            flex: 1;
-        }
-
-        .stat-box {
-            text-align: center;
-            padding: 6px 4px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-        }
-
-        .stat-box .stat-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        .stat-icon {
-            font-size: 0.85rem;
-        }
-
-        .stat-label {
-            font-size: 0.6rem;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: clamp(0.8rem, 2.2vw, 1rem);
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .stat-box.attack .stat-value { color: #ff6b35; }
-        .stat-box.defense .stat-value { color: #4ecdc4; }
-        .stat-box.dodge .stat-value { color: #a8e6cf; }
-        .stat-box.crit .stat-value { color: #f39c12; }
-
-        .stats-right {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            min-width: 110px;
-        }
-
-        .gold-box {
-            background: rgba(255, 215, 0, 0.15);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            padding: 6px 10px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .gold-box .gold-icon {
-            font-size: 1rem;
-        }
-
-        .gold-box .gold-value {
-            font-size: 0.95rem;
-            font-weight: bold;
-            color: #ffd700;
-        }
-
-        .buffs-box {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 5px 8px;
-            border-radius: 6px;
-            flex: 1;
-            overflow-y: auto;
-            max-height: 50px;
-        }
-
-        .buffs-box .buff {
-            padding: 2px 6px;
-            border-radius: 8px;
-            font-size: 0.55rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            margin: 1px;
-        }
-
-        .buffs-box .buff.positive {
-            background: rgba(78, 205, 196, 0.2);
-            border: 1px solid #4ecdc4;
-            color: #4ecdc4;
-        }
-
-        .buffs-box .buff.negative {
-            background: rgba(233, 69, 96, 0.2);
-            border: 1px solid #e94560;
-            color: #e94560;
-        }
-
-        .buffs-box .buff.soul {
-            background: rgba(147, 51, 234, 0.2);
-            border: 1px solid #9333ea;
-            color: #c084fc;
-        }
-
-        .no-buffs {
-            font-size: 0.6rem;
-            color: #555;
-            text-align: center;
-        }
-
-        /* 5. Potions Panel */
-        .potions-panel {
-            display: flex;
-            gap: 6px;
-            padding: 6px 12px;
-            background: rgba(0, 0, 0, 0.2);
-            flex-shrink: 0;
-            flex-wrap: wrap;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .potions-label {
-            font-size: 0.7rem;
-            color: #888;
-            margin-right: 4px;
-        }
-
-        .potion-slot {
-            background: rgba(78, 205, 196, 0.15);
-            border: 1px solid rgba(78, 205, 196, 0.4);
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-
-        .potion-slot:active {
-            background: rgba(78, 205, 196, 0.4);
-            transform: scale(0.98);
-        }
-
-        .potion-slot .potion-name {
-            color: #4ecdc4;
-            font-size: 0.7rem;
-        }
-
-        .potion-slot .potion-count {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.65rem;
-        }
-
-        .potion-slot .potion-heal {
-            font-size: 0.6rem;
-            color: #aaa;
-        }
-
-        .no-potions {
-            font-size: 0.7rem;
-            color: #555;
-        }
-
-        /* 6. Bottom Tabs */
-        .bottom-tabs {
-            display: flex;
-            background: rgba(0, 0, 0, 0.5);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            flex-shrink: 0;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px 5px;
-            text-align: center;
-            font-size: 0.7rem;
-            color: #888;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .tab-btn:active {
-            background: rgba(233, 69, 96, 0.1);
-        }
-
-        .tab-btn.active {
-            color: #e94560;
-            background: rgba(233, 69, 96, 0.15);
-            border-top: 2px solid #e94560;
-        }
-
-        .tab-btn .tab-icon {
-            font-size: 1.2rem;
-        }
-
-        .tab-btn .tab-label {
-            font-size: 0.65rem;
-        }
-
-        /* Tab Panels */
-        .tab-panel {
-            display: none;
-            flex-direction: column;
-            background: rgba(0, 0, 0, 0.4);
-            max-height: 40vh;
-            overflow-y: auto;
-            flex-shrink: 0;
-        }
-
-        .tab-panel.active {
-            display: flex;
-        }
-
-        /* Equipment Tab Panel - Combined */
-        .equipment-tab-content {
-            padding: 10px 12px;
-        }
-
-        .equipment-tab-content h4 {
-            font-size: 0.75rem;
-            color: #e94560;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .equipment-wearing-section {
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .equipment-slots-horizontal {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-        }
-
-        .equipment-slot-h {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 6px;
-            border-radius: 6px;
-            border-left: 3px solid #444;
-            text-align: center;
-        }
-
-        .equipment-slot-h.common { border-left-color: #888; }
-        .equipment-slot-h.uncommon { border-left-color: #4ecdc4; }
-        .equipment-slot-h.rare { border-left-color: #667eea; }
-        .equipment-slot-h.epic { border-left-color: #a855f7; }
-        .equipment-slot-h.legendary { border-left-color: #ffd700; }
-
-        .equipment-slot-h .slot-type {
-            font-size: 0.6rem;
-            color: #666;
-            margin-bottom: 2px;
-        }
-
-        .equipment-slot-h .slot-name {
-            font-weight: bold;
-            font-size: 0.75rem;
-            margin-bottom: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .equipment-slot-h .slot-name.common { color: #888; }
-        .equipment-slot-h .slot-name.uncommon { color: #4ecdc4; }
-        .equipment-slot-h .slot-name.rare { color: #667eea; }
-        .equipment-slot-h .slot-name.epic { color: #a855f7; }
-        .equipment-slot-h .slot-name.legendary { color: #ffd700; }
-
-        .equipment-slot-h .slot-stats {
-            font-size: 0.55rem;
-            color: #aaa;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 3px;
-        }
-
-        /* Bag Grid - 3 columns */
-        .bag-section h4 {
-            font-size: 0.75rem;
-            color: #888;
-            margin-bottom: 8px;
-        }
-
-        .bag-grid-3col {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-        }
-
-        .bag-slot {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 8px 6px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            min-height: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .bag-slot:active {
-            background: rgba(233, 69, 96, 0.2);
-            border-color: #e94560;
-        }
-
-        .bag-slot.empty {
-            border-style: dashed;
-            opacity: 0.5;
-        }
-
-        .bag-slot.common { border-left: 3px solid #888; }
-        .bag-slot.uncommon { border-left: 3px solid #4ecdc4; }
-        .bag-slot.rare { border-left: 3px solid #667eea; }
-        .bag-slot.epic { border-left: 3px solid #a855f7; }
-        .bag-slot.legendary { border-left: 3px solid #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
-
-        .bag-slot .item-type {
-            font-size: 0.55rem;
-            color: #666;
-            margin-bottom: 2px;
-        }
-
-        .bag-slot .item-name {
-            font-size: 0.7rem;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
-
-        .bag-slot .item-name.common { color: #888; }
-        .bag-slot .item-name.uncommon { color: #4ecdc4; }
-        .bag-slot .item-name.rare { color: #667eea; }
-        .bag-slot .item-name.epic { color: #a855f7; }
-        .bag-slot .item-name.legendary { color: #ffd700; }
-
-        .bag-slot .item-stats {
-            font-size: 0.5rem;
-            color: #888;
-            margin-top: 2px;
-        }
-
-        .bag-slot.empty .empty-text {
-            font-size: 0.6rem;
-            color: #444;
-        }
-
-        /* Materials Tab */
-        .materials-tab-content {
-            padding: 10px 12px;
-        }
-
-        .materials-tab-content h4 {
-            font-size: 0.75rem;
-            color: #e94560;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .materials-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .material-item {
-            background: rgba(139, 69, 19, 0.2);
-            padding: 6px 10px;
-            border-radius: 5px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border-left: 2px solid #8b4513;
-        }
-
-        .material-item.common { border-left-color: #888; }
-        .material-item.uncommon { border-left-color: #4ecdc4; }
-        .material-item.rare { border-left-color: #667eea; }
-        .material-item.epic { border-left-color: #a855f7; }
-        .material-item.legendary { border-left-color: #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
-
-        .material-count {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.65rem;
-        }
-
-        .empty-materials {
-            color: #555;
-            font-size: 0.75rem;
-            text-align: center;
-            padding: 20px;
-        }
-
-        @keyframes legendaryGlow {
-            0%, 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
-            50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
-        }
-
-        /* ==================== BATTLE ARENA ==================== */
-        .battle-arena {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 12px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
-            border-radius: 10px;
-            margin-bottom: 8px;
-        }
-
-        .combatant {
-            text-align: center;
-        }
-
-        .combatant-sprite {
-            font-size: 3.5rem;
-            animation: combatantIdle 1.5s ease-in-out infinite;
-        }
-
-        @keyframes combatantIdle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        .combatant-name {
-            font-weight: bold;
-            font-size: 1rem;
-            margin: 4px 0;
-        }
-
-        .combatant-name.normal { color: #888; }
-        .combatant-name.elite { color: #667eea; }
-        .combatant-name.boss { color: #ffd700; }
-
-        .combatant-hp-bar {
-            width: 160px;
-            height: 14px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 7px;
-            overflow: hidden;
-            margin: 4px auto;
-        }
-
-        .combatant-hp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #e94560, #ff6b6b);
-            transition: width 0.3s ease;
-        }
-
-        .combatant-hp-text {
-            font-size: 0.75rem;
-            color: #aaa;
-        }
-
-        .combatant-stats {
-            font-size: 0.7rem;
-            color: #888;
-            margin-top: 2px;
-        }
-
-        /* Battle Log */
-        .battle-log {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            padding: 8px;
-            margin-top: 8px;
-        }
-
-        .battle-log-entry {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 3px 0;
-            font-size: 0.8rem;
-        }
-
-        .battle-log-entry.player-attack { color: #4ecdc4; }
-        .battle-log-entry.player-crit { color: #f39c12; }
-        .battle-log-entry.monster-attack { color: #e94560; }
-        .battle-log-entry.dodge { color: #a8e6cf; }
-        .battle-log-entry.heal { color: #4ecdc4; }
-
-        .damage-number {
-            font-weight: bold;
-            font-size: 0.95rem;
-        }
-
-        /* ==================== DIALOG BOX ==================== */
-        .dialog-box {
-            background: rgba(0, 0, 0, 0.5);
-            border-left: 3px solid #ffd700;
-            padding: 10px 12px;
-            margin: 8px 0;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .dialog-speaker {
-            color: #ffd700;
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-bottom: 4px;
-        }
-
-        .dialog-text {
-            color: #ddd;
-            font-size: 0.85rem;
-            line-height: 1.4;
-            font-style: italic;
-        }
-
-        /* ==================== TREASURE ==================== */
-        .treasure-display {
-            text-align: center;
-            padding: 15px;
-        }
-
-        .treasure-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            animation: treasureGlow 1.5s ease-in-out infinite;
-        }
-
-        @keyframes treasureGlow {
-            0%, 100% { filter: drop-shadow(0 0 8px #ffd700); }
-            50% { filter: drop-shadow(0 0 20px #ffd700); }
-        }
-
-        .chest-choice {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 12px;
-        }
-
-        .chest-option {
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px solid #444;
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            flex: 1;
-            max-width: 140px;
-            transition: all 0.2s;
-        }
-
-        .chest-option:active {
-            transform: scale(0.98);
-        }
-
-        .chest-option.safe { border-color: #4ecdc4; }
-        .chest-option.risky { border-color: #e94560; }
-
-        .chest-option .option-icon {
-            font-size: 2.2rem;
-            margin-bottom: 6px;
-        }
-
-        .chest-option .option-title {
-            font-weight: bold;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-        }
-
-        .chest-option.safe .option-title { color: #4ecdc4; }
-        .chest-option.risky .option-title { color: #e94560; }
-
-        .chest-option .option-desc {
-            font-size: 0.65rem;
-            color: #aaa;
-        }
-
-        /* Loot Display */
-        .loot-display {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 8px;
-        }
-
-        .loot-title {
-            font-size: 0.8rem;
-            color: #ffd700;
-            margin-bottom: 6px;
-            text-align: center;
-        }
-
-        .loot-items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            justify-content: center;
-        }
-
-        .loot-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* ==================== SHOP ==================== */
-        .shop-items {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .shop-item {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px;
-            border-radius: 6px;
-            border-left: 3px solid #444;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .shop-item:active:not(.disabled) {
-            background: rgba(233, 69, 96, 0.2);
-        }
-
-        .shop-item.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .shop-item.potion-item { border-left-color: #4ecdc4; }
-        .shop-item.common { border-left-color: #888; }
-        .shop-item.uncommon { border-left-color: #4ecdc4; }
-        .shop-item.rare { border-left-color: #667eea; }
-        .shop-item.epic { border-left-color: #a855f7; }
-        .shop-item.legendary { border-left-color: #ffd700; }
-
-        .shop-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-
-        .shop-item-name {
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
-
-        .shop-item-name.potion { color: #4ecdc4; }
-
-        .shop-item-price {
-            color: #ffd700;
-            font-weight: bold;
-            font-size: 0.8rem;
-        }
-
-        .shop-item-description {
-            font-size: 0.7rem;
-            color: #aaa;
-        }
-
-        .shop-item-rarity {
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .shop-item-rarity.common { background: rgba(136, 136, 136, 0.3); color: #888; }
-        .shop-item-rarity.uncommon { background: rgba(78, 205, 196, 0.3); color: #4ecdc4; }
-        .shop-item-rarity.rare { background: rgba(102, 126, 234, 0.3); color: #667eea; }
-        .shop-item-rarity.epic { background: rgba(168, 85, 247, 0.3); color: #a855f7; }
-        .shop-item-rarity.legendary { background: rgba(255, 215, 0, 0.3); color: #ffd700; }
-
-        .sell-all-btn {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
-
-        .sell-all-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* ==================== BUTTONS ==================== */
-        .btn {
-            padding: 12px 24px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn:active:not(:disabled) {
-            transform: scale(0.96);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #e94560, #ff6b6b);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
-            color: white;
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, #ffd700, #ff9500);
-            color: #1a1a2e;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 0.75rem;
-        }
-
-        .flee-info {
-            font-size: 0.6rem;
-            color: rgba(255,255,255,0.7);
-            display: block;
-            margin-top: 2px;
-        }
-
-        /* ==================== MODALS ==================== */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            max-width: 350px;
-            width: 100%;
-            border: 2px solid #e94560;
-        }
-
-        .modal-content h2 {
-            font-size: 1.3rem;
-            margin-bottom: 12px;
-            color: #e94560;
-        }
-
-        .modal-content p {
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-        }
-
-        .final-stats {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            font-size: 0.85rem;
-        }
-
-        .final-stats div {
-            padding: 3px 0;
-        }
-
-        .soul-reward {
-            background: rgba(147, 51, 234, 0.3);
-            border: 1px solid #9333ea;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-
-        .soul-reward-text {
-            color: #c084fc;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        /* Equipment Compare Modal */
-        .equip-compare-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 15px;
-        }
-
-        .equip-compare-content {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 380px;
-            width: 100%;
-            border: 2px solid #e94560;
-        }
-
-        .equip-compare-title {
-            text-align: center;
-            font-size: 1.1rem;
-            color: #e94560;
-            margin-bottom: 15px;
-        }
-
-        .equip-compare-container {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .equip-card {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .equip-card.current {
-            border: 2px solid #888;
-        }
-
-        .equip-card.new {
-            border: 2px solid;
-        }
-
-        .equip-card.new.common { border-color: #888; }
-        .equip-card.new.uncommon { border-color: #4ecdc4; }
-        .equip-card.new.rare { border-color: #667eea; }
-        .equip-card.new.epic { border-color: #a855f7; }
-        .equip-card.new.legendary { border-color: #ffd700; }
-
-        .equip-card-label {
-            font-size: 0.7rem;
-            color: #888;
-            margin-bottom: 5px;
-        }
-
-        .equip-card-name {
-            font-weight: bold;
-            font-size: 0.85rem;
-            margin-bottom: 8px;
-        }
-
-        .equip-card-stats {
-            font-size: 0.75rem;
-            color: #aaa;
-        }
-
-        .equip-card-stats .stat-line {
-            display: flex;
-            justify-content: space-between;
-            padding: 2px 0;
-        }
-
-        .compare-arrow {
-            font-size: 1.5rem;
-            color: #ffd700;
-        }
-
-        .stat-change {
-            font-size: 0.7rem;
-            margin-left: 5px;
-        }
-
-        .stat-change.positive { color: #4ecdc4; }
-        .stat-change.negative { color: #e94560; }
-
-        .equip-compare-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        /* ==================== OVERLAYS ==================== */
-        .area-transition, .story-transition {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.5s ease;
-            padding: 20px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .area-transition h2 {
-            font-size: 1.8rem;
-            color: #e94560;
-            margin-bottom: 15px;
-            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
-        }
-
-        .area-transition .area-name {
-            font-size: 1.3rem;
-            color: #ffd700;
-            margin-bottom: 20px;
-        }
-
-        .area-transition .area-desc {
-            font-size: 0.9rem;
-            color: #aaa;
-            text-align: center;
-            max-width: 300px;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
-
-        .area-transition .area-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        .story-transition .story-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .story-transition h2 {
-            font-size: 1.5rem;
-            color: #ffd700;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-
-        .story-transition .princess-display {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .story-transition .princess-display .princess-sprite {
-            font-size: 3.5rem;
-            animation: princessFloat 2s ease-in-out infinite;
-        }
-
-        @keyframes princessFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .story-transition .story-info {
-            color: #888;
-            font-size: 0.8rem;
-            margin-top: 10px;
-        }
-
-        /* ==================== ANIMATIONS ==================== */
-        .shake {
-            animation: shake 0.5s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
-
-        .attack-animation {
-            animation: attackPulse 0.3s ease-out;
-        }
-
-        @keyframes attackPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .princess-sprite {
-            font-size: 3rem;
-        }
-
-        /* ==================== SCROLLBAR ==================== */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 2px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #e94560;
-            border-radius: 2px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Landscape adjustments */
-        @media (orientation: landscape) and (max-height: 500px) {
-            .event-panel {
-                min-height: 100px;
-            }
-            
-            .combatant-sprite {
-                font-size: 2.5rem;
-            }
-            
-            .treasure-icon {
-                font-size: 2rem;
-            }
-            
-            .tab-panel {
-                max-height: 35vh;
-            }
-            
-            .stats-panel {
-                padding: 4px 12px;
-            }
-            
-            .stat-box {
-                padding: 4px;
-            }
-        }
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    touch-action: manipulation;
+}
+
+body {
+    font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #e8e8e8;
+    display: flex;
+    justify-content: center;
+}
+
+.game-container {
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    overflow: hidden;
+}
+
+/* ==================== MAIN MENU ==================== */
+.main-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.main-menu h1 {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    color: #e94560;
+    text-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
+    margin-bottom: 10px;
+}
+
+.main-menu .subtitle {
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    color: #ffd700;
+    margin-bottom: 30px;
+}
+
+.menu-story {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    max-width: 400px;
+    border: 1px solid rgba(233, 69, 96, 0.3);
+}
+
+.menu-story p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.menu-story p:last-child {
+    margin-bottom: 0;
+    color: #e94560;
+    font-weight: bold;
+}
+
+.soul-display {
+    background: rgba(147, 51, 234, 0.2);
+    border: 1px solid #9333ea;
+    padding: 10px 25px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.soul-display .soul-icon {
+    font-size: 1.3rem;
+}
+
+.soul-display .soul-count {
+    font-size: 1.2rem;
+    color: #c084fc;
+    font-weight: bold;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 250px;
+}
+
+.menu-btn {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.menu-btn:active {
+    transform: scale(0.98);
+}
+
+.menu-btn.start {
+    background: linear-gradient(135deg, #e94560, #ff6b6b);
+    color: white;
+}
+
+.menu-btn.soul-shop {
+    background: linear-gradient(135deg, #9333ea, #c084fc);
+    color: white;
+}
+
+/* ==================== SOUL SHOP ==================== */
+.soul-shop-container {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px;
+}
+
+.soul-shop-header {
+    text-align: center;
+    padding: 15px;
+    border-bottom: 2px solid #9333ea;
+    margin-bottom: 15px;
+    flex-shrink: 0;
+}
+
+.soul-shop-header h2 {
+    font-size: 1.5rem;
+    color: #c084fc;
+    margin-bottom: 8px;
+}
+
+.soul-shop-items {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.soul-upgrade {
+    background: rgba(147, 51, 234, 0.15);
+    border: 1px solid rgba(147, 51, 234, 0.4);
+    padding: 12px 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.soul-upgrade.maxed {
+    opacity: 0.6;
+    border-color: #4ecdc4;
+}
+
+.upgrade-info {
+    flex: 1;
+}
+
+.upgrade-name {
+    font-weight: bold;
+    color: #c084fc;
+    margin-bottom: 4px;
+}
+
+.upgrade-desc {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.upgrade-level {
+    font-size: 0.75rem;
+    color: #ffd700;
+    margin-top: 4px;
+}
+
+.upgrade-cost {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.upgrade-cost:active:not(.disabled) {
+    background: rgba(147, 51, 234, 0.4);
+}
+
+.upgrade-cost.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.upgrade-cost.maxed {
+    background: rgba(78, 205, 196, 0.3);
+    cursor: default;
+}
+
+/* ==================== GAME SCREEN ==================== */
+.game-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Main scrollable area containing event + inventory */
+.game-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+
+
+/* 1. Title/Header */
+.game-header {
+    text-align: center;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid #e94560;
+    flex-shrink: 0;
+}
+
+.game-header h1 {
+    font-size: 1rem;
+    color: #e94560;
+    text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+    margin-bottom: 2px;
+}
+
+.floor-display {
+    font-size: 0.8rem;
+    color: #ffd700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.floor-display .area-icon {
+    font-size: 1rem;
+}
+
+.floor-display .area-name {
+    color: #c084fc;
+    font-weight: bold;
+}
+
+/* 2. Event Panel - Now part of scroll area */
+.event-panel {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+}
+
+.event-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+.event-icon {
+    font-size: 1.5rem;
+}
+
+.event-title {
+    font-size: 1rem;
+    color: #e94560;
+    font-weight: bold;
+}
+
+.event-content {
+    padding: 8px 12px;
+}
+
+.event-description {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #ccc;
+    margin-bottom: 8px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* 3. HP Bar */
+.hp-section {
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hp-bar-container {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.hp-bar {
+    height: 22px;
+    background: linear-gradient(90deg, #e94560, #ff6b6b);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.hp-bar-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    line-height: 22px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* 4. Stats Panel */
+.stats-panel {
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stats-left {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    flex: 1;
+}
+
+.stat-box {
+    text-align: center;
+    padding: 6px 4px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+}
+
+.stat-box .stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.stat-icon {
+    font-size: 0.85rem;
+}
+
+.stat-label {
+    font-size: 0.6rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
+    font-weight: bold;
+    color: #fff;
+}
+
+.stat-box.attack .stat-value { color: #ff6b35; }
+.stat-box.defense .stat-value { color: #4ecdc4; }
+.stat-box.dodge .stat-value { color: #a8e6cf; }
+.stat-box.crit .stat-value { color: #f39c12; }
+
+.stats-right {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 110px;
+}
+
+.gold-box {
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    padding: 6px 10px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.gold-box .gold-icon {
+    font-size: 1rem;
+}
+
+.gold-box .gold-value {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.buffs-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 5px 8px;
+    border-radius: 6px;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 50px;
+}
+
+.buffs-box .buff {
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 0.55rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin: 1px;
+}
+
+.buffs-box .buff.positive {
+    background: rgba(78, 205, 196, 0.2);
+    border: 1px solid #4ecdc4;
+    color: #4ecdc4;
+}
+
+.buffs-box .buff.negative {
+    background: rgba(233, 69, 96, 0.2);
+    border: 1px solid #e94560;
+    color: #e94560;
+}
+
+.buffs-box .buff.soul {
+    background: rgba(147, 51, 234, 0.2);
+    border: 1px solid #9333ea;
+    color: #c084fc;
+}
+
+.no-buffs {
+    font-size: 0.6rem;
+    color: #555;
+    text-align: center;
+}
+
+/* 5. Potions Panel */
+.potions-panel {
+    display: flex;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.2);
+    flex-wrap: wrap;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.potions-label {
+    font-size: 0.7rem;
+    color: #888;
+    margin-right: 4px;
+}
+
+.potion-slot {
+    background: rgba(78, 205, 196, 0.15);
+    border: 1px solid rgba(78, 205, 196, 0.4);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.potion-slot:active {
+    background: rgba(78, 205, 196, 0.4);
+    transform: scale(0.98);
+}
+
+.potion-slot .potion-name {
+    color: #4ecdc4;
+    font-size: 0.7rem;
+}
+
+.potion-slot .potion-count {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+}
+
+.potion-slot .potion-heal {
+    font-size: 0.6rem;
+    color: #aaa;
+}
+
+.no-potions {
+    font-size: 0.7rem;
+    color: #555;
+}
+
+/* 6. Inventory Sections - Dynamic sizing */
+.inventory-section {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.inventory-section:last-child {
+    border-bottom: none;
+    padding-bottom: 12px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.section-header h4 {
+    font-size: 0.75rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+}
+
+.section-header .section-count {
+    font-size: 0.65rem;
+    color: #666;
+}
+
+/* Equipment Wearing Section */
+.equipment-slots-horizontal {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.equipment-slot-h {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 6px 4px;
+    border-radius: 6px;
+    border-left: 3px solid #444;
+    text-align: center;
+}
+
+.equipment-slot-h.common { border-left-color: #888; }
+.equipment-slot-h.uncommon { border-left-color: #4ecdc4; }
+.equipment-slot-h.rare { border-left-color: #667eea; }
+.equipment-slot-h.epic { border-left-color: #a855f7; }
+.equipment-slot-h.legendary { border-left-color: #ffd700; }
+
+.equipment-slot-h .slot-type {
+    font-size: 0.55rem;
+    color: #666;
+    margin-bottom: 1px;
+}
+
+.equipment-slot-h .slot-name {
+    font-weight: bold;
+    font-size: 0.65rem;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.equipment-slot-h .slot-name.common { color: #888; }
+.equipment-slot-h .slot-name.uncommon { color: #4ecdc4; }
+.equipment-slot-h .slot-name.rare { color: #667eea; }
+.equipment-slot-h .slot-name.epic { color: #a855f7; }
+.equipment-slot-h .slot-name.legendary { color: #ffd700; }
+
+.equipment-slot-h .slot-stats {
+    font-size: 0.5rem;
+    color: #aaa;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+}
+
+/* Bag Grid - 5 columns compact */
+.bag-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+}
+
+.bag-slot {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px 2px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.bag-slot:active {
+    background: rgba(233, 69, 96, 0.2);
+    border-color: #e94560;
+}
+
+.bag-slot.common { border-left: 2px solid #888; }
+.bag-slot.uncommon { border-left: 2px solid #4ecdc4; }
+.bag-slot.rare { border-left: 2px solid #667eea; }
+.bag-slot.epic { border-left: 2px solid #a855f7; }
+.bag-slot.legendary { border-left: 2px solid #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
+
+.bag-slot .item-type {
+    font-size: 0.45rem;
+    color: #666;
+    line-height: 1;
+}
+
+.bag-slot .item-name {
+    font-size: 0.5rem;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    line-height: 1.2;
+}
+
+.bag-slot .item-name.common { color: #888; }
+.bag-slot .item-name.uncommon { color: #4ecdc4; }
+.bag-slot .item-name.rare { color: #667eea; }
+.bag-slot .item-name.epic { color: #a855f7; }
+.bag-slot .item-name.legendary { color: #ffd700; }
+
+.bag-slot .item-stats {
+    font-size: 0.4rem;
+    color: #888;
+    line-height: 1;
+}
+
+/* Empty bag message */
+.bag-empty {
+    text-align: center;
+    color: #555;
+    font-size: 0.7rem;
+    padding: 8px;
+}
+
+/* Materials Section - Compact inline */
+.materials-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.material-item {
+    background: rgba(139, 69, 19, 0.2);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    border-left: 2px solid #8b4513;
+}
+
+.material-item.common { border-left-color: #888; }
+.material-item.uncommon { border-left-color: #4ecdc4; }
+.material-item.rare { border-left-color: #667eea; }
+.material-item.epic { border-left-color: #a855f7; }
+.material-item.legendary { border-left-color: #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
+
+.material-count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 0.55rem;
+}
+
+.empty-materials {
+    color: #555;
+    font-size: 0.65rem;
+}
+
+@keyframes legendaryGlow {
+    0%, 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
+}
+
+/* Hide old tab system */
+.bottom-tabs {
+    display: none !important;
+}
+
+.tab-panel {
+    display: none !important;
+}
+
+/* ==================== BATTLE ARENA ==================== */
+.battle-arena {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+
+.combatant {
+    text-align: center;
+}
+
+.combatant-sprite {
+    font-size: 3.5rem;
+    animation: combatantIdle 1.5s ease-in-out infinite;
+}
+
+@keyframes combatantIdle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.combatant-name {
+    font-weight: bold;
+    font-size: 1rem;
+    margin: 4px 0;
+}
+
+.combatant-name.normal { color: #888; }
+.combatant-name.elite { color: #667eea; }
+.combatant-name.boss { color: #ffd700; }
+
+.combatant-hp-bar {
+    width: 160px;
+    height: 14px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 7px;
+    overflow: hidden;
+    margin: 4px auto;
+}
+
+.combatant-hp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #e94560, #ff6b6b);
+    transition: width 0.3s ease;
+}
+
+.combatant-hp-text {
+    font-size: 0.75rem;
+    color: #aaa;
+}
+
+.combatant-stats {
+    font-size: 0.7rem;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* Battle Log */
+.battle-log {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    padding: 8px;
+    margin-top: 8px;
+}
+
+.battle-log-entry {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 3px 0;
+    font-size: 0.8rem;
+}
+
+.battle-log-entry.player-attack { color: #4ecdc4; }
+.battle-log-entry.player-crit { color: #f39c12; }
+.battle-log-entry.monster-attack { color: #e94560; }
+.battle-log-entry.dodge { color: #a8e6cf; }
+.battle-log-entry.heal { color: #4ecdc4; }
+
+.damage-number {
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+/* ==================== DIALOG BOX ==================== */
+.dialog-box {
+    background: rgba(0, 0, 0, 0.5);
+    border-left: 3px solid #ffd700;
+    padding: 10px 12px;
+    margin: 8px 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.dialog-speaker {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+}
+
+.dialog-text {
+    color: #ddd;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+/* ==================== TREASURE ==================== */
+.treasure-display {
+    text-align: center;
+    padding: 15px;
+}
+
+.treasure-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    animation: treasureGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes treasureGlow {
+    0%, 100% { filter: drop-shadow(0 0 8px #ffd700); }
+    50% { filter: drop-shadow(0 0 20px #ffd700); }
+}
+
+.chest-choice {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.chest-option {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    flex: 1;
+    max-width: 140px;
+    transition: all 0.2s;
+}
+
+.chest-option:active {
+    transform: scale(0.98);
+}
+
+.chest-option.safe { border-color: #4ecdc4; }
+.chest-option.risky { border-color: #e94560; }
+
+.chest-option .option-icon {
+    font-size: 2.2rem;
+    margin-bottom: 6px;
+}
+
+.chest-option .option-title {
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.chest-option.safe .option-title { color: #4ecdc4; }
+.chest-option.risky .option-title { color: #e94560; }
+
+.chest-option .option-desc {
+    font-size: 0.65rem;
+    color: #aaa;
+}
+
+/* Loot Display */
+.loot-display {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 8px;
+}
+
+.loot-title {
+    font-size: 0.8rem;
+    color: #ffd700;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.loot-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+}
+
+.loot-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ==================== SHOP ==================== */
+.shop-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.shop-item {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid #444;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.shop-item:active:not(.disabled) {
+    background: rgba(233, 69, 96, 0.2);
+}
+
+.shop-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.shop-item.potion-item { border-left-color: #4ecdc4; }
+.shop-item.common { border-left-color: #888; }
+.shop-item.uncommon { border-left-color: #4ecdc4; }
+.shop-item.rare { border-left-color: #667eea; }
+.shop-item.epic { border-left-color: #a855f7; }
+.shop-item.legendary { border-left-color: #ffd700; }
+
+.shop-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.shop-item-name {
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.shop-item-name.potion { color: #4ecdc4; }
+
+.shop-item-price {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.shop-item-description {
+    font-size: 0.7rem;
+    color: #aaa;
+}
+
+.shop-item-rarity {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.shop-item-rarity.common { background: rgba(136, 136, 136, 0.3); color: #888; }
+.shop-item-rarity.uncommon { background: rgba(78, 205, 196, 0.3); color: #4ecdc4; }
+.shop-item-rarity.rare { background: rgba(102, 126, 234, 0.3); color: #667eea; }
+.shop-item-rarity.epic { background: rgba(168, 85, 247, 0.3); color: #a855f7; }
+.shop-item-rarity.legendary { background: rgba(255, 215, 0, 0.3); color: #ffd700; }
+
+.sell-all-btn {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.sell-all-btn:active {
+    transform: scale(0.98);
+}
+
+/* ==================== BUTTONS ==================== */
+.btn {
+    padding: 12px 24px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #e94560, #ff6b6b);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ffd700, #ff9500);
+    color: #1a1a2e;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+}
+
+.flee-info {
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.7);
+    display: block;
+    margin-top: 2px;
+}
+
+/* ==================== MODALS ==================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 350px;
+    width: 100%;
+    border: 2px solid #e94560;
+}
+
+.modal-content h2 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+    color: #e94560;
+}
+
+.modal-content p {
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+.final-stats {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+}
+
+.final-stats div {
+    padding: 3px 0;
+}
+
+.soul-reward {
+    background: rgba(147, 51, 234, 0.3);
+    border: 1px solid #9333ea;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.soul-reward-text {
+    color: #c084fc;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* Equipment Compare Modal */
+.equip-compare-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 15px;
+}
+
+.equip-compare-content {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 380px;
+    width: 100%;
+    border: 2px solid #e94560;
+}
+
+.equip-compare-title {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #e94560;
+    margin-bottom: 15px;
+}
+
+.equip-compare-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.equip-card {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.equip-card.current {
+    border: 2px solid #888;
+}
+
+.equip-card.new {
+    border: 2px solid;
+}
+
+.equip-card.new.common { border-color: #888; }
+.equip-card.new.uncommon { border-color: #4ecdc4; }
+.equip-card.new.rare { border-color: #667eea; }
+.equip-card.new.epic { border-color: #a855f7; }
+.equip-card.new.legendary { border-color: #ffd700; }
+
+.equip-card-label {
+    font-size: 0.7rem;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.equip-card-name {
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.equip-card-stats {
+    font-size: 0.75rem;
+    color: #aaa;
+}
+
+.equip-card-stats .stat-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+}
+
+.compare-arrow {
+    font-size: 1.5rem;
+    color: #ffd700;
+}
+
+.stat-change {
+    font-size: 0.7rem;
+    margin-left: 5px;
+}
+
+.stat-change.positive { color: #4ecdc4; }
+.stat-change.negative { color: #e94560; }
+
+.equip-compare-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* ==================== OVERLAYS ==================== */
+.area-transition, .story-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease;
+    padding: 20px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.area-transition h2 {
+    font-size: 1.8rem;
+    color: #e94560;
+    margin-bottom: 15px;
+    text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+}
+
+.area-transition .area-name {
+    font-size: 1.3rem;
+    color: #ffd700;
+    margin-bottom: 20px;
+}
+
+.area-transition .area-desc {
+    font-size: 0.9rem;
+    color: #aaa;
+    text-align: center;
+    max-width: 300px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.area-transition .area-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.story-transition .story-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.story-transition h2 {
+    font-size: 1.5rem;
+    color: #ffd700;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.story-transition .princess-display {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.story-transition .princess-display .princess-sprite {
+    font-size: 3.5rem;
+    animation: princessFloat 2s ease-in-out infinite;
+}
+
+@keyframes princessFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.story-transition .story-info {
+    color: #888;
+    font-size: 0.8rem;
+    margin-top: 10px;
+}
+
+/* ==================== ANIMATIONS ==================== */
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+
+.attack-animation {
+    animation: attackPulse 0.3s ease-out;
+}
+
+@keyframes attackPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.princess-sprite {
+    font-size: 3rem;
+}
+
+/* ==================== SCROLLBAR ==================== */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #e94560;
+    border-radius: 2px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Landscape adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+    .combatant-sprite {
+        font-size: 2.5rem;
+    }
+    
+    .treasure-icon {
+        font-size: 2rem;
+    }
+    
+    .stats-panel {
+        padding: 4px 12px;
+    }
+    
+    .stat-box {
+        padding: 4px;
+    }
+}
     </style>
 </head>
 <body>
@@ -1514,7 +1450,7 @@
 
         <!-- Game Screen -->
         <div class="game-screen hidden" id="game-screen">
-            <!-- 1. Title/Header -->
+            <!-- 1. Title/Header - Fixed -->
             <div class="game-header">
                 <h1>🏰 魔塔傳說 🏰</h1>
                 <div class="floor-display">
@@ -1524,99 +1460,92 @@
                 </div>
             </div>
 
-            <!-- 2. Event Panel -->
-            <div class="event-panel" id="event-panel"></div>
+            <!-- 2. Main Scrollable Area -->
+            <div class="game-scroll-area">
+                <!-- Event Panel - First in scroll area -->
+                <div class="event-panel" id="event-panel">
+                    <!-- Events render here -->
+                </div>
 
-            <!-- 3. HP Bar -->
-            <div class="hp-section">
-                <div class="hp-bar-container">
-                    <div class="hp-bar" id="hp-bar">
-                        <span class="hp-bar-text" id="hp-bar-text">100 / 100</span>
+                <!-- HP Bar -->
+                <div class="hp-section">
+                    <div class="hp-bar-container">
+                        <div class="hp-bar" id="hp-bar">
+                            <span class="hp-bar-text" id="hp-bar-text">100 / 100</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- 4. Stats Panel - 2x2 Matrix with Gold and Buffs -->
-            <div class="stats-panel">
-                <div class="stats-left">
-                    <div class="stat-box attack">
-                        <div class="stat-row">
-                            <span class="stat-icon">⚔️</span>
-                            <span class="stat-value" id="stat-attack">10</span>
+                <!-- Stats Panel -->
+                <div class="stats-panel">
+                    <div class="stats-left">
+                        <div class="stat-box attack">
+                            <div class="stat-row">
+                                <span class="stat-icon">⚔️</span>
+                                <span class="stat-value" id="stat-attack">10</span>
+                            </div>
+                            <div class="stat-label">攻擊</div>
                         </div>
-                        <div class="stat-label">攻擊</div>
+                        <div class="stat-box defense">
+                            <div class="stat-row">
+                                <span class="stat-icon">🛡️</span>
+                                <span class="stat-value" id="stat-defense">5</span>
+                            </div>
+                            <div class="stat-label">防禦</div>
+                        </div>
+                        <div class="stat-box crit">
+                            <div class="stat-row">
+                                <span class="stat-icon">💥</span>
+                                <span class="stat-value" id="stat-crit">5%</span>
+                            </div>
+                            <div class="stat-label">爆擊</div>
+                        </div>
+                        <div class="stat-box dodge">
+                            <div class="stat-row">
+                                <span class="stat-icon">💨</span>
+                                <span class="stat-value" id="stat-dodge">5%</span>
+                            </div>
+                            <div class="stat-label">閃避</div>
+                        </div>
                     </div>
-                    <div class="stat-box defense">
-                        <div class="stat-row">
-                            <span class="stat-icon">🛡️</span>
-                            <span class="stat-value" id="stat-defense">5</span>
+                    <div class="stats-right">
+                        <div class="gold-box">
+                            <span class="gold-icon">💰</span>
+                            <span class="gold-value" id="stat-gold">0</span>
                         </div>
-                        <div class="stat-label">防禦</div>
-                    </div>
-                    <div class="stat-box crit">
-                        <div class="stat-row">
-                            <span class="stat-icon">💥</span>
-                            <span class="stat-value" id="stat-crit">5%</span>
+                        <div class="buffs-box" id="buffs-panel">
+                            <div class="no-buffs">無增益效果</div>
                         </div>
-                        <div class="stat-label">爆擊</div>
-                    </div>
-                    <div class="stat-box dodge">
-                        <div class="stat-row">
-                            <span class="stat-icon">💨</span>
-                            <span class="stat-value" id="stat-dodge">5%</span>
-                        </div>
-                        <div class="stat-label">閃避</div>
                     </div>
                 </div>
-                <div class="stats-right">
-                    <div class="gold-box">
-                        <span class="gold-icon">💰</span>
-                        <span class="gold-value" id="stat-gold">0</span>
-                    </div>
-                    <div class="buffs-box" id="buffs-panel">
-                        <div class="no-buffs">無增益效果</div>
-                    </div>
+
+                <!-- Potions -->
+                <div class="potions-panel" id="potions-panel">
+                    <span class="potions-label">💊 藥水:</span>
                 </div>
-            </div>
 
-            <!-- 5. Potions -->
-            <div class="potions-panel" id="potions-panel">
-                <span class="potions-label">💊 藥水:</span>
-            </div>
-
-            <!-- 6. Bottom Tabs -->
-            <div class="bottom-tabs">
-                <button class="tab-btn" onclick="game.toggleTab('equipment')" id="tab-equipment">
-                    <span class="tab-icon">⚔️</span>
-                    <span class="tab-label">裝備 (<span id="equip-bag-count">0</span>/20)</span>
-                </button>
-                <button class="tab-btn" onclick="game.toggleTab('materials')" id="tab-materials">
-                    <span class="tab-icon">📦</span>
-                    <span class="tab-label">素材</span>
-                </button>
-            </div>
-
-            <!-- Equipment Tab Panel (Combined: Wearing + Bag) -->
-            <div class="tab-panel" id="panel-equipment">
-                <div class="equipment-tab-content">
-                    <!-- Wearing Section -->
-                    <div class="equipment-wearing-section">
+                <!-- Equipment Wearing Section -->
+                <div class="inventory-section" id="section-equipment">
+                    <div class="section-header">
                         <h4>🎖️ 裝備中</h4>
-                        <div class="equipment-slots-horizontal" id="equipment-slots"></div>
                     </div>
-                    
-                    <!-- Bag Section - 3 Column Grid -->
-                    <div class="bag-section">
-                        <h4>🎒 裝備背包</h4>
-                        <div class="bag-grid-3col" id="equip-bag-grid"></div>
-                    </div>
+                    <div class="equipment-slots-horizontal" id="equipment-slots"></div>
                 </div>
-            </div>
-
-            <!-- Materials Tab Panel -->
-            <div class="tab-panel" id="panel-materials">
-                <div class="materials-tab-content">
-                    <h4>📦 素材背包</h4>
+                
+                <!-- Equipment Bag Section -->
+                <div class="inventory-section" id="section-bag">
+                    <div class="section-header">
+                        <h4>🎒 裝備背包</h4>
+                        <span class="section-count"><span id="equip-bag-count">0</span>/20</span>
+                    </div>
+                    <div class="bag-grid" id="equip-bag-grid"></div>
+                </div>
+                
+                <!-- Materials Section -->
+                <div class="inventory-section" id="section-materials">
+                    <div class="section-header">
+                        <h4>📦 素材</h4>
+                    </div>
                     <div class="materials-grid" id="material-bag-items"></div>
                 </div>
             </div>
@@ -2473,31 +2402,6 @@
                     this.restoreScreen();
                 }
             }
-            
-            toggleTab(tabName) {
-            const tabs = ['equipment', 'materials'];
-            const wasActive = document.getElementById(`tab-${tabName}`).classList.contains('active');
-            
-            // Close all tabs first
-            tabs.forEach(t => {
-                document.getElementById(`tab-${t}`).classList.remove('active');
-                document.getElementById(`panel-${t}`).classList.remove('active');
-            });
-            
-            // If it wasn't active, open it
-            if (!wasActive) {
-                document.getElementById(`tab-${tabName}`).classList.add('active');
-                document.getElementById(`panel-${tabName}`).classList.add('active');
-            }
-        }
-
-        closeAllTabs() {
-            const tabs = ['equipment', 'materials'];
-            tabs.forEach(t => {
-                document.getElementById(`tab-${t}`).classList.remove('active');
-                document.getElementById(`panel-${t}`).classList.remove('active');
-            });
-        }
 
             gambleEvent(chance, successFn, failFn) {
                 if (Math.random() < chance) {
@@ -2573,34 +2477,33 @@
             }
 
             restoreScreen() {
-                this.gameStarted = true;
-                document.getElementById('main-menu').classList.add('hidden');
-                document.getElementById('game-screen').classList.remove('hidden');
-                this.updateUI();
+            this.gameStarted = true;
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            this.updateUI();
 
-                // Decide what to render based on the saved state
-                if (this.currentEvent === 'fight' || (this.inCombat && this.currentMonster)) {
-                    this.renderCombat();
-                } else if (this.currentEvent === 'merchant') {
-                    this.renderMerchant();
-                } else if (this.currentEvent === 'treasure') {
-                    if (this.pendingLoot) this.renderTreasure();
-                    else this.generateTreasureChoice();
-                } else if (this.currentEvent === 'rest') {
-                    this.generateRestArea();
-                } else if (this.currentEvent === 'event' && this.currentRandomEvent) {
-                    // Re-render the event choice UI since we can't restore mid-resolution
-                    this.renderRandomEventChoice();
-                } else if (this.pendingLoot) {
-                    // Loot screen after battle
-                    if (this.level > 500) this.renderFinalVictory();
-                    else this.renderVictory();
-                } else {
-                    // ✅ FIX: Always generate a new event if no valid state exists
-                    // This is safer than checking innerHTML
-                    this.generateEvent();
-                }
+            const panel = document.getElementById('event-panel');
+            
+            // Decide what to render based on the saved state
+            if (this.currentEvent === 'fight' || (this.inCombat && this.currentMonster)) {
+                this.renderCombat();
+            } else if (this.currentEvent === 'merchant') {
+                this.renderMerchant();
+            } else if (this.currentEvent === 'treasure') {
+                if (this.pendingLoot) this.renderTreasure();
+                else this.generateTreasureChoice();
+            } else if (this.currentEvent === 'rest') {
+                this.generateRestArea();
+            } else if (this.currentEvent === 'event' && this.currentRandomEvent) {
+                this.renderRandomEventChoice();
+            } else if (this.pendingLoot) {
+                if (this.level > 500) this.renderFinalVictory();
+                else this.renderVictory();
+            } else {
+                // Generate new event if nothing valid
+                this.generateEvent();
             }
+        }
 
             // ✅ NEW: Add helper method to re-render random event choice
             renderRandomEventChoice() {
@@ -2822,10 +2725,15 @@
             startNewRun() {
                 this.resetRunState();
                 document.getElementById('main-menu').classList.add('hidden');
+                document.getElementById('soul-shop').style.display = 'none';
                 document.getElementById('game-screen').classList.remove('hidden');
                 this.gameStarted = true;
                 this.soulData.totalRuns++;
                 saveSoulData(this.soulData);
+                
+                // Clear event panel first
+                document.getElementById('event-panel').innerHTML = '';
+                
                 this.updateUI();
                 this.showStoryTransition();
             }
@@ -2936,47 +2844,54 @@
             }
 
             generateEvent() {
-                // Close tabs when generating new event
-                this.closeAllTabs();
-                
-                if (this.isAreaBossFloor()) {
-                    this.currentEvent = 'fight';
-                    this.generateBoss();
-                    return;
-                }
+            const panel = document.getElementById('event-panel');
+            
+            // Safety check
+            if (!panel) {
+                console.error('Event panel not found!');
+                return;
+            }
+            
+            if (this.isAreaBossFloor()) {
+                this.currentEvent = 'fight';
+                this.generateBoss();
+                return;
+            }
 
-                const areaNum = this.getAreaNumber();
-                const bossFloor = areaNum * 50;
-                if (this.level === bossFloor - 3) {
-                    this.currentEvent = 'merchant';
-                    this.generateMerchant();
-                    return;
-                }
+            const areaNum = this.getAreaNumber();
+            const bossFloor = areaNum * 50;
+            if (this.level === bossFloor - 3) {
+                this.currentEvent = 'merchant';
+                this.generateMerchant();
+                return;
+            }
 
-                if (this.level % 10 === 0 && !this.isAreaBossFloor()) {
-                    this.currentEvent = 'rest';
-                    this.generateRestArea();
-                    return;
-                }
+            if (this.level % 10 === 0 && !this.isAreaBossFloor()) {
+                this.currentEvent = 'rest';
+                this.generateRestArea();
+                return;
+            }
 
-                const roll = Math.random() * 100;
-                let cumulative = 0;
-                for (const [event, data] of Object.entries(EVENTS)) {
-                    cumulative += data.weight;
-                    if (roll < cumulative) {
-                        this.currentEvent = event;
-                        break;
-                    }
-                }
-
-                switch (this.currentEvent) {
-                    case 'fight': this.generateMonster(); break;
-                    case 'treasure': this.generateTreasureChoice(); break;
-                    case 'merchant': this.generateMerchant(); break;
-                    case 'event': this.generateRandomEvent(); break;
-                    case 'rest': this.generateRestArea(); break;
+            const roll = Math.random() * 100;
+            let cumulative = 0;
+            for (const [event, data] of Object.entries(EVENTS)) {
+                cumulative += data.weight;
+                if (roll < cumulative) {
+                    this.currentEvent = event;
+                    break;
                 }
             }
+
+            switch (this.currentEvent) {
+                case 'fight': this.generateMonster(); break;
+                case 'treasure': this.generateTreasureChoice(); break;
+                case 'merchant': this.generateMerchant(); break;
+                case 'event': this.generateRandomEvent(); break;
+                case 'rest': this.generateRestArea(); break;
+            }
+            
+            this.saveGame();
+        }
 
             // ==================== REST AREA ====================
 
@@ -4268,165 +4183,157 @@
             }
 
             // ==================== UI UPDATE ====================
-
             updateUI() {
-            const maxHp = this.getMaxHp();
-            const area = this.getCurrentArea();
-            const areaNum = this.getAreaNumber();
-            const floorInArea = this.getFloorInArea();
-            
-            // Update header
-            document.getElementById('floor-area-icon').textContent = area.icon;
-            document.getElementById('floor-area-name').textContent = area.name;
-            document.getElementById('current-floor').textContent = floorInArea;
-            
-            // Stats
-            document.getElementById('stat-attack').textContent = this.getAttack();
-            document.getElementById('stat-defense').textContent = this.getDefense();
-            document.getElementById('stat-dodge').textContent = `${this.getDodge()}%`;
-            document.getElementById('stat-crit').textContent = `${this.getCrit()}%`;
-            document.getElementById('stat-gold').textContent = this.player.gold;
-
-            // HP Bar
-            const hpPercent = Math.max(0, (this.player.hp / maxHp) * 100);
-            document.getElementById('hp-bar').style.width = `${hpPercent}%`;
-            document.getElementById('hp-bar-text').textContent = `❤️ ${this.player.hp} / ${maxHp}`;
-
-            // Potions Panel
-            const potionsPanel = document.getElementById('potions-panel');
-            const potionMult = this.getPotionMultiplier();
-            let potionsHtml = '<span class="potions-label">💊 藥水:</span>';
-            let hasPotions = false;
-            
-            Object.entries(this.player.potions).forEach(([type, count]) => {
-                if (count > 0) {
-                    hasPotions = true;
-                    const potion = POTION_TYPES[type];
-                    const healAmount = Math.floor(maxHp * potion.healPercent * potionMult);
-                    potionsHtml += `
-                        <div class="potion-slot" onclick="game.usePotion('${type}')" title="使用後恢復 ${healAmount} 點生命">
-                            ${potion.emoji}
-                            <span class="potion-name">${potion.name}</span>
-                            <span class="potion-heal">+${healAmount}</span>
-                            <span class="potion-count">x${count}</span>
-                        </div>
-                    `;
-                }
-            });
-            
-            if (!hasPotions) {
-                potionsHtml += '<span class="no-potions">無藥水</span>';
-            }
-            potionsPanel.innerHTML = potionsHtml;
-
-            // Buffs Panel
-            const buffsPanel = document.getElementById('buffs-panel');
-            const statNames = { attack: '攻', defense: '防', dodge: '閃', crit: '爆' };
-            
-            let buffHtml = '';
-            const soulBonuses = this.getSoulBonuses();
-            const hasSoulBonus = soulBonuses.vitality > 0 || soulBonuses.strength > 0 || 
-                                soulBonuses.resilience > 0 || soulBonuses.agility > 0 || 
-                                soulBonuses.precision > 0;
-            if (hasSoulBonus) {
-                buffHtml += `<div class="buff soul">💎 靈魂強化</div>`;
-            }
-            
-            buffHtml += this.buffs.map(buff => `
-                <div class="buff ${buff.type}">
-                    ${buff.name} ${buff.value > 0 ? '+' : ''}${buff.value}${statNames[buff.stat]} (${buff.duration})
-                </div>
-            `).join('');
-            
-            if (buffHtml === '') {
-                buffHtml = '<div class="no-buffs">無增益效果</div>';
-            }
-            buffsPanel.innerHTML = buffHtml;
-
-            // Equipment Slots (Wearing)
-            const equipSlots = document.getElementById('equipment-slots');
-            equipSlots.innerHTML = ['weapon', 'armor', 'accessory'].map(slot => {
-                const item = this.player.equipment[slot];
-                if (item) {
-                    return `
-                        <div class="equipment-slot-h ${item.rarity}">
-                            <div class="slot-type">${SLOT_NAMES[slot]}</div>
-                            <div class="slot-name ${item.rarity}">${item.name}</div>
-                            <div class="slot-stats">
-                                <span>⚔️${item.attack}</span>
-                                <span>🛡️${item.defense}</span>
-                                <span>💨${item.dodge}%</span>
-                                <span>💥${item.crit}%</span>
-                                ${item.hp ? `<span>❤️${item.hp}</span>` : ''}
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    return `
-                        <div class="equipment-slot-h">
-                            <div class="slot-type">${SLOT_NAMES[slot]}</div>
-                            <div class="slot-name" style="color: #555">空</div>
-                            <div class="slot-stats" style="color: #444">-</div>
-                        </div>
-                    `;
-                }
-            }).join('');
-
-            // Equipment Bag - 3 Column Grid (20 slots)
-            const equipBagGrid = document.getElementById('equip-bag-grid');
-            document.getElementById('equip-bag-count').textContent = this.player.bag.length;
-            
-            let bagHtml = '';
-            
-            // Render existing items
-            this.player.bag.forEach((item, index) => {
-                bagHtml += `
-                    <div class="bag-slot ${item.rarity}" onclick="game.showEquipCompare(${index})">
-                        <div class="item-type">${SLOT_NAMES[item.type]}</div>
-                        <div class="item-name ${item.rarity}">${item.name}</div>
-                        <div class="item-stats">⚔️${item.attack} 🛡️${item.defense}</div>
-                    </div>
-                `;
-            });
-            
-            // Fill remaining empty slots (up to 20)
-            const emptySlots = 20 - this.player.bag.length;
-            for (let i = 0; i < emptySlots; i++) {
-                bagHtml += `
-                    <div class="bag-slot empty">
-                        <span class="empty-text">空</span>
-                    </div>
-                `;
-            }
-            
-            equipBagGrid.innerHTML = bagHtml;
-
-            // Material Bag Items
-            const materialBagItems = document.getElementById('material-bag-items');
-            let materialBagHtml = '';
-
-            Object.keys(this.player.materials).forEach(key => {
-                const mat = MATERIALS[key];
-                if (!mat) return;
-                const count = this.player.materials[key];
-                const rarityColor = this.getRarityColor(mat.rarity || 'common');
-                const rarityClass = mat.rarity || 'common';
+                const maxHp = this.getMaxHp();
+                const area = this.getCurrentArea();
+                const areaNum = this.getAreaNumber();
+                const floorInArea = this.getFloorInArea();
                 
-                materialBagHtml += `
-                    <div class="material-item ${rarityClass}">
-                        <span style="color: ${rarityColor}">${mat.emoji} ${mat.name}</span>
-                        <span class="material-count">x${count}</span>
+                // Update header
+                document.getElementById('floor-area-icon').textContent = area.icon;
+                document.getElementById('floor-area-name').textContent = area.name;
+                document.getElementById('current-floor').textContent = floorInArea;
+                
+                // Stats
+                document.getElementById('stat-attack').textContent = this.getAttack();
+                document.getElementById('stat-defense').textContent = this.getDefense();
+                document.getElementById('stat-dodge').textContent = `${this.getDodge()}%`;
+                document.getElementById('stat-crit').textContent = `${this.getCrit()}%`;
+                document.getElementById('stat-gold').textContent = this.player.gold;
+
+                // HP Bar
+                const hpPercent = Math.max(0, (this.player.hp / maxHp) * 100);
+                document.getElementById('hp-bar').style.width = `${hpPercent}%`;
+                document.getElementById('hp-bar-text').textContent = `❤️ ${this.player.hp} / ${maxHp}`;
+
+                // Potions Panel
+                const potionsPanel = document.getElementById('potions-panel');
+                const potionMult = this.getPotionMultiplier();
+                let potionsHtml = '<span class="potions-label">💊 藥水:</span>';
+                let hasPotions = false;
+                
+                Object.entries(this.player.potions).forEach(([type, count]) => {
+                    if (count > 0) {
+                        hasPotions = true;
+                        const potion = POTION_TYPES[type];
+                        const healAmount = Math.floor(maxHp * potion.healPercent * potionMult);
+                        potionsHtml += `
+                            <div class="potion-slot" onclick="game.usePotion('${type}')" title="使用後恢復 ${healAmount} 點生命">
+                                ${potion.emoji}
+                                <span class="potion-name">${potion.name}</span>
+                                <span class="potion-heal">+${healAmount}</span>
+                                <span class="potion-count">x${count}</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                if (!hasPotions) {
+                    potionsHtml += '<span class="no-potions">無藥水</span>';
+                }
+                potionsPanel.innerHTML = potionsHtml;
+
+                // Buffs Panel
+                const buffsPanel = document.getElementById('buffs-panel');
+                const statNames = { attack: '攻', defense: '防', dodge: '閃', crit: '爆' };
+                
+                let buffHtml = '';
+                const soulBonuses = this.getSoulBonuses();
+                const hasSoulBonus = soulBonuses.vitality > 0 || soulBonuses.strength > 0 || 
+                                    soulBonuses.resilience > 0 || soulBonuses.agility > 0 || 
+                                    soulBonuses.precision > 0;
+                if (hasSoulBonus) {
+                    buffHtml += `<div class="buff soul">💎 靈魂強化</div>`;
+                }
+                
+                buffHtml += this.buffs.map(buff => `
+                    <div class="buff ${buff.type}">
+                        ${buff.name} ${buff.value > 0 ? '+' : ''}${buff.value}${statNames[buff.stat]} (${buff.duration})
                     </div>
-                `;
-            });
+                `).join('');
+                
+                if (buffHtml === '') {
+                    buffHtml = '<div class="no-buffs">無增益效果</div>';
+                }
+                buffsPanel.innerHTML = buffHtml;
 
-            if (materialBagHtml === '') {
-                materialBagHtml = '<div class="empty-materials">空的</div>';
+                // Equipment Slots (Wearing)
+                const equipSlots = document.getElementById('equipment-slots');
+                equipSlots.innerHTML = ['weapon', 'armor', 'accessory'].map(slot => {
+                    const item = this.player.equipment[slot];
+                    if (item) {
+                        return `
+                            <div class="equipment-slot-h ${item.rarity}">
+                                <div class="slot-type">${SLOT_NAMES[slot]}</div>
+                                <div class="slot-name ${item.rarity}">${item.name}</div>
+                                <div class="slot-stats">
+                                    <span>⚔️${item.attack}</span>
+                                    <span>🛡️${item.defense}</span>
+                                    <span>💨${item.dodge}%</span>
+                                    <span>💥${item.crit}%</span>
+                                    ${item.hp ? `<span>❤️${item.hp}</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="equipment-slot-h">
+                                <div class="slot-type">${SLOT_NAMES[slot]}</div>
+                                <div class="slot-name" style="color: #555">空</div>
+                                <div class="slot-stats" style="color: #444">-</div>
+                            </div>
+                        `;
+                    }
+                }).join('');
+
+                // Equipment Bag - Dynamic (only show items, no empty slots)
+                const equipBagGrid = document.getElementById('equip-bag-grid');
+                const bagSection = document.getElementById('section-bag');
+                document.getElementById('equip-bag-count').textContent = this.player.bag.length;
+                
+                if (this.player.bag.length === 0) {
+                    equipBagGrid.innerHTML = '<div class="bag-empty">背包空空如也</div>';
+                } else {
+                    let bagHtml = '';
+                    this.player.bag.forEach((item, index) => {
+                        bagHtml += `
+                            <div class="bag-slot ${item.rarity}" onclick="game.showEquipCompare(${index})">
+                                <div class="item-type">${SLOT_NAMES[item.type]}</div>
+                                <div class="item-name ${item.rarity}">${item.name}</div>
+                                <div class="item-stats">⚔️${item.attack} 🛡️${item.defense}</div>
+                            </div>
+                        `;
+                    });
+                    equipBagGrid.innerHTML = bagHtml;
+                }
+
+                // Material Bag Items - Dynamic
+                const materialBagItems = document.getElementById('material-bag-items');
+                const matKeys = Object.keys(this.player.materials);
+                
+                if (matKeys.length === 0) {
+                    materialBagItems.innerHTML = '<span class="empty-materials">尚無素材</span>';
+                } else {
+                    let materialBagHtml = '';
+                    matKeys.forEach(key => {
+                        const mat = MATERIALS[key];
+                        if (!mat) return;
+                        const count = this.player.materials[key];
+                        const rarityColor = this.getRarityColor(mat.rarity || 'common');
+                        const rarityClass = mat.rarity || 'common';
+                        
+                        materialBagHtml += `
+                            <div class="material-item ${rarityClass}">
+                                <span style="color: ${rarityColor}">${mat.emoji} ${mat.name}</span>
+                                <span class="material-count">x${count}</span>
+                            </div>
+                        `;
+                    });
+                    materialBagItems.innerHTML = materialBagHtml;
+                }
+
+                this.saveGame();
             }
-            materialBagItems.innerHTML = materialBagHtml;
-
-            this.saveGame();
-        }
 
             // ==================== GAME END ====================
 
