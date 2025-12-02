@@ -3233,9 +3233,6 @@ body {
                 this.player.potions[type]--;
                 this.player.hp = Math.min(this.player.hp + healAmount, maxHp);
                 
-                if (this.lastBattleLog) {
-                    this.lastBattleLog.potionUsed = { type, healAmount };
-                }
 
                 this.updateUI();
                 
@@ -3827,42 +3824,56 @@ body {
                 const typeText = monster.type === 'elite' ? '⭐ 精英' : monster.type === 'boss' ? '👑 首領' : '';
                 const fleeChance = this.getFleeChance();
 
-                let battleLogHtml = '';
-                if (this.lastBattleLog) {
-                    const log = this.lastBattleLog;
-                    battleLogHtml = `<div class="battle-log">`;
-                    
-                    if (log.fleeFailed) {
-                        battleLogHtml += `<div class="battle-log-entry" style="color: #888;">逃跑失敗！</div>`;
-                    }
-                    
-                    if (log.playerDamage > 0) {
-                        if (log.playerCrit) {
-                            battleLogHtml += `<div class="battle-log-entry player-crit">💥 爆擊！你造成 <span class="damage-number">${log.playerDamage}</span> 傷害</div>`;
-                        } else {
-                            battleLogHtml += `<div class="battle-log-entry player-attack">⚔️ 你造成 <span class="damage-number">${log.playerDamage}</span> 傷害</div>`;
-                        }
-                    }
-                    
-                    if (log.playerDodged) {
-                        battleLogHtml += `<div class="battle-log-entry dodge">💨 你閃避了攻擊！</div>`;
-                    } else if (log.monsterDamage > 0) {
-                        battleLogHtml += `<div class="battle-log-entry monster-attack">💢 ${monster.name} 造成 <span class="damage-number">${log.monsterDamage}</span> 傷害</div>`;
-                    }
-                    
-                    if (log.secondChance) {
-                        battleLogHtml += `<div class="battle-log-entry heal">💫 不死決心！你存活了下來！</div>`;
-                    }
-                    
-                    if (log.potionUsed) {
-                        battleLogHtml += `<div class="battle-log-entry heal">💊 使用藥水恢復 <span class="damage-number">${log.potionUsed.healAmount}</span> 生命</div>`;
-                    }
-                    
-                    battleLogHtml += `</div>`;
+                // === 1. 第一次進入戰鬥時強制顯示「遭遇 xxx」 ===
+                if (!this.lastBattleLog) {
+                    this.lastBattleLog = { initialEncounter: true };
                 }
 
+                // === 2. 建立戰鬥 log（最多只保留兩行實質戰鬥紀錄）===
+                let battleLogHtml = '<div class="battle-log">';
+
+                if (this.lastBattleLog.initialEncounter) {
+                    // 第一次進戰鬥，只顯示遭遇訊息（置中、較大字）
+                    battleLogHtml += `
+                        <div class="battle-log-entry" style="font-size:1rem; color:#ffd700; font-weight:bold; margin:8px 0;">
+                            遭遇 ${monster.emoji} ${monster.name}${typeText ? '（' + typeText + '）' : ''}
+                        </div>`;
+                } else {
+                    // 之後的回合，只保留最近兩筆「實質戰鬥紀錄」（絕對不包含喝藥）
+                    const recentLogs = [];
+
+                    if (this.lastBattleLog.playerDamage > 0) {
+                        if (this.lastBattleLog.playerCrit) {
+                            recentLogs.push(`<div class="battle-log-entry player-crit">爆擊！造成 <span class="damage-number">${this.lastBattleLog.playerDamage}</span> 傷害</div>`);
+                        } else {
+                            recentLogs.push(`<div class="battle-log-entry player-attack">造成 <span class="damage-number">${this.lastBattleLog.playerDamage}</span> 傷害</div>`);
+                        }
+                    }
+
+                    if (this.lastBattleLog.playerDodged) {
+                        recentLogs.push(`<div class="battle-log-entry dodge">閃避了攻擊！</div>`);
+                    } else if (this.lastBattleLog.monsterDamage > 0) {
+                        recentLogs.push(`<div class="battle-log-entry monster-attack">${monster.name} 造成 <span class="damage-number">${this.lastBattleLog.monsterDamage}</span> 傷害</div>`);
+                    }
+
+                    if (this.lastBattleLog.fleeFailed) {
+                        recentLogs.push(`<div class="battle-log-entry" style="color:#888;">逃跑失敗！</div>`);
+                    }
+
+                    if (this.lastBattleLog.secondChance) {
+                        recentLogs.push(`<div class="battle-log-entry heal">不死決心！勉強存活</div>`);
+                    }
+
+                    // 只保留最後兩筆
+                    const displayLogs = recentLogs.slice(-2);
+                    battleLogHtml += displayLogs.join('');
+                }
+
+                battleLogHtml += `</div>`;
+
+                // === 其餘原本的對話框（Boss/Mimic）保持不變 ===
                 let bossDialogue = '';
-                if (monster.type === 'boss' && !this.lastBattleLog) {
+                if (monster.type === 'boss' && this.lastBattleLog.initialEncounter) {
                     const bossDialogues = {
                         1: '「哼，你竟敢闖入我的領地！」',
                         2: '「這裡將是你的葬身之地！」',
@@ -3881,30 +3892,25 @@ body {
                             <div class="dialog-box" style="margin-bottom: 10px;">
                                 <div class="dialog-speaker">${monster.name}</div>
                                 <div class="dialog-text">${bossDialogues[areaNum]}</div>
-                            </div>
-                        `;
+                            </div>`;
                     }
                 }
 
-                // Mimic dialogue
                 let mimicDialogue = '';
-                if (this.isMimicFight && !this.lastBattleLog) {
+                if (this.isMimicFight && this.lastBattleLog.initialEncounter) {
                     mimicDialogue = `
                         <div class="dialog-box" style="margin-bottom: 10px; border-left-color: #e94560;">
                             <div class="dialog-speaker" style="color: #e94560;">${monster.name}</div>
                             <div class="dialog-text">「嘿嘿嘿...又有人上當了！」</div>
-                        </div>
-                    `;
+                        </div>`;
                 }
 
-                const eventTitle = this.isMimicFight ? '⚠️ 寶箱怪！' : (monster.type === 'boss' ? '⚠️ 首領戰！' : EVENTS.fight.title);
+                const eventTitle = this.isMimicFight ? '⚠️ 寶箱怪！' : (monster.type === 'boss' ? '⚠️ 首領戰！' : '遭遇怪物！');
 
                 panel.innerHTML = `
                     <div class="event-header">
                         <div class="event-icon">${monster.type === 'boss' ? '👑' : (this.isMimicFight ? '📦' : '⚔️')}</div>
-                        <div>
-                            <div class="event-title">${eventTitle}</div>
-                        </div>
+                        <div><div class="event-title">${eventTitle}</div></div>
                     </div>
                     <div class="event-content">
                         ${bossDialogue}
@@ -3912,7 +3918,9 @@ body {
                         <div class="battle-arena" style="justify-content: center;">
                             <div class="combatant monster" style="max-width: 80%;">
                                 <div class="combatant-sprite" style="font-size: 4rem;">${monster.emoji}</div>
-                                <div class="combatant-name ${monster.type}" style="font-size: 1.1rem;">${typeText} ${monster.name}</div>
+                                <div class="combatant-name ${monster.type}" style="font-size: 1.1rem;">
+                                    ${typeText} ${monster.name}
+                                </div>
                                 <div class="combatant-hp-bar" style="height: 16px; margin-top: 5px;">
                                     <div class="combatant-hp-fill" style="width: ${Math.max(0, (monster.hp / monster.maxHp) * 100)}%"></div>
                                 </div>
