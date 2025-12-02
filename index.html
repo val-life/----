@@ -4124,34 +4124,61 @@
                 const panel = document.getElementById('event-panel');
                 const areaNum = this.getAreaNumber();
                 
-                let itemsHtml = this.merchantItems.map((item, index) => {
-                    if (item.shopType === 'potion') {
-                        return `
-                            <div class="shop-item potion-item ${this.player.gold >= item.price ? '' : 'disabled'}" 
-                                onclick="game.buyItem(${index})">
-                                <div class="shop-item-header">
-                                    <span class="shop-item-name potion">${item.emoji} ${item.name}</span>
-                                    <span class="shop-item-price">💰 ${item.price}</span>
-                                </div>
-                                <div class="shop-item-description">${item.description}</div>
+                // Separate potions and equipment
+                const potionItems = this.merchantItems.filter(item => item.shopType === 'potion');
+                const equipItems = this.merchantItems.filter(item => item.shopType === 'equipment');
+                
+                // Potions - 2 column grid
+                let potionsHtml = '';
+                if (potionItems.length > 0) {
+                    potionsHtml = `
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px;">💊 藥水</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+                                ${potionItems.map((item, index) => {
+                                    const actualIndex = this.merchantItems.indexOf(item);
+                                    return `
+                                        <div class="shop-item potion-item ${this.player.gold >= item.price ? '' : 'disabled'}" 
+                                            onclick="game.buyItem(${actualIndex})" style="padding: 8px;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span style="color: #4ecdc4; font-weight: bold;">${item.emoji} ${item.name}</span>
+                                                <span style="color: #ffd700; font-size: 0.8rem;">💰${item.price}</span>
+                                            </div>
+                                            <div style="font-size: 0.65rem; color: #aaa; margin-top: 2px;">${item.description}</div>
+                                        </div>
+                                    `;
+                                }).join('')}
                             </div>
-                        `;
-                    } else {
-                        return `
-                            <div class="shop-item ${item.rarity} ${this.player.gold >= item.price ? '' : 'disabled'}" 
-                                onclick="game.buyItem(${index})">
-                                <div class="shop-item-header">
-                                    <span class="shop-item-name slot-name ${item.rarity}">${item.name}</span>
-                                    <span class="shop-item-rarity ${item.rarity}">${RARITY_NAMES[item.rarity]}</span>
-                                    <span class="shop-item-price">💰 ${item.price}</span>
-                                </div>
-                                <div class="shop-item-description">
-                                    ${SLOT_NAMES[item.type]} | ⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}% 💥${item.crit}% ${item.hp ? `❤️${item.hp}` : ''}
-                                </div>
+                        </div>
+                    `;
+                }
+                
+                // Equipment for sale - 3 column grid
+                let equipHtml = '';
+                if (equipItems.length > 0) {
+                    equipHtml = `
+                        <div style="margin-bottom: 10px;">
+                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px;">⚔️ 裝備</div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                                ${equipItems.map((item, index) => {
+                                    const actualIndex = this.merchantItems.indexOf(item);
+                                    return `
+                                        <div class="bag-slot ${item.rarity} ${this.player.gold >= item.price ? '' : 'disabled'}" 
+                                            onclick="game.buyItem(${actualIndex})" 
+                                            style="min-height: 70px; cursor: pointer; ${this.player.gold < item.price ? 'opacity: 0.5;' : ''}">
+                                            <div class="item-type">${SLOT_NAMES[item.type]}</div>
+                                            <div class="item-name ${item.rarity}" style="font-size: 0.65rem;">${item.name}</div>
+                                            <div style="font-size: 0.5rem; color: #aaa; margin-top: 2px;">
+                                                ⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}%
+                                            </div>
+                                            <div style="color: #ffd700; font-size: 0.65rem; margin-top: 3px;">💰${item.price}</div>
+                                        </div>
+                                    `;
+                                }).join('')}
                             </div>
-                        `;
-                    }
-                }).join('');
+                        </div>
+                    `;
+                }
 
                 // Materials to sell
                 let materialsHtml = '';
@@ -4160,6 +4187,7 @@
                     let totalValue = 0;
                     matKeys.forEach(key => {
                         const mat = MATERIALS[key];
+                        if (!mat) return;
                         const count = this.player.materials[key];
                         totalValue += Math.floor(mat.basePrice * (1 + areaNum * 0.1) * this.getGoldMultiplier()) * count;
                     });
@@ -4170,7 +4198,7 @@
                                 <span>📦 出售素材</span>
                                 <button class="sell-all-btn" onclick="game.sellAllMaterials()">全部賣出 (💰${totalValue})</button>
                             </div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 4px">
+                            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
                                 ${matKeys.map(key => {
                                     const mat = MATERIALS[key];
                                     if (!mat) return '';
@@ -4180,7 +4208,7 @@
                                     return `
                                         <div class="bag-item material" style="border-left: 2px solid ${rarityColor}; background: rgba(139, 69, 19, 0.2);" onclick="game.sellMaterial('${key}')" title="點擊出售一個 - ${RARITY_NAMES[mat.rarity] || '普通'}">
                                             <span style="color: ${rarityColor}">${mat.emoji} x${count}</span>
-                                            <span style="color: #ffd700; margin-left: 4px">💰${price}</span>
+                                            <span style="color: #ffd700; margin-left: 4px;">💰${price}</span>
                                         </div>
                                     `;
                                 }).join('')}
@@ -4189,17 +4217,17 @@
                     `;
                 }
 
-                // Equipment to sell - with colored boxes
+                // Equipment to sell from bag - 3 column grid
                 let bagSellHtml = '';
                 if (this.player.bag.length > 0) {
                     bagSellHtml = `
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1)">
-                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px">🎒 出售裝備</div>
+                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px;">🎒 出售裝備</div>
                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
                                 ${this.player.bag.map((item, index) => {
                                     const price = Math.floor(this.calculateEquipmentPrice(item) * 0.35);
                                     return `
-                                        <div class="bag-slot ${item.rarity}" onclick="game.sellEquipFromBag(${index})" style="min-height: 50px; cursor: pointer;">
+                                        <div class="bag-slot ${item.rarity}" onclick="game.sellEquipFromBag(${index})" style="min-height: 55px; cursor: pointer;">
                                             <div class="item-type">${SLOT_NAMES[item.type]}</div>
                                             <div class="item-name ${item.rarity}" style="font-size: 0.65rem;">${item.name}</div>
                                             <div style="color: #ffd700; font-size: 0.6rem; margin-top: 2px;">💰${price}</div>
@@ -4214,10 +4242,11 @@
                 panel.innerHTML = `
                     <div class="event-header">
                         <div class="event-icon">🏪</div>
-                        <div class="event-title">神秘商人 - 「嘿嘿，勇敢的騎士，需要些什麼嗎？」</div>
+                        <div class="event-title">神秘商人 - 「需要些什麼嗎？」</div>
                     </div>
                     <div class="event-content">
-                        <div class="shop-items">${itemsHtml}</div>
+                        ${potionsHtml}
+                        ${equipHtml}
                         ${materialsHtml}
                         ${bagSellHtml}
                     </div>
