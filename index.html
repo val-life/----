@@ -813,12 +813,12 @@ body {
     border-radius: 6px;
     padding: 8px;
     margin-top: 8px;
-    height: 60px; /* ✅ Fixed height instead of min-height */
+    height: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* Prevent content overflow */
+    overflow: hidden;
 }
 
 .battle-log-content {
@@ -830,7 +830,6 @@ body {
     gap: 2px;
 }
 
-/* When only 1 line, ensure it's centered */
 .battle-log-content.single-line {
     min-height: 40px;
     justify-content: center;
@@ -844,7 +843,7 @@ body {
     padding: 3px 0;
     font-size: 0.8rem;
     line-height: 1.4;
-    height: 24px; /* ✅ Fixed height per line */
+    height: 24px;
     flex-shrink: 0;
 }
 
@@ -1060,6 +1059,116 @@ body {
 .sell-all-btn:active {
     transform: scale(0.98);
 }
+
+/* ==================== MERCHANT EQUIPMENT GRID ==================== */
+.merchant-equip-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.merchant-equip-card {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    padding: 8px;
+    border: 2px solid #444;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.merchant-equip-card:active:not(.disabled) {
+    transform: scale(0.98);
+    background: rgba(233, 69, 96, 0.2);
+}
+
+.merchant-equip-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.merchant-equip-card.common { border-color: #888; }
+.merchant-equip-card.uncommon { border-color: #4ecdc4; }
+.merchant-equip-card.rare { border-color: #667eea; }
+.merchant-equip-card.epic { border-color: #a855f7; }
+.merchant-equip-card.legendary { border-color: #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
+
+.merchant-equip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.merchant-equip-type {
+    font-size: 0.55rem;
+    color: #888;
+    background: rgba(255,255,255,0.1);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+.merchant-equip-rarity {
+    font-size: 0.5rem;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.merchant-equip-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    gap: 4px;
+}
+
+.merchant-equip-name {
+    font-weight: bold;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.merchant-equip-name.common { color: #888; }
+.merchant-equip-name.uncommon { color: #4ecdc4; }
+.merchant-equip-name.rare { color: #667eea; }
+.merchant-equip-name.epic { color: #a855f7; }
+.merchant-equip-name.legendary { color: #ffd700; }
+
+.merchant-equip-price {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+
+.merchant-equip-price.sell {
+    color: #4ecdc4;
+}
+
+.merchant-equip-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+
+.merchant-equip-stats .stat-tag {
+    font-size: 0.6rem;
+    color: #ccc;
+    background: rgba(255,255,255,0.08);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.merchant-equip-stats .stat-tag.attack { color: #ff6b35; }
+.merchant-equip-stats .stat-tag.defense { color: #4ecdc4; }
+.merchant-equip-stats .stat-tag.dodge { color: #a8e6cf; }
+.merchant-equip-stats .stat-tag.crit { color: #f39c12; }
+.merchant-equip-stats .stat-tag.hp { color: #e94560; }
 
 /* ==================== BUTTONS ==================== */
 .btn {
@@ -2023,9 +2132,9 @@ body {
         };
 
         const EVENTS = {
-            fight: { weight: 60, icon: '⚔️', title: '遭遇怪物！' },
+            fight: { weight: 10, icon: '⚔️', title: '遭遇怪物！' },
             treasure: { weight: 10, icon: '💎', title: '發現寶箱！' },
-            merchant: { weight: 10, icon: '🏪', title: '流浪商人' },
+            merchant: { weight: 60, icon: '🏪', title: '流浪商人' },
             event: { weight: 15, icon: '❓', title: '神秘事件' },
             rest: { weight: 5, icon: '🏕️', title: '安全區域' }
         };
@@ -3671,9 +3780,9 @@ body {
 
                 const equipCount = 2 + Math.floor(Math.random() * 3);
                 for (let i = 0; i < equipCount; i++) {
-                    //const rarityBoost = areaNum > 6 ? 0.25 : (areaNum > 3 ? 0.15 : 0.05);
-                    //const equip = this.generateEquipmentDrop(rarityBoost);
-                    const equip = this.generateEquipmentDrop(0); 
+                    const rarityBoost = areaNum > 6 ? 0.25 : (areaNum > 3 ? 0.15 : 0.05);
+                    const equip = this.generateEquipmentDrop(rarityBoost);
+                    //const equip = this.generateEquipmentDrop(0); 
                     equip.price = this.calculateEquipmentPrice(equip);
                     this.merchantItems.push({
                         shopType: 'equipment',
@@ -4112,12 +4221,11 @@ body {
                 const potionItems = this.merchantItems.filter(item => item.shopType === 'potion');
                 const equipItems = this.merchantItems.filter(item => item.shopType === 'equipment');
                 
-                // Potions - 2 column grid
+                // Potions - 2 column grid (no label)
                 let potionsHtml = '';
                 if (potionItems.length > 0) {
                     potionsHtml = `
-                        <div style="margin-bottom: 10px;">
-                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px;">💊 藥水</div>
+                        <div style="margin-bottom: 8px;">
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
                                 ${potionItems.map((item, index) => {
                                     const actualIndex = this.merchantItems.indexOf(item);
@@ -4137,25 +4245,38 @@ body {
                     `;
                 }
                 
-                // Equipment for sale - 3 column grid
+                // Equipment for sale - 2x2 grid, compact cards (no label)
                 let equipHtml = '';
                 if (equipItems.length > 0) {
                     equipHtml = `
-                        <div style="margin-bottom: 10px;">
-                            <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px;">⚔️ 裝備</div>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                        <div style="margin-bottom: 8px;">
+                            <div class="merchant-equip-grid">
                                 ${equipItems.map((item, index) => {
                                     const actualIndex = this.merchantItems.indexOf(item);
+                                    const canAfford = this.player.gold >= item.price;
+                                    
+                                    // Build stats array - only show non-zero stats
+                                    let statsHtml = '';
+                                    if (item.attack > 0) statsHtml += `<span class="stat-tag attack">⚔️${item.attack}</span>`;
+                                    if (item.defense > 0) statsHtml += `<span class="stat-tag defense">🛡️${item.defense}</span>`;
+                                    if (item.dodge > 0) statsHtml += `<span class="stat-tag dodge">💨${item.dodge}%</span>`;
+                                    if (item.crit > 0) statsHtml += `<span class="stat-tag crit">💥${item.crit}%</span>`;
+                                    if (item.hp && item.hp > 0) statsHtml += `<span class="stat-tag hp">❤️${item.hp}</span>`;
+                                    
                                     return `
-                                        <div class="bag-slot ${item.rarity} ${this.player.gold >= item.price ? '' : 'disabled'}" 
-                                            onclick="game.buyItem(${actualIndex})" 
-                                            style="min-height: 70px; cursor: pointer; ${this.player.gold < item.price ? 'opacity: 0.5;' : ''}">
-                                            <div class="item-type">${SLOT_NAMES[item.type]}</div>
-                                            <div class="item-name ${item.rarity}" style="font-size: 0.65rem;">${item.name}</div>
-                                            <div style="font-size: 0.5rem; color: #aaa; margin-top: 2px;">
-                                                ⚔️${item.attack} 🛡️${item.defense} 💨${item.dodge}%
+                                        <div class="merchant-equip-card ${item.rarity} ${canAfford ? '' : 'disabled'}" 
+                                            onclick="game.buyItem(${actualIndex})">
+                                            <div class="merchant-equip-header">
+                                                <span class="merchant-equip-type">${SLOT_NAMES[item.type]}</span>
+                                                <span class="merchant-equip-rarity shop-item-rarity ${item.rarity}">${RARITY_NAMES[item.rarity]}</span>
                                             </div>
-                                            <div style="color: #ffd700; font-size: 0.65rem; margin-top: 3px;">💰${item.price}</div>
+                                            <div class="merchant-equip-title-row">
+                                                <span class="merchant-equip-name ${item.rarity}">${item.name}</span>
+                                                <span class="merchant-equip-price">💰${item.price}</span>
+                                            </div>
+                                            <div class="merchant-equip-stats">
+                                                ${statsHtml}
+                                            </div>
                                         </div>
                                     `;
                                 }).join('')}
@@ -4177,7 +4298,7 @@ body {
                     });
 
                     materialsHtml = `
-                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1)">
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1)">
                             <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
                                 <span>📦 出售素材</span>
                                 <button class="sell-all-btn" onclick="game.sellAllMaterials()">全部賣出 (💰${totalValue})</button>
@@ -4201,20 +4322,37 @@ body {
                     `;
                 }
 
-                // Equipment to sell from bag - 3 column grid
+                // Equipment to sell from bag - 2x2 grid style (no label)
                 let bagSellHtml = '';
                 if (this.player.bag.length > 0) {
                     bagSellHtml = `
-                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1)">
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1)">
                             <div style="font-size: 0.75rem; color: #888; margin-bottom: 6px;">🎒 出售裝備</div>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                            <div class="merchant-equip-grid">
                                 ${this.player.bag.map((item, index) => {
                                     const price = Math.floor(this.calculateEquipmentPrice(item) * 0.35);
+                                    
+                                    // Build stats array - only show non-zero stats
+                                    let statsHtml = '';
+                                    if (item.attack > 0) statsHtml += `<span class="stat-tag attack">⚔️${item.attack}</span>`;
+                                    if (item.defense > 0) statsHtml += `<span class="stat-tag defense">🛡️${item.defense}</span>`;
+                                    if (item.dodge > 0) statsHtml += `<span class="stat-tag dodge">💨${item.dodge}%</span>`;
+                                    if (item.crit > 0) statsHtml += `<span class="stat-tag crit">💥${item.crit}%</span>`;
+                                    if (item.hp && item.hp > 0) statsHtml += `<span class="stat-tag hp">❤️${item.hp}</span>`;
+                                    
                                     return `
-                                        <div class="bag-slot ${item.rarity}" onclick="game.sellEquipFromBag(${index})" style="min-height: 55px; cursor: pointer;">
-                                            <div class="item-type">${SLOT_NAMES[item.type]}</div>
-                                            <div class="item-name ${item.rarity}" style="font-size: 0.65rem;">${item.name}</div>
-                                            <div style="color: #ffd700; font-size: 0.6rem; margin-top: 2px;">💰${price}</div>
+                                        <div class="merchant-equip-card ${item.rarity}" onclick="game.sellEquipFromBag(${index})">
+                                            <div class="merchant-equip-header">
+                                                <span class="merchant-equip-type">${SLOT_NAMES[item.type]}</span>
+                                                <span class="merchant-equip-rarity shop-item-rarity ${item.rarity}">${RARITY_NAMES[item.rarity]}</span>
+                                            </div>
+                                            <div class="merchant-equip-title-row">
+                                                <span class="merchant-equip-name ${item.rarity}">${item.name}</span>
+                                                <span class="merchant-equip-price sell">💰${price}</span>
+                                            </div>
+                                            <div class="merchant-equip-stats">
+                                                ${statsHtml}
+                                            </div>
                                         </div>
                                     `;
                                 }).join('')}
@@ -4226,7 +4364,7 @@ body {
                 panel.innerHTML = `
                     <div class="event-header">
                         <div class="event-icon">🏪</div>
-                        <div class="event-title">神秘商人 - 「需要些什麼嗎？」</div>
+                        <div class="event-title">神秘商人</div>
                     </div>
                     <div class="event-content">
                         ${potionsHtml}
