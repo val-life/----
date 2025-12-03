@@ -3856,22 +3856,18 @@ body {
                 const typeText = monster.type === 'elite' ? '⭐ 精英' : monster.type === 'boss' ? '👑 首領' : '';
                 const fleeChance = this.getFleeChance();
 
-                // === 1. 第一次進入戰鬥時強制顯示「遭遇 xxx」 ===
                 if (!this.lastBattleLog) {
                     this.lastBattleLog = { initialEncounter: true };
                 }
 
-                // === 2. 建立戰鬥 log（最多只保留兩行實質戰鬥紀錄）===
                 let battleLogHtml = '<div class="battle-log">';
 
                 if (this.lastBattleLog.initialEncounter) {
-                    // 第一次進戰鬥，只顯示遭遇訊息（置中、較大字）
                     battleLogHtml += `
                         <div class="battle-log-entry" style="font-size:1rem; color:#ffd700; font-weight:bold; margin:8px 0;">
                             遭遇 ${monster.emoji} ${monster.name}${typeText ? '（' + typeText + '）' : ''}
                         </div>`;
                 } else {
-                    // 之後的回合，只保留最近兩筆「實質戰鬥紀錄」（絕對不包含喝藥）
                     const recentLogs = [];
 
                     if (this.lastBattleLog.playerDamage > 0) {
@@ -3896,14 +3892,12 @@ body {
                         recentLogs.push(`<div class="battle-log-entry heal">不死決心！勉強存活</div>`);
                     }
 
-                    // 只保留最後兩筆
                     const displayLogs = recentLogs.slice(-2);
                     battleLogHtml += displayLogs.join('');
                 }
 
                 battleLogHtml += `</div>`;
 
-                // === 其餘原本的對話框（Boss/Mimic）保持不變 ===
                 let bossDialogue = '';
                 if (monster.type === 'boss' && this.lastBattleLog.initialEncounter) {
                     const bossDialogues = {
