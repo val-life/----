@@ -813,6 +813,27 @@ body {
     border-radius: 6px;
     padding: 8px;
     margin-top: 8px;
+    height: 60px; /* ✅ Fixed height instead of min-height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.battle-log-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 2px;
+}
+
+/* When only 1 line, ensure it's centered */
+.battle-log-content.single-line {
+    min-height: 40px;
+    justify-content: center;
 }
 
 .battle-log-entry {
@@ -822,6 +843,9 @@ body {
     gap: 6px;
     padding: 3px 0;
     font-size: 0.8rem;
+    line-height: 1.4;
+    height: 24px; /* ✅ Fixed height per line */
+    flex-shrink: 0;
 }
 
 .battle-log-entry.player-attack { color: #4ecdc4; }
@@ -3860,43 +3884,51 @@ body {
                     this.lastBattleLog = { initialEncounter: true };
                 }
 
-                let battleLogHtml = '<div class="battle-log">';
+                let battleLogEntries = [];
 
                 if (this.lastBattleLog.initialEncounter) {
-                    battleLogHtml += `
-                        <div class="battle-log-entry" style="font-size:1rem; color:#ffd700; font-weight:bold; margin:8px 0;">
+                    // 第一次進戰鬥，只顯示遭遇訊息
+                    battleLogEntries.push(`
+                        <div class="battle-log-entry" style="font-size:1rem; color:#ffd700; font-weight:bold;">
                             遭遇 ${monster.emoji} ${monster.name}${typeText ? '（' + typeText + '）' : ''}
-                        </div>`;
+                        </div>
+                    `);
                 } else {
-                    const recentLogs = [];
-
+                    // 之後的回合，只保留最近兩筆「實質戰鬥紀錄」
                     if (this.lastBattleLog.playerDamage > 0) {
                         if (this.lastBattleLog.playerCrit) {
-                            recentLogs.push(`<div class="battle-log-entry player-crit">爆擊！造成 <span class="damage-number">${this.lastBattleLog.playerDamage}</span> 傷害</div>`);
+                            battleLogEntries.push(`<div class="battle-log-entry player-crit">爆擊！造成 <span class="damage-number">${this.lastBattleLog.playerDamage}</span> 傷害</div>`);
                         } else {
-                            recentLogs.push(`<div class="battle-log-entry player-attack">造成 <span class="damage-number">${this.lastBattleLog.playerDamage}</span> 傷害</div>`);
+                            battleLogEntries.push(`<div class="battle-log-entry player-attack">造成 <span class="damage-number">${this.lastBattleLog.playerDamage}</span> 傷害</div>`);
                         }
                     }
 
                     if (this.lastBattleLog.playerDodged) {
-                        recentLogs.push(`<div class="battle-log-entry dodge">閃避了攻擊！</div>`);
+                        battleLogEntries.push(`<div class="battle-log-entry dodge">閃避了攻擊！</div>`);
                     } else if (this.lastBattleLog.monsterDamage > 0) {
-                        recentLogs.push(`<div class="battle-log-entry monster-attack">${monster.name} 造成 <span class="damage-number">${this.lastBattleLog.monsterDamage}</span> 傷害</div>`);
+                        battleLogEntries.push(`<div class="battle-log-entry monster-attack">${monster.name} 造成 <span class="damage-number">${this.lastBattleLog.monsterDamage}</span> 傷害</div>`);
                     }
 
                     if (this.lastBattleLog.fleeFailed) {
-                        recentLogs.push(`<div class="battle-log-entry" style="color:#888;">逃跑失敗！</div>`);
+                        battleLogEntries.push(`<div class="battle-log-entry" style="color:#888;">逃跑失敗！</div>`);
                     }
 
                     if (this.lastBattleLog.secondChance) {
-                        recentLogs.push(`<div class="battle-log-entry heal">不死決心！勉強存活</div>`);
+                        battleLogEntries.push(`<div class="battle-log-entry heal">不死決心！勉強存活</div>`);
                     }
 
-                    const displayLogs = recentLogs.slice(-2);
-                    battleLogHtml += displayLogs.join('');
+                    // 只保留最後兩筆
+                    battleLogEntries = battleLogEntries.slice(-2);
                 }
 
-                battleLogHtml += `</div>`;
+                // 建立固定高度的 log 容器
+                const battleLogHtml = `
+                    <div class="battle-log">
+                        <div class="battle-log-content ${battleLogEntries.length === 1 ? 'single-line' : ''}">
+                            ${battleLogEntries.join('')}
+                        </div>
+                    </div>
+                `;
 
                 let bossDialogue = '';
                 if (monster.type === 'boss' && this.lastBattleLog.initialEncounter) {
