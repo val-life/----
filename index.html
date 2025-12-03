@@ -1744,8 +1744,19 @@ body {
             <div class="equip-compare-container" id="equip-compare-container"></div>
             <div class="equip-compare-buttons">
                 <button class="btn btn-primary btn-small" id="equip-confirm-btn">裝備</button>
-                <button class="btn btn-danger btn-small" id="equip-discard-btn">丟棄</button>
                 <button class="btn btn-secondary btn-small" onclick="game.closeEquipCompare()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unequip Confirm Modal -->
+    <div class="equip-compare-modal hidden" id="unequip-modal">
+        <div class="equip-compare-content">
+            <div class="equip-compare-title">🔄 卸下裝備</div>
+            <div id="unequip-modal-content"></div>
+            <div class="equip-compare-buttons">
+                <button class="btn btn-warning btn-small" id="unequip-confirm-btn">卸下</button>
+                <button class="btn btn-secondary btn-small" onclick="game.closeUnequipModal()">取消</button>
             </div>
         </div>
     </div>
@@ -2545,6 +2556,7 @@ body {
                 this.soulData = loadSoulData();
                 this.resetRunState();
                 this.updateMenuSoulDisplay();
+                this.selectedUnequipSlot = null;
 
                 // ✅ Only initialize once in constructor - no need to reset per run
                 this.combatHeightSet = false;
@@ -3509,11 +3521,11 @@ body {
                         </div>
                         ${currentItem ? `
                             <div class="equip-card-stats">
-                                <div class="stat-line"><span>⚔️ 攻擊</span><span>${currentStats.attack}</span></div>
-                                <div class="stat-line"><span>🛡️ 防禦</span><span>${currentStats.defense}</span></div>
-                                <div class="stat-line"><span>💨 閃避</span><span>${currentStats.dodge}%</span></div>
-                                <div class="stat-line"><span>💥 爆擊</span><span>${currentStats.crit}%</span></div>
-                                ${currentStats.hp ? `<div class="stat-line"><span>❤️ 生命</span><span>${currentStats.hp}</span></div>` : ''}
+                                ${currentStats.attack > 0 ? `<div class="stat-line"><span>⚔️ 攻擊</span><span>${currentStats.attack}</span></div>` : ''}
+                                ${currentStats.defense > 0 ? `<div class="stat-line"><span>🛡️ 防禦</span><span>${currentStats.defense}</span></div>` : ''}
+                                ${currentStats.dodge > 0 ? `<div class="stat-line"><span>💨 閃避</span><span>${currentStats.dodge}%</span></div>` : ''}
+                                ${currentStats.crit > 0 ? `<div class="stat-line"><span>💥 爆擊</span><span>${currentStats.crit}%</span></div>` : ''}
+                                ${currentStats.hp > 0 ? `<div class="stat-line"><span>❤️ 生命</span><span>${currentStats.hp}</span></div>` : ''}
                             </div>
                         ` : '<div class="equip-card-stats" style="color:#555">空</div>'}
                     </div>
@@ -3524,26 +3536,34 @@ body {
                             ${newItem.name}
                         </div>
                         <div class="equip-card-stats">
-                            <div class="stat-line">
-                                <span>⚔️ 攻擊</span>
-                                <span>${newItem.attack} ${getStatChange('attack', newItem.attack, currentStats.attack)}</span>
-                            </div>
-                            <div class="stat-line">
-                                <span>🛡️ 防禦</span>
-                                <span>${newItem.defense} ${getStatChange('defense', newItem.defense, currentStats.defense)}</span>
-                            </div>
-                            <div class="stat-line">
-                                <span>💨 閃避</span>
-                                <span>${newItem.dodge}% ${getStatChange('dodge', newItem.dodge, currentStats.dodge)}</span>
-                            </div>
-                            <div class="stat-line">
-                                <span>💥 爆擊</span>
-                                <span>${newItem.crit}% ${getStatChange('crit', newItem.crit, currentStats.crit)}</span>
-                            </div>
-                            ${newItem.hp ? `
+                            ${newItem.attack > 0 || currentStats.attack > 0 ? `
+                                <div class="stat-line">
+                                    <span>⚔️ 攻擊</span>
+                                    <span>${newItem.attack} ${getStatChange('attack', newItem.attack, currentStats.attack)}</span>
+                                </div>
+                            ` : ''}
+                            ${newItem.defense > 0 || currentStats.defense > 0 ? `
+                                <div class="stat-line">
+                                    <span>🛡️ 防禦</span>
+                                    <span>${newItem.defense} ${getStatChange('defense', newItem.defense, currentStats.defense)}</span>
+                                </div>
+                            ` : ''}
+                            ${newItem.dodge > 0 || currentStats.dodge > 0 ? `
+                                <div class="stat-line">
+                                    <span>💨 閃避</span>
+                                    <span>${newItem.dodge}% ${getStatChange('dodge', newItem.dodge, currentStats.dodge)}</span>
+                                </div>
+                            ` : ''}
+                            ${newItem.crit > 0 || currentStats.crit > 0 ? `
+                                <div class="stat-line">
+                                    <span>💥 爆擊</span>
+                                    <span>${newItem.crit}% ${getStatChange('crit', newItem.crit, currentStats.crit)}</span>
+                                </div>
+                            ` : ''}
+                            ${(newItem.hp && newItem.hp > 0) || currentStats.hp > 0 ? `
                                 <div class="stat-line">
                                     <span>❤️ 生命</span>
-                                    <span>${newItem.hp} ${getStatChange('hp', newItem.hp, currentStats.hp)}</span>
+                                    <span>${newItem.hp || 0} ${getStatChange('hp', newItem.hp || 0, currentStats.hp)}</span>
                                 </div>
                             ` : ''}
                         </div>
@@ -3552,11 +3572,6 @@ body {
 
                 document.getElementById('equip-confirm-btn').onclick = () => {
                     this.equipFromBag(this.selectedBagIndex);
-                    this.closeEquipCompare();
-                };
-
-                document.getElementById('equip-discard-btn').onclick = () => {
-                    this.discardFromBag(this.selectedBagIndex);
                     this.closeEquipCompare();
                 };
 
@@ -3571,42 +3586,134 @@ body {
             equipFromBag(index) {
                 if (index < 0 || index >= this.player.bag.length) return;
                 
-                const item = this.player.bag[index];
-                const currentEquip = this.player.equipment[item.type];
+                const newItem = this.player.bag[index];
+                const oldItem = this.player.equipment[newItem.type];
                 
                 const oldMaxHp = this.getMaxHp();
+                const oldHp = this.player.hp;
                 
-                this.player.equipment[item.type] = item;
+                // Calculate HP difference
+                const newItemHp = newItem.hp || 0;
+                const oldItemHp = oldItem ? (oldItem.hp || 0) : 0;
+                const hpDiff = newItemHp - oldItemHp;
+                
+                // Swap equipment
+                this.player.equipment[newItem.type] = newItem;
                 this.player.bag.splice(index, 1);
                 
-                if (currentEquip && this.player.bag.length < 20) {
-                    this.player.bag.push(currentEquip);
+                if (oldItem && this.player.bag.length < 20) {
+                    this.player.bag.push(oldItem);
                 }
                 
-                const newMaxHp = this.getMaxHp();
-                if (newMaxHp > oldMaxHp) {
-                    this.player.hp += (newMaxHp - oldMaxHp);
-                } else if (this.player.hp > newMaxHp) {
-                    this.player.hp = newMaxHp;
+                // Adjust HP based on difference
+                if (hpDiff > 0) {
+                    // New item has more HP - add the difference
+                    this.player.hp = oldHp + hpDiff;
+                } else if (hpDiff < 0) {
+                    // New item has less HP - subtract the difference
+                    this.player.hp = Math.max(1, oldHp + hpDiff); // hpDiff is negative
                 }
+                
+                // Safety cap: never exceed new max
+                const newMaxHp = this.getMaxHp();
+                this.player.hp = Math.min(this.player.hp, newMaxHp);
                 
                 this.updateUI();
             }
 
-            discardFromBag(index) {
-                if (index < 0 || index >= this.player.bag.length) return;
+            showUnequipModal(slot) {
+                const item = this.player.equipment[slot];
+                if (!item) return;
                 
-                const item = this.player.bag[index];
+                this.selectedUnequipSlot = slot;
                 
-                // ✅ FIX: Add confirmation for rare+ equipment
-                if (item.rarity === 'rare' || item.rarity === 'epic' || item.rarity === 'legendary') {
-                    const rarityName = RARITY_NAMES[item.rarity];
-                    if (!confirm(`⚠️ 確定要丟棄【${rarityName}】${item.name} 嗎？\n\n這個動作無法復原！`)) {
-                        return;
-                    }
+                const container = document.getElementById('unequip-modal-content');
+                
+                // Build stats - only show non-zero
+                let statsHtml = '';
+                if (item.attack > 0) statsHtml += `<div class="stat-line"><span>⚔️ 攻擊</span><span style="color:#ff6b35">-${item.attack}</span></div>`;
+                if (item.defense > 0) statsHtml += `<div class="stat-line"><span>🛡️ 防禦</span><span style="color:#4ecdc4">-${item.defense}</span></div>`;
+                if (item.dodge > 0) statsHtml += `<div class="stat-line"><span>💨 閃避</span><span style="color:#a8e6cf">-${item.dodge}%</span></div>`;
+                if (item.crit > 0) statsHtml += `<div class="stat-line"><span>💥 爆擊</span><span style="color:#f39c12">-${item.crit}%</span></div>`;
+                if (item.hp && item.hp > 0) statsHtml += `<div class="stat-line"><span>❤️ 生命</span><span style="color:#e94560">-${item.hp}</span></div>`;
+                
+                const bagFull = this.player.bag.length >= 20;
+                
+                container.innerHTML = `
+                    <div class="equip-card new ${item.rarity}" style="margin: 15px auto; max-width: 200px;">
+                        <div class="equip-card-label">${SLOT_NAMES[slot]}</div>
+                        <div class="equip-card-name" style="color: ${this.getRarityColor(item.rarity)}">
+                            ${item.name}
+                        </div>
+                        <div class="equip-card-stats">
+                            ${statsHtml}
+                        </div>
+                    </div>
+                    ${bagFull ? `
+                        <div style="color: #e94560; text-align: center; font-size: 0.85rem; margin-top: 10px;">
+                            ⚠️ 背包已滿，無法卸下裝備！
+                        </div>
+                    ` : `
+                        <div style="color: #aaa; text-align: center; font-size: 0.8rem; margin-top: 10px;">
+                            卸下後將移至背包
+                        </div>
+                    `}
+                `;
+                
+                const confirmBtn = document.getElementById('unequip-confirm-btn');
+                if (bagFull) {
+                    confirmBtn.disabled = true;
+                    confirmBtn.style.opacity = '0.5';
+                } else {
+                    confirmBtn.disabled = false;
+                    confirmBtn.style.opacity = '1';
+                    confirmBtn.onclick = () => {
+                        this.unequipItem(this.selectedUnequipSlot);
+                        this.closeUnequipModal();
+                    };
                 }
                 
-                this.player.bag.splice(index, 1);
+                document.getElementById('unequip-modal').classList.remove('hidden');
+            }
+
+            closeUnequipModal() {
+                document.getElementById('unequip-modal').classList.add('hidden');
+                this.selectedUnequipSlot = null;
+            }
+
+            unequipItem(slot) {
+                const item = this.player.equipment[slot];
+                if (!item) return;
+                
+                if (this.player.bag.length >= 20) {
+                    return;
+                }
+                
+                // Calculate HP from this item BEFORE removing
+                const itemHp = item.hp || 0;
+                const oldMaxHp = this.getMaxHp();
+                const oldHp = this.player.hp;
+                
+                // Move to bag
+                this.player.bag.push(item);
+                this.player.equipment[slot] = null;
+                
+                // Calculate new max HP AFTER removing
+                const newMaxHp = this.getMaxHp();
+                
+                // Adjust current HP
+                if (newMaxHp < oldMaxHp && itemHp > 0) {
+                    // Option 1: Proportional reduction
+                    // const hpRatio = oldHp / oldMaxHp;
+                    // this.player.hp = Math.floor(hpRatio * newMaxHp);
+                    
+                    // Option 2: Simply subtract the item's HP bonus (more intuitive)
+                    this.player.hp = Math.max(1, oldHp - itemHp);
+                }
+                
+                // Safety cap: never exceed new max
+                this.player.hp = Math.min(this.player.hp, newMaxHp);
+                
                 this.updateUI();
             }
 
@@ -4486,7 +4593,7 @@ body {
                         if (item.hp && item.hp > 0) statsHtml += `<span>❤️${item.hp}</span>`;
                         
                         return `
-                            <div class="equipment-slot-h ${item.rarity}">
+                            <div class="equipment-slot-h ${item.rarity}" onclick="game.showUnequipModal('${slot}')" style="cursor: pointer;">
                                 <div class="slot-name ${item.rarity}">${item.name}</div>
                                 <div class="slot-stats">
                                     ${statsHtml}
