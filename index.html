@@ -1094,40 +1094,26 @@ body {
 .merchant-equip-card.epic { border-color: #a855f7; }
 .merchant-equip-card.legendary { border-color: #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
 
-.merchant-equip-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-}
-
-.merchant-equip-type {
-    font-size: 0.55rem;
-    color: #888;
-    background: rgba(255,255,255,0.1);
-    padding: 1px 5px;
-    border-radius: 3px;
-}
-
-.merchant-equip-rarity {
-    font-size: 0.5rem;
-    padding: 1px 4px;
-    border-radius: 3px;
-}
-
 .merchant-equip-title-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
     gap: 4px;
+}
+
+.merchant-equip-name-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
 }
 
 .merchant-equip-name {
     font-weight: bold;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     line-height: 1.2;
-    flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1139,11 +1125,19 @@ body {
 .merchant-equip-name.epic { color: #a855f7; }
 .merchant-equip-name.legendary { color: #ffd700; }
 
+.merchant-equip-rarity {
+    font-size: 0.5rem;
+    padding: 1px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
 .merchant-equip-price {
     color: #ffd700;
     font-weight: bold;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .merchant-equip-price.sell {
@@ -2132,9 +2126,9 @@ body {
         };
 
         const EVENTS = {
-            fight: { weight: 10, icon: '⚔️', title: '遭遇怪物！' },
+            fight: { weight: 60, icon: '⚔️', title: '遭遇怪物！' },
             treasure: { weight: 10, icon: '💎', title: '發現寶箱！' },
-            merchant: { weight: 60, icon: '🏪', title: '流浪商人' },
+            merchant: { weight: 10, icon: '🏪', title: '流浪商人' },
             event: { weight: 15, icon: '❓', title: '神秘事件' },
             rest: { weight: 5, icon: '🏕️', title: '安全區域' }
         };
@@ -4221,7 +4215,7 @@ body {
                 const potionItems = this.merchantItems.filter(item => item.shopType === 'potion');
                 const equipItems = this.merchantItems.filter(item => item.shopType === 'equipment');
                 
-                // Potions - 2 column grid (no label)
+                // Potions - 2 column grid
                 let potionsHtml = '';
                 if (potionItems.length > 0) {
                     potionsHtml = `
@@ -4245,7 +4239,7 @@ body {
                     `;
                 }
                 
-                // Equipment for sale - 2x2 grid, compact cards (no label)
+                // Equipment for sale - 2x2 grid, compact cards
                 let equipHtml = '';
                 if (equipItems.length > 0) {
                     equipHtml = `
@@ -4266,12 +4260,11 @@ body {
                                     return `
                                         <div class="merchant-equip-card ${item.rarity} ${canAfford ? '' : 'disabled'}" 
                                             onclick="game.buyItem(${actualIndex})">
-                                            <div class="merchant-equip-header">
-                                                <span class="merchant-equip-type">${SLOT_NAMES[item.type]}</span>
-                                                <span class="merchant-equip-rarity shop-item-rarity ${item.rarity}">${RARITY_NAMES[item.rarity]}</span>
-                                            </div>
                                             <div class="merchant-equip-title-row">
-                                                <span class="merchant-equip-name ${item.rarity}">${item.name}</span>
+                                                <div class="merchant-equip-name-group">
+                                                    <span class="merchant-equip-name ${item.rarity}">${item.name}</span>
+                                                    <span class="merchant-equip-rarity shop-item-rarity ${item.rarity}">${RARITY_NAMES[item.rarity]}</span>
+                                                </div>
                                                 <span class="merchant-equip-price">💰${item.price}</span>
                                             </div>
                                             <div class="merchant-equip-stats">
@@ -4322,7 +4315,7 @@ body {
                     `;
                 }
 
-                // Equipment to sell from bag - 2x2 grid style (no label)
+                // Equipment to sell from bag - 2x2 grid style
                 let bagSellHtml = '';
                 if (this.player.bag.length > 0) {
                     bagSellHtml = `
@@ -4342,12 +4335,11 @@ body {
                                     
                                     return `
                                         <div class="merchant-equip-card ${item.rarity}" onclick="game.sellEquipFromBag(${index})">
-                                            <div class="merchant-equip-header">
-                                                <span class="merchant-equip-type">${SLOT_NAMES[item.type]}</span>
-                                                <span class="merchant-equip-rarity shop-item-rarity ${item.rarity}">${RARITY_NAMES[item.rarity]}</span>
-                                            </div>
                                             <div class="merchant-equip-title-row">
-                                                <span class="merchant-equip-name ${item.rarity}">${item.name}</span>
+                                                <div class="merchant-equip-name-group">
+                                                    <span class="merchant-equip-name ${item.rarity}">${item.name}</span>
+                                                    <span class="merchant-equip-rarity shop-item-rarity ${item.rarity}">${RARITY_NAMES[item.rarity]}</span>
+                                                </div>
                                                 <span class="merchant-equip-price sell">💰${price}</span>
                                             </div>
                                             <div class="merchant-equip-stats">
@@ -4364,7 +4356,7 @@ body {
                 panel.innerHTML = `
                     <div class="event-header">
                         <div class="event-icon">🏪</div>
-                        <div class="event-title">神秘商人</div>
+                        <div class="event-title">神秘商人 - 「需要些什麼嗎？」</div>
                     </div>
                     <div class="event-content">
                         ${potionsHtml}
