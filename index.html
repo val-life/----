@@ -287,6 +287,7 @@ body {
     flex-direction: column;
     background: rgba(255, 255, 255, 0.03);
     border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+    min-height: var(--combat-height, 320px); /* Default fallback */
 }
 
 .event-header {
@@ -310,6 +311,10 @@ body {
 
 .event-content {
     padding: 8px 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .event-description {
@@ -2398,6 +2403,10 @@ body {
                 this.resetRunState();
                 this.updateMenuSoulDisplay();
 
+                // ✅ Only initialize once in constructor - no need to reset per run
+                this.combatHeightSet = false;
+                this.referenceHeight = 320;
+
                 if (this.loadGame()) {
                     this.restoreScreen();
                 }
@@ -2477,33 +2486,50 @@ body {
             }
 
             restoreScreen() {
-            this.gameStarted = true;
-            document.getElementById('main-menu').classList.add('hidden');
-            document.getElementById('game-screen').classList.remove('hidden');
-            this.updateUI();
+                this.gameStarted = true;
+                document.getElementById('main-menu').classList.add('hidden');
+                document.getElementById('game-screen').classList.remove('hidden');
+                this.updateUI();
 
-            const panel = document.getElementById('event-panel');
-            
-            // Decide what to render based on the saved state
-            if (this.currentEvent === 'fight' || (this.inCombat && this.currentMonster)) {
-                this.renderCombat();
-            } else if (this.currentEvent === 'merchant') {
-                this.renderMerchant();
-            } else if (this.currentEvent === 'treasure') {
-                if (this.pendingLoot) this.renderTreasure();
-                else this.generateTreasureChoice();
-            } else if (this.currentEvent === 'rest') {
-                this.generateRestArea();
-            } else if (this.currentEvent === 'event' && this.currentRandomEvent) {
-                this.renderRandomEventChoice();
-            } else if (this.pendingLoot) {
-                if (this.level > 500) this.renderFinalVictory();
-                else this.renderVictory();
-            } else {
-                // Generate new event if nothing valid
-                this.generateEvent();
+                const panel = document.getElementById('event-panel');
+                
+                // Decide what to render based on the saved state
+                if (this.currentEvent === 'fight' || (this.inCombat && this.currentMonster)) {
+                    this.renderCombat();
+                } else if (this.currentEvent === 'merchant') {
+                    this.renderMerchant();
+                } else if (this.currentEvent === 'treasure') {
+                    if (this.pendingLoot) this.renderTreasure();
+                    else this.generateTreasureChoice();
+                } else if (this.currentEvent === 'rest') {
+                    this.generateRestArea();
+                } else if (this.currentEvent === 'event' && this.currentRandomEvent) {
+                    this.renderRandomEventChoice();
+                } else if (this.pendingLoot) {
+                    if (this.level > 500) this.renderFinalVictory();
+                    else this.renderVictory();
+                } else {
+                    // Generate new event if nothing valid
+                    this.generateEvent();
+                }
             }
-        }
+
+            updateCombatReferenceHeight() {
+                const panel = document.getElementById('event-panel');
+                if (!panel || this.combatHeightSet) return;
+                
+                if (this.inCombat && this.currentMonster) {
+                    // Wait for render to complete
+                    requestAnimationFrame(() => {
+                        const height = panel.offsetHeight;
+                        if (height > 250) { // Sanity check
+                            this.combatHeightSet = true;
+                            this.referenceHeight = height;
+                            document.documentElement.style.setProperty('--combat-height', `${height}px`);
+                        }
+                    });
+                }
+            }
 
             // ✅ NEW: Add helper method to re-render random event choice
             renderRandomEventChoice() {
@@ -2570,8 +2596,8 @@ body {
                 this.lastArea = 0;
                 this.selectedBagIndex = -1;
                 this.isMimicFight = false;
-                this.mimicLootBonus = false;  // ✅ FIX: Was missing
-                this.isActionLocked = false;  // ✅ NEW: Debounce flag
+                this.mimicLootBonus = false;  
+                this.isActionLocked = false; 
             }
 
             getSoulBonuses() {
@@ -2844,54 +2870,60 @@ body {
             }
 
             generateEvent() {
-            const panel = document.getElementById('event-panel');
-            
-            // Safety check
-            if (!panel) {
-                console.error('Event panel not found!');
-                return;
-            }
-            
-            if (this.isAreaBossFloor()) {
-                this.currentEvent = 'fight';
-                this.generateBoss();
-                return;
-            }
-
-            const areaNum = this.getAreaNumber();
-            const bossFloor = areaNum * 50;
-            if (this.level === bossFloor - 3) {
-                this.currentEvent = 'merchant';
-                this.generateMerchant();
-                return;
-            }
-
-            if (this.level % 10 === 0 && !this.isAreaBossFloor()) {
-                this.currentEvent = 'rest';
-                this.generateRestArea();
-                return;
-            }
-
-            const roll = Math.random() * 100;
-            let cumulative = 0;
-            for (const [event, data] of Object.entries(EVENTS)) {
-                cumulative += data.weight;
-                if (roll < cumulative) {
-                    this.currentEvent = event;
-                    break;
+                const panel = document.getElementById('event-panel');
+                
+                // Safety check
+                if (!panel) {
+                    console.error('Event panel not found!');
+                    return;
                 }
-            }
+                
+                if (this.level === 1 && !this.combatHeightSet) {
+                    this.currentEvent = 'fight';
+                    this.generateMonster();
+                    return;
+                }
 
-            switch (this.currentEvent) {
-                case 'fight': this.generateMonster(); break;
-                case 'treasure': this.generateTreasureChoice(); break;
-                case 'merchant': this.generateMerchant(); break;
-                case 'event': this.generateRandomEvent(); break;
-                case 'rest': this.generateRestArea(); break;
+                if (this.isAreaBossFloor()) {
+                    this.currentEvent = 'fight';
+                    this.generateBoss();
+                    return;
+                }
+
+                const areaNum = this.getAreaNumber();
+                const bossFloor = areaNum * 50;
+                if (this.level === bossFloor - 3) {
+                    this.currentEvent = 'merchant';
+                    this.generateMerchant();
+                    return;
+                }
+
+                if (this.level % 10 === 0 && !this.isAreaBossFloor()) {
+                    this.currentEvent = 'rest';
+                    this.generateRestArea();
+                    return;
+                }
+
+                const roll = Math.random() * 100;
+                let cumulative = 0;
+                for (const [event, data] of Object.entries(EVENTS)) {
+                    cumulative += data.weight;
+                    if (roll < cumulative) {
+                        this.currentEvent = event;
+                        break;
+                    }
+                }
+
+                switch (this.currentEvent) {
+                    case 'fight': this.generateMonster(); break;
+                    case 'treasure': this.generateTreasureChoice(); break;
+                    case 'merchant': this.generateMerchant(); break;
+                    case 'event': this.generateRandomEvent(); break;
+                    case 'rest': this.generateRestArea(); break;
+                }
+                
+                this.saveGame();
             }
-            
-            this.saveGame();
-        }
 
             // ==================== REST AREA ====================
 
@@ -3940,6 +3972,9 @@ body {
                         ` : ''}
                     </div>
                 `;
+                requestAnimationFrame(() => {
+                    this.updateCombatReferenceHeight();
+                });
             }
 
             renderVictory() {
