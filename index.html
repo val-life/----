@@ -627,53 +627,49 @@ body {
     gap: 2px;
 }
 
-/* Bag Grid - 5 columns compact */
+/* Bag Grid - 3 columns with merchant style */
 .bag-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
 }
 
 .bag-slot {
     background: rgba(0, 0, 0, 0.4);
-    padding: 4px 2px;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    border: 2px solid #444;
     cursor: pointer;
     transition: all 0.2s;
-    aspect-ratio: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 .bag-slot:active {
     background: rgba(233, 69, 96, 0.2);
-    border-color: #e94560;
+    transform: scale(0.98);
 }
 
-.bag-slot.common { border-left: 2px solid #888; }
-.bag-slot.uncommon { border-left: 2px solid #4ecdc4; }
-.bag-slot.rare { border-left: 2px solid #667eea; }
-.bag-slot.epic { border-left: 2px solid #a855f7; }
-.bag-slot.legendary { border-left: 2px solid #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
+.bag-slot.common { border-color: #888; }
+.bag-slot.uncommon { border-color: #4ecdc4; }
+.bag-slot.rare { border-color: #667eea; }
+.bag-slot.epic { border-color: #a855f7; }
+.bag-slot.legendary { border-color: #ffd700; animation: legendaryGlow 2s ease-in-out infinite; }
 
-.bag-slot .item-type {
-    font-size: 0.45rem;
-    color: #666;
-    line-height: 1;
+.bag-slot .bag-title-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
 }
 
 .bag-slot .item-name {
-    font-size: 0.5rem;
     font-weight: bold;
+    font-size: 0.8rem;
+    line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 100%;
-    line-height: 1.2;
 }
 
 .bag-slot .item-name.common { color: #888; }
@@ -682,13 +678,33 @@ body {
 .bag-slot .item-name.epic { color: #a855f7; }
 .bag-slot .item-name.legendary { color: #ffd700; }
 
-.bag-slot .item-stats {
-    font-size: 0.4rem;
-    color: #888;
-    line-height: 1;
+.bag-slot .item-rarity {
+    font-size: 0.5rem;
+    padding: 1px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
 }
 
-/* Empty bag message */
+.bag-slot .item-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+
+.bag-slot .item-stats .stat-tag {
+    font-size: 0.6rem;
+    color: #ccc;
+    background: rgba(255,255,255,0.08);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.bag-slot .item-stats .stat-tag.attack { color: #ff6b35; }
+.bag-slot .item-stats .stat-tag.defense { color: #4ecdc4; }
+.bag-slot .item-stats .stat-tag.dodge { color: #a8e6cf; }
+.bag-slot .item-stats .stat-tag.crit { color: #f39c12; }
+.bag-slot .item-stats .stat-tag.hp { color: #e94560; }
+
 .bag-empty {
     text-align: center;
     color: #555;
@@ -4461,16 +4477,19 @@ body {
                 equipSlots.innerHTML = ['weapon', 'armor', 'accessory'].map(slot => {
                     const item = this.player.equipment[slot];
                     if (item) {
+                        // Build stats array - only show non-zero stats
+                        let statsHtml = '';
+                        if (item.attack > 0) statsHtml += `<span>⚔️${item.attack}</span>`;
+                        if (item.defense > 0) statsHtml += `<span>🛡️${item.defense}</span>`;
+                        if (item.dodge > 0) statsHtml += `<span>💨${item.dodge}%</span>`;
+                        if (item.crit > 0) statsHtml += `<span>💥${item.crit}%</span>`;
+                        if (item.hp && item.hp > 0) statsHtml += `<span>❤️${item.hp}</span>`;
+                        
                         return `
                             <div class="equipment-slot-h ${item.rarity}">
-                                <div class="slot-type">${SLOT_NAMES[slot]}</div>
                                 <div class="slot-name ${item.rarity}">${item.name}</div>
                                 <div class="slot-stats">
-                                    <span>⚔️${item.attack}</span>
-                                    <span>🛡️${item.defense}</span>
-                                    <span>💨${item.dodge}%</span>
-                                    <span>💥${item.crit}%</span>
-                                    ${item.hp ? `<span>❤️${item.hp}</span>` : ''}
+                                    ${statsHtml}
                                 </div>
                             </div>
                         `;
@@ -4479,27 +4498,38 @@ body {
                             <div class="equipment-slot-h">
                                 <div class="slot-type">${SLOT_NAMES[slot]}</div>
                                 <div class="slot-name" style="color: #555">空</div>
-                                <div class="slot-stats" style="color: #444">-</div>
                             </div>
                         `;
                     }
                 }).join('');
 
-                // Equipment Bag - Dynamic (only show items, no empty slots)
+                // Equipment Bag - 3 columns with merchant style
                 const equipBagGrid = document.getElementById('equip-bag-grid');
                 const bagSection = document.getElementById('section-bag');
                 document.getElementById('equip-bag-count').textContent = this.player.bag.length;
-                
+
                 if (this.player.bag.length === 0) {
                     equipBagGrid.innerHTML = '<div class="bag-empty">背包空空如也</div>';
                 } else {
                     let bagHtml = '';
                     this.player.bag.forEach((item, index) => {
+                        // Build stats array - only show non-zero stats
+                        let statsHtml = '';
+                        if (item.attack > 0) statsHtml += `<span class="stat-tag attack">⚔️${item.attack}</span>`;
+                        if (item.defense > 0) statsHtml += `<span class="stat-tag defense">🛡️${item.defense}</span>`;
+                        if (item.dodge > 0) statsHtml += `<span class="stat-tag dodge">💨${item.dodge}%</span>`;
+                        if (item.crit > 0) statsHtml += `<span class="stat-tag crit">💥${item.crit}%</span>`;
+                        if (item.hp && item.hp > 0) statsHtml += `<span class="stat-tag hp">❤️${item.hp}</span>`;
+                        
                         bagHtml += `
                             <div class="bag-slot ${item.rarity}" onclick="game.showEquipCompare(${index})">
-                                <div class="item-type">${SLOT_NAMES[item.type]}</div>
-                                <div class="item-name ${item.rarity}">${item.name}</div>
-                                <div class="item-stats">⚔️${item.attack} 🛡️${item.defense}</div>
+                                <div class="bag-title-row">
+                                    <span class="item-name ${item.rarity}">${item.name}</span>
+                                    <span class="item-rarity shop-item-rarity ${item.rarity}">${RARITY_NAMES[item.rarity]}</span>
+                                </div>
+                                <div class="item-stats">
+                                    ${statsHtml}
+                                </div>
                             </div>
                         `;
                     });
