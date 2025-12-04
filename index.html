@@ -1934,8 +1934,8 @@ body {
     <script>
         // ==================== PERSISTENT DATA ====================
         const SAVE_KEY = 'magicTower_soulData_v2';
-        const GAME_VERSION = '0.6';
-        const DEBUG_MODE = true;
+        const GAME_VERSION = '0.7';
+        const DEBUG_MODE = false;
 
         function getNewSoulData() {
             return {
@@ -2022,7 +2022,7 @@ body {
                     `為了平衡性調整，進度已重置。\n` +
                     `\n💰 靈魂計算：\n` +
                     `包含您正在進行的冒險，總資產為 ${totalVal} 靈魂。\n` +
-                    `已為您保留 50% (${refundAmount} 靈魂)！`
+                    `已為您保留 80% (${refundAmount} 靈魂)！`
                 );
                 
                 return newData;
@@ -2287,6 +2287,19 @@ body {
             8: { name: '烈焰魔君', emoji: '🔥', baseHp: 4200, baseAtk: 200, baseDef: 100, goldMin: 1500, goldMax: 2200, soulReward: 220, material: 'boss_8' },
             9: { name: '虛空領主', emoji: '🌑', baseHp: 5000, baseAtk: 240, baseDef: 115, goldMin: 2000, goldMax: 3000, soulReward: 300, material: 'boss_9' },
             10: { name: '魔王', emoji: '👑', baseHp: 8000, baseAtk: 300, baseDef: 140, goldMin: 5000, goldMax: 10000, soulReward: 500, material: 'boss_10' }
+        };
+
+        const TRUE_BOSS = {
+            name: '真・魔王',
+            emoji: '😈',
+            baseHp: 15000,
+            baseAtk: 400,
+            baseDef: 180,
+            goldMin: 10000,
+            goldMax: 15000,
+            soulReward: 1000,
+            material: 'boss_10',  // Same material as fake boss
+            trueBonusSouls: 500   // Extra souls for true ending
         };
 
         const EQUIPMENT = {
@@ -2804,6 +2817,7 @@ body {
                     mimicLootBonus: this.mimicLootBonus,
                     currentEvent: this.currentEvent,
                     currentMonster: this.currentMonster,
+                    isTrueBoss: this.isTrueBoss,
                     merchantItems: this.merchantItems,
                     pendingLoot: this.pendingLoot,
                     lastBattleLog: this.lastBattleLog,
@@ -2970,7 +2984,8 @@ body {
                 this.isMimicFight = false;
                 this.mimicLootBonus = false;  
                 this.isActionLocked = false;
-                this.classSelectionShown = false;  // ✅ NEW: Track if class selection was shown
+                this.classSelectionShown = false;
+                this.isTrueBoss = false;
             }
 
             getSoulBonuses() {
@@ -3139,7 +3154,9 @@ body {
                     this.currentArea = 10;
                     this.player.gold = 5000;  // Extra gold for testing
                     this.player.potions = { small: 5, medium: 5, large: 5, full: 5 };
-                    this.classSelectionShown = false; 
+                    // Options: 'knight', 'swordmaster', 'ninja', 'guardian'
+                    this.player.playerClass = 'ninja';
+                    this.classSelectionShown = true; 
                     
                     this.player.equipment.weapon = { ...EQUIPMENT.weapons[12], type: 'weapon', id: Date.now() };
                     
@@ -3693,6 +3710,13 @@ body {
             monsterDefeated() {
                 this.inCombat = false;
                 const monster = this.currentMonster;
+
+                // Check if this was the true boss
+                if (this.isTrueBoss) {
+                    this.isTrueBoss = false;
+                    this.showTrueEnding();
+                    return;
+                }
                 
                 // Better loot for mimic
                 const rarityBoost = this.mimicLootBonus ? 0.35 : (monster.type === 'boss' ? 0.4 : (monster.type === 'elite' ? 0.2 : 0));
@@ -4550,6 +4574,271 @@ body {
                 this.updateUI();
             }
 
+            // ==================== STORY SYSTEM ====================
+            takePrincessHome() {
+                // Collect loot first
+                if (this.pendingLoot) {
+                    this.player.gold += this.pendingLoot.gold;
+                    if (this.pendingLoot.souls > 0) {
+                        this.soulGainedThisRun += this.pendingLoot.souls;
+                    }
+                    this.pendingLoot = null;
+                }
+
+                const isKnight = this.player.playerClass === 'knight';
+
+                if (isKnight) {
+                    // Knight taking princess home without questioning = Bad ending too
+                    // (They should have used the secret button)
+                    this.showBadEnding();
+                } else {
+                    // Non-knight classes always get bad ending
+                    this.showBadEnding();
+                }
+            }
+
+            showBadEnding() {
+                const panel = document.getElementById('event-panel');
+                
+                panel.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-icon">🌅</div>
+                        <div><div class="event-title">歸途</div></div>
+                    </div>
+                    <div class="event-content">
+                        <div class="treasure-display" style="padding: 15px">
+                            <div class="princess-sprite" style="font-size: 3rem;">👸</div>
+                            <p style="color: #ffd700; font-size: 1rem; margin-top: 15px;">
+                                你牽著公主的手，踏上了回家的路...
+                            </p>
+                        </div>
+                        <div class="dialog-box" style="margin: 15px 0;">
+                            <div class="dialog-speaker">愛莉絲公主</div>
+                            <div class="dialog-text">終於結束了...謝謝你來救我。</div>
+                        </div>
+                        <div style="color: #aaa; font-size: 0.85rem; text-align: center; line-height: 1.6; padding: 10px;">
+                            王國舉辦了盛大的慶典，你被封為英雄。<br>
+                            但在深夜裡，你總會想起那場戰鬥...<br>
+                            <span style="color: #e94560;">那個魔王，真的有那麼容易被打敗嗎？</span><br>
+                            <span style="color: #888; font-size: 0.8rem;">而公主的眼神，為何總帶著一絲...笑意？</span>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="game.confirmBadEnding()">結束旅程</button>
+                    </div>
+                `;
+            }
+
+            confirmBadEnding() {
+                localStorage.removeItem('magicTower_autoSave');
+                
+                const totalSouls = Math.floor((this.soulGainedThisRun + 200) * this.getSoulMultiplier());
+                this.soulData.souls += totalSouls;
+                this.soulData.bestFloor = 500;
+                saveSoulData(this.soulData);
+
+                const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
+
+                document.getElementById('modal-title').textContent = '🌙 結局 A - 虛假的和平 🌙';
+                document.getElementById('modal-message').textContent = '你拯救了公主，成為了英雄。但真相，永遠埋藏在魔塔之中...';
+                document.getElementById('soul-gained').textContent = totalSouls;
+                document.getElementById('final-stats').innerHTML = `
+                    <div style="color: #888; font-size: 0.9rem; margin-bottom: 8px">— Bad Ending —</div>
+                    <div>👸 「公主」已帶回王國</div>
+                    <div>職業: <strong style="color: #c084fc">${playerClass.icon} ${playerClass.name}</strong></div>
+                    <div>總冒險次數: <strong>${this.soulData.totalRuns}</strong></div>
+                    <div>擊敗首領數: <strong style="color: #e94560">${this.soulData.bossesKilled}</strong></div>
+                    <div style="margin-top: 10px; color: #666; font-size: 0.8rem;">
+                        「也許，還有另一條道路...」
+                    </div>
+                `;
+                document.getElementById('game-over-modal').classList.add('active');
+            }
+
+            confrontTrueEnemy() {
+                // Collect loot first
+                if (this.pendingLoot) {
+                    this.player.gold += this.pendingLoot.gold;
+                    if (this.pendingLoot.souls > 0) {
+                        this.soulGainedThisRun += this.pendingLoot.souls;
+                    }
+                    this.pendingLoot = null;
+                }
+
+                const panel = document.getElementById('event-panel');
+                
+                panel.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-icon">⚔️</div>
+                        <div><div class="event-title">...劍的指引</div></div>
+                    </div>
+                    <div class="event-content">
+                        <div class="dialog-box" style="margin: 10px 0;">
+                            <div class="dialog-speaker" style="color: #4ecdc4;">你的內心</div>
+                            <div class="dialog-text">「願你的劍永不動搖」...那位劍士的話語在腦海中迴響。</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px;">
+                            <div style="font-size: 2.5rem; margin-bottom: 10px;">👸</div>
+                            <p style="color: #aaa; font-size: 0.9rem; line-height: 1.6;">
+                                你看著眼前的公主，心中湧起一股奇異的感覺。<br>
+                                她的笑容很美，但...總覺得哪裡不對勁。<br>
+                                <span style="color: #ffd700;">真正的公主，會是這種眼神嗎？</span>
+                            </p>
+                        </div>
+                        <div class="dialog-box" style="margin: 10px 0;">
+                            <div class="dialog-speaker">「公主」</div>
+                            <div class="dialog-text">怎麼了，騎士大人？快帶我離開這裡吧...</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons" style="flex-direction: column; align-items: center; gap: 10px;">
+                        <button class="btn btn-secondary" onclick="game.showBadEnding()">抱歉，是我多心了</button>
+                        <button class="btn btn-danger" onclick="game.revealTrueEnemy()">舉起劍，指向「公主」</button>
+                    </div>
+                `;
+            }
+
+            revealTrueEnemy() {
+                const panel = document.getElementById('event-panel');
+                
+                panel.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-icon">😈</div>
+                        <div><div class="event-title">��相</div></div>
+                    </div>
+                    <div class="event-content">
+                        <div class="dialog-box" style="margin: 10px 0; border-left-color: #e94560;">
+                            <div class="dialog-speaker" style="color: #e94560;">「公主」</div>
+                            <div class="dialog-text">呵...呵呵...你怎麼知道的？</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px;">
+                            <div style="font-size: 3rem; margin-bottom: 10px; animation: pulse 1s infinite;">👸➡️😈</div>
+                            <p style="color: #e94560; font-size: 1rem; line-height: 1.6; margin-bottom: 10px;">
+                                「公主」的身影開始扭曲變形...<br>
+                                美麗的外表逐漸剝落，露出了真正的面貌。
+                            </p>
+                        </div>
+                        <div class="dialog-box" style="margin: 10px 0; border-left-color: #9333ea;">
+                            <div class="dialog-speaker" style="color: #9333ea;">真・魔王</div>
+                            <div class="dialog-text">
+                                那個廢物只是我的替身罷了。我才是這座塔真正的主人！<br>
+                                <span style="font-size: 0.85rem; color: #aaa;">不過...能看穿我的偽裝，你是第一個。</span>
+                            </div>
+                        </div>
+                        <div style="color: #ffd700; text-align: center; font-size: 0.9rem; padding: 10px;">
+                            真正的戰鬥，現在才開始！
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="game.startTrueBossFight()">⚔️ 面對真正的魔王</button>
+                    </div>
+                `;
+            }
+
+            startTrueBossFight() {
+                this.inCombat = true;
+                this.currentEvent = 'fight';
+                
+                // ✅ Use TRUE_BOSS constant
+                const boss = TRUE_BOSS;
+                
+                this.currentMonster = {
+                    name: boss.name,
+                    emoji: boss.emoji,
+                    type: 'boss',
+                    hp: boss.baseHp,
+                    maxHp: boss.baseHp,
+                    attack: boss.baseAtk,
+                    defense: boss.baseDef,
+                    gold: Math.floor((boss.goldMin + Math.random() * (boss.goldMax - boss.goldMin)) * this.getGoldMultiplier()),
+                    dropChance: 1.0,
+                    matChance: 1.0,
+                    material: boss.material,
+                    soulReward: Math.floor(boss.soulReward * this.getSoulMultiplier())
+                };
+
+                this.isTrueBoss = true;
+                this.renderCombat();
+            }
+
+            showTrueEnding() {
+                const panel = document.getElementById('event-panel');
+                
+                panel.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-icon">✨</div>
+                        <div><div class="event-title">真・結局</div></div>
+                    </div>
+                    <div class="event-content">
+                        <div style="text-align: center; padding: 15px;">
+                            <div style="font-size: 3rem; margin-bottom: 15px;">😈💥⚔️</div>
+                            <p style="color: #ffd700; font-size: 1.1rem; margin-bottom: 15px;">
+                                真正的魔王終於倒下了！
+                            </p>
+                        </div>
+                        <div class="dialog-box" style="margin: 10px 0; border-left-color: #9333ea;">
+                            <div class="dialog-speaker" style="color: #9333ea;">真・魔王（瀕死）</div>
+                            <div class="dialog-text">
+                                不可能...我存在了千年...怎麼會輸給一個區區的騎士...<br>
+                                <span style="font-size: 0.85rem; color: #aaa;">你...你的劍...那道光芒是...！</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; padding: 10px;">
+                            <p style="color: #aaa; font-size: 0.9rem; line-height: 1.6;">
+                                隨著魔王的消散，魔塔開始崩塌...<br>
+                                在廢墟中，你發現了被囚禁的真正公主。
+                            </p>
+                        </div>
+                        <div style="text-align: center; margin: 15px 0;">
+                            <div style="font-size: 2.5rem;">👸</div>
+                            <p style="color: #ffd700; font-size: 0.9rem; margin-top: 5px;">真正的愛莉絲公主</p>
+                        </div>
+                        <div class="dialog-box" style="margin: 10px 0; border-left-color: #ffd700;">
+                            <div class="dialog-speaker" style="color: #ffd700;">愛莉絲公主</div>
+                            <div class="dialog-text">
+                                你...你終於來了...我等了好久好久...<br>
+                                謝謝你，沒有被那個怪物欺騙。謝謝你，堅持做一名真正的騎士。
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="game.confirmTrueEnding()">👸 帶真正的公主回家</button>
+                    </div>
+                `;
+            }
+
+            confirmTrueEnding() {
+                localStorage.removeItem('magicTower_autoSave');
+                
+                // ✅ Use TRUE_BOSS constant for bonus souls
+                const totalSouls = Math.floor((this.soulGainedThisRun + TRUE_BOSS.soulReward + TRUE_BOSS.trueBonusSouls) * this.getSoulMultiplier());
+                this.soulData.souls += totalSouls;
+                this.soulData.bestFloor = 500;
+                
+                this.soulData.trueEndingCompleted = true;
+                
+                saveSoulData(this.soulData);
+
+                const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
+
+                document.getElementById('modal-title').textContent = '🌟 真・結局 - 騎士的榮耀 🌟';
+                document.getElementById('modal-message').textContent = '你堅守了騎士的信念，識破了魔王的偽裝，拯救了真正的公主。這才是真正的英雄！';
+                document.getElementById('soul-gained').textContent = totalSouls;
+                document.getElementById('final-stats').innerHTML = `
+                    <div style="color: #ffd700; font-size: 1rem; margin-bottom: 8px">✨ True Ending ✨</div>
+                    <div>👸 真正的愛莉絲公主獲救</div>
+                    <div>😈 ${TRUE_BOSS.name} 已消滅</div>
+                    <div>職業: <strong style="color: #c084fc">${playerClass.icon} ${playerClass.name}</strong></div>
+                    <div style="margin-top: 8px;">
+                        <div>總冒險次數: <strong>${this.soulData.totalRuns}</strong></div>
+                        <div>擊敗首領數: <strong style="color: #e94560">${this.soulData.bossesKilled + 1}</strong></div>
+                    </div>
+                    <div style="margin-top: 10px; color: #4ecdc4; font-size: 0.85rem;">
+                        「願你的劍永不動搖」—— 你做到了。
+                    </div>
+                `;
+                document.getElementById('game-over-modal').classList.add('active');
+            }
+
             // ==================== RENDER METHODS ====================
 
             renderCombat() {
@@ -4726,7 +5015,19 @@ body {
             renderFinalVictory() {
                 const panel = document.getElementById('event-panel');
                 const loot = this.pendingLoot;
-                const dialogue = STORY_DIALOGUES.bossDefeat;
+                const isKnight = this.player.playerClass === 'knight';
+
+                // Remove the old dialogue, just show victory and loot
+                let secretButtonHtml = '';
+                if (isKnight) {
+                    // ✅ Secret button only for Knight class
+                    secretButtonHtml = `
+                        <button class="btn btn-secondary btn-small" onclick="game.confrontTrueEnemy()" 
+                            style="opacity: 0.6; margin-top: 10px; font-size: 0.75rem;">
+                            ...願你的劍永不動搖
+                        </button>
+                    `;
+                }
 
                 panel.innerHTML = `
                     <div class="event-header">
@@ -4737,10 +5038,9 @@ body {
                         <div class="treasure-display" style="padding: 10px">
                             <div class="princess-sprite">👸</div>
                             <p style="color: #ffd700; font-size: 1.1rem; margin-top: 10px;">公主得救了！</p>
-                        </div>
-                        <div class="dialog-box">
-                            <div class="dialog-speaker">${dialogue.speaker}</div>
-                            <div class="dialog-text">${dialogue.text}</div>
+                            <p style="color: #aaa; font-size: 0.85rem; margin-top: 5px;">
+                                「謝謝你，勇敢的騎士...帶我回家吧。」
+                            </p>
                         </div>
                         <div class="loot-display">
                             <div class="loot-title">🎁 戰利品</div>
@@ -4750,8 +5050,9 @@ body {
                             </div>
                         </div>
                     </div>
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="game.collectLoot()">帶公主回家</button>
+                    <div class="action-buttons" style="flex-direction: column; align-items: center;">
+                        <button class="btn btn-primary" onclick="game.takePrincessHome()">👸 帶公主回家</button>
+                        ${secretButtonHtml}
                     </div>
                 `;
             }
