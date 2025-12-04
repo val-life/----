@@ -2903,10 +2903,9 @@ body {
                 if (!panel || this.combatHeightSet) return;
                 
                 if (this.inCombat && this.currentMonster) {
-                    // Wait for render to complete
                     requestAnimationFrame(() => {
                         const height = panel.offsetHeight;
-                        if (height > 250) { // Sanity check
+                        if (height > 250) { 
                             this.combatHeightSet = true;
                             this.referenceHeight = height;
                             document.documentElement.style.setProperty('--combat-height', `${height}px`);
@@ -3060,11 +3059,10 @@ body {
                 document.getElementById('area-transition').classList.add('hidden');
                 this.checkStoryDialogue();
                 
-                // ✅ NEW: Check for class selection when entering Area 6
                 const areaNum = this.getAreaNumber();
                 if (areaNum === 6 && !this.classSelectionShown) {
                     this.showClassSelection();
-                    return;  // Don't generate event yet, wait for class selection
+                    return; 
                 }
                 
                 this.generateEvent();
@@ -3149,8 +3147,8 @@ body {
 
                 // ==================== DEBUG MODE ====================
                 if (DEBUG_MODE) {
-                    this.level = 500;  // Area 4 boss floor (floor 200 = area 4, floor 50)
-                    this.lastArea = 9;  // Set to previous area so transition shows
+                    this.level = 500;  
+                    this.lastArea = 9;  
                     this.currentArea = 10;
                     this.player.gold = 5000;  // Extra gold for testing
                     this.player.potions = { small: 5, medium: 5, large: 5, full: 5 };
@@ -3193,7 +3191,6 @@ body {
                 if (this.player.equipment.accessory) total += this.player.equipment.accessory.attack;
                 this.buffs.forEach(b => { if (b.stat === 'attack') total += b.value; });
 
-                // ✅ Apply class multiplier
                 const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
                 total = Math.floor(total * playerClass.attackMult);
 
@@ -3220,11 +3217,9 @@ body {
                 if (this.player.equipment.accessory) total += this.player.equipment.accessory.dodge;
                 this.buffs.forEach(b => { if (b.stat === 'dodge') total += b.value; });
 
-                // ✅ Apply class multiplier first, then add flat bonus
                 const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
                 total = Math.floor(total * playerClass.dodgeMult) + playerClass.dodgeBonus;
                 
-                // ✅ Ninja can reach higher dodge cap (up to 75%)
                 const dodgeCap = playerClass.id === 'ninja' ? 75 : 50;
                 return Math.min(dodgeCap, Math.max(0, total));
             }
@@ -3236,7 +3231,6 @@ body {
                 if (this.player.equipment.accessory) total += this.player.equipment.accessory.crit;
                 this.buffs.forEach(b => { if (b.stat === 'crit') total += b.value; });
 
-                // ✅ Apply class bonus
                 const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
                 total += playerClass.critBonus;
 
@@ -3455,15 +3449,12 @@ body {
                 
                 const selectedClass = PLAYER_CLASSES[classId];
                 
-                // Show confirmation
                 document.getElementById('class-selection').classList.add('hidden');
                 
-                // Show a brief transition message
                 this.showClassConfirmation(selectedClass);
             }
 
             showClassConfirmation(selectedClass) {
-                // Create a temporary overlay for class confirmation
                 const overlay = document.createElement('div');
                 overlay.className = 'class-selection';
                 overlay.id = 'class-confirm-overlay';
@@ -3492,15 +3483,12 @@ body {
                 this.generateEvent();
             }
 
-            // When player declines to change class - stays as Knight (secret true ending path)
             declineClassChange() {
                 this.classSelectionShown = true;
-                this.player.playerClass = 'knight';  // Explicitly stay as knight
+                this.player.playerClass = 'knight';  
                 
-                // Show a subtle response from the mysterious swordsman
                 document.getElementById('class-selection').classList.add('hidden');
                 
-                // Brief acknowledgment without hinting at anything special
                 const overlay = document.createElement('div');
                 overlay.className = 'class-selection';
                 overlay.id = 'class-confirm-overlay';
@@ -3516,7 +3504,6 @@ body {
                 document.body.appendChild(overlay);
             }
 
-            // Keep the original skipClassSelection as a backup, but it won't be used in UI
             skipClassSelection() {
                 this.declineClassChange();
             }
