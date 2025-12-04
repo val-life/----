@@ -1491,6 +1491,148 @@ body {
     margin-top: 10px;
 }
 
+/* ==================== CLASS SELECTION ==================== */
+.class-selection {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.class-selection-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.class-selection-title {
+    font-size: 1.8rem;
+    color: #ffd700;
+    margin-bottom: 15px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.class-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 350px;
+}
+
+.class-option {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+}
+
+.class-option:active {
+    transform: scale(0.98);
+}
+
+.class-option.swordmaster {
+    border-color: #ff6b35;
+}
+
+.class-option.swordmaster:hover, .class-option.swordmaster:active {
+    background: rgba(255, 107, 53, 0.2);
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+}
+
+.class-option.ninja {
+    border-color: #a855f7;
+}
+
+.class-option.ninja:hover, .class-option.ninja:active {
+    background: rgba(168, 85, 247, 0.2);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+}
+
+.class-option.guardian {
+    border-color: #4ecdc4;
+}
+
+.class-option.guardian:hover, .class-option.guardian:active {
+    background: rgba(78, 205, 196, 0.2);
+    box-shadow: 0 0 15px rgba(78, 205, 196, 0.3);
+}
+
+.class-option-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.class-option-icon {
+    font-size: 2rem;
+}
+
+.class-option-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.class-option.swordmaster .class-option-name { color: #ff6b35; }
+.class-option.ninja .class-option-name { color: #a855f7; }
+.class-option.guardian .class-option-name { color: #4ecdc4; }
+
+.class-option-desc {
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.class-option-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.class-stat {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.class-stat.buff {
+    color: #4ecdc4;
+    border: 1px solid #4ecdc4;
+}
+
+.class-stat.nerf {
+    color: #e94560;
+    border: 1px solid #e94560;
+}
+
+.class-stat.neutral {
+    color: #ffd700;
+    border: 1px solid #ffd700;
+}
+
+/* Current class display in header */
+.class-display {
+    font-size: 0.7rem;
+    color: #c084fc;
+    margin-left: 8px;
+}
+
 /* ==================== ANIMATIONS ==================== */
 .shake {
     animation: shake 0.5s ease-in-out;
@@ -1737,6 +1879,22 @@ body {
         <button class="btn btn-primary" onclick="game.closeStoryTransition()">踏入魔塔</button>
     </div>
 
+    <!-- Class Selection Modal -->
+    <div class="class-selection hidden" id="class-selection">
+        <div class="class-selection-icon">⚔️</div>
+        <h2 class="class-selection-title">職業覺醒</h2>
+        <div class="dialog-box" style="max-width: 350px; margin: 0 auto 20px;">
+            <div class="dialog-speaker">神秘劍士</div>
+            <div class="dialog-text">你已經證明了自己的實力。現在，是時候選擇你的道路了。每條道路都有其獨特的力量與代價...</div>
+        </div>
+        <div class="class-options" id="class-options"></div>
+        <div style="margin-top: 20px; text-align: center;">
+            <button class="btn btn-secondary btn-small" onclick="game.declineClassChange()" style="opacity: 0.7;">
+                謝謝，但我想保持現狀
+            </button>
+        </div>
+    </div>
+
     <!-- Equipment Compare Modal -->
     <div class="equip-compare-modal hidden" id="equip-compare-modal">
         <div class="equip-compare-content">
@@ -1777,6 +1935,7 @@ body {
         // ==================== PERSISTENT DATA ====================
         const SAVE_KEY = 'magicTower_soulData_v2';
         const GAME_VERSION = '0.6';
+        const DEBUG_MODE = true;
 
         function getNewSoulData() {
             return {
@@ -1823,28 +1982,21 @@ body {
         function loadSoulData() {
             const dataStr = localStorage.getItem(SAVE_KEY);
             
-            // Default empty data if new player
             let data = dataStr ? JSON.parse(dataStr) : getNewSoulData();
 
-            // --- VERSION CHECK & MIGRATION ---
             if (data.version !== GAME_VERSION) {
                 console.log(`Version update detected: ${data.version || 'Unknown'} -> ${GAME_VERSION}`);
                 
-                // 1. Calculate Permanent Souls (Current + Spent on Upgrades)
                 let totalVal = calculateTotalLifetimeSouls(data);
-
-                // 2. [NEW] Check Active Run for Unbanked Souls
                 const runStr = localStorage.getItem('magicTower_autoSave');
                 if (runStr) {
                     try {
                         const runData = JSON.parse(runStr);
                         
-                        // Add souls collected so far in this run
                         if (runData.soulGainedThisRun) {
                             totalVal += runData.soulGainedThisRun;
                         }
                         
-                        // Add souls waiting in a loot box (if you just killed a mob but didn't collect yet)
                         if (runData.pendingLoot && runData.pendingLoot.souls) {
                             totalVal += runData.pendingLoot.souls;
                         }
@@ -1855,20 +2007,16 @@ body {
                     }
                 }
                 
-                // 3. Calculate 50% Refund
-                const refundAmount = Math.floor(totalVal * 0.5);
+                // Calculate 50% Refund
+                const refundAmount = Math.floor(totalVal * 0.8);
                 
-                // 4. Wipe Old Data
-                localStorage.removeItem('magicTower_autoSave'); // Delete the run
+                localStorage.removeItem('magicTower_autoSave'); 
                 
-                // 5. Create Fresh Soul Data with Refund
                 const newData = getNewSoulData();
                 newData.souls = refundAmount; 
                 
-                // 6. Save immediately
                 saveSoulData(newData);
 
-                // 7. Notify User
                 alert(
                     `🎉 遊戲版本更新至 v${GAME_VERSION}！\n\n` +
                     `為了平衡性調整，進度已重置。\n` +
@@ -1885,7 +2033,6 @@ body {
         }
 
         function saveSoulData(data) {
-            // Ensure the version is always the current one when saving
             data.version = GAME_VERSION; 
             localStorage.setItem(SAVE_KEY, JSON.stringify(data));
         }
@@ -1902,6 +2049,53 @@ body {
             { id: 'startingGold', name: '初始資金', desc: '每次冒險開始時獲得額外金幣', effect: '+25 金幣', maxLevel: 10, baseCost: 15, costMult: 1.5 },
             { id: 'secondChance', name: '不死決心', desc: '受到致命傷害時有機會存活', effect: '+5% 機率', maxLevel: 10, baseCost: 30, costMult: 2.0 }
         ];
+
+        const PLAYER_CLASSES = {
+            knight: {
+                id: 'knight',
+                name: '騎士',
+                icon: '🛡️',
+                description: '平衡的戰士，攻守兼備。',
+                attackMult: 1.0,
+                defenseMult: 1.0,
+                dodgeMult: 1.0,
+                critBonus: 0,
+                dodgeBonus: 0
+            },
+            swordmaster: {
+                id: 'swordmaster',
+                name: '劍聖',
+                icon: '⚔️',
+                description: '追求極致攻擊的劍術大師。犧牲防禦換取毀滅性的攻擊力。',
+                attackMult: 1.5,
+                defenseMult: 0.8,
+                dodgeMult: 1.0,
+                critBonus: 0,
+                dodgeBonus: 0
+            },
+            ninja: {
+                id: 'ninja',
+                name: '忍者',
+                icon: '🐱‍👤',
+                description: '來無影去無蹤的暗殺者。極高的閃避與爆擊，但防禦薄弱。',
+                attackMult: 1.0,
+                defenseMult: 0.5,
+                dodgeMult: 1.0,
+                critBonus: 20,
+                dodgeBonus: 50
+            },
+            guardian: {
+                id: 'guardian',
+                name: '盾衛',
+                icon: '🏰',
+                description: '堅不可摧的守護者。以攻擊力換取鋼鐵般的防禦。',
+                attackMult: 0.8,
+                defenseMult: 1.5,
+                dodgeMult: 1.0,
+                critBonus: 0,
+                dodgeBonus: 0
+            }
+        };
 
         // ==================== GAME DATA ====================
         
@@ -2113,6 +2307,8 @@ body {
                 { name: '屠龍者', rarity: 'epic', attack: 75, defense: 15, dodge: 4, crit: 12, hp: 50 }, // Buffed from 45
                 { name: '致命細劍', rarity: 'epic', attack: 65, defense: 5, dodge: 12, crit: 25, hp: 0 }, // Buffed
                 { name: '聖劍', rarity: 'legendary', attack: 120, defense: 30, dodge: 8, crit: 20, hp: 100 }, // Buffed from 70
+
+                { name: 'debug劍', rarity: 'legendary', attack: 999, defense: 999, dodge: 8, crit: 20, hp: 999 }
             ],
             armor: [
                 { name: '布甲', rarity: 'common', attack: 0, defense: 4, dodge: 1, crit: 0, hp: 10 },
@@ -2596,6 +2792,8 @@ body {
                     version: GAME_VERSION,
                     level: this.level,
                     player: this.player,
+                    playerClass: this.player.playerClass,
+                    classSelectionShown: this.classSelectionShown,
                     buffs: this.buffs,
                     currentArea: this.currentArea,
                     lastArea: this.lastArea,
@@ -2633,6 +2831,12 @@ body {
 
                     // Restore data
                     Object.assign(this, data);
+                    if (data.player && data.player.playerClass) {
+                        this.player.playerClass = data.player.playerClass;
+                    }
+                    if (data.classSelectionShown !== undefined) {
+                        this.classSelectionShown = data.classSelectionShown;
+                    }
                     
                     // ✅ FIX: Explicitly set gameStarted to true when loading a valid save
                     this.gameStarted = true;
@@ -2729,11 +2933,12 @@ body {
                 this.player = {
                     hp: 100 + soulBonuses.vitality,
                     maxHp: 100 + soulBonuses.vitality,
-                    baseAttack: 12 + soulBonuses.strength,
+                    baseAttack: 10 + soulBonuses.strength,  
                     baseDefense: 5 + soulBonuses.resilience,
                     baseDodge: 5 + soulBonuses.agility,
                     baseCrit: 5 + soulBonuses.precision,
                     gold: 50 + soulBonuses.startingGold,
+                    playerClass: 'knight',  
                     equipment: {
                         weapon: null,
                         armor: null,
@@ -2764,7 +2969,8 @@ body {
                 this.selectedSellIndex = -1;
                 this.isMimicFight = false;
                 this.mimicLootBonus = false;  
-                this.isActionLocked = false; 
+                this.isActionLocked = false;
+                this.classSelectionShown = false;  // ✅ NEW: Track if class selection was shown
             }
 
             getSoulBonuses() {
@@ -2838,6 +3044,14 @@ body {
             closeAreaTransition() {
                 document.getElementById('area-transition').classList.add('hidden');
                 this.checkStoryDialogue();
+                
+                // ✅ NEW: Check for class selection when entering Area 6
+                const areaNum = this.getAreaNumber();
+                if (areaNum === 6 && !this.classSelectionShown) {
+                    this.showClassSelection();
+                    return;  // Don't generate event yet, wait for class selection
+                }
+                
                 this.generateEvent();
                 this.updateUI();
             }
@@ -2917,6 +3131,22 @@ body {
 
             startNewRun() {
                 this.resetRunState();
+
+                // ==================== DEBUG MODE ====================
+                if (DEBUG_MODE) {
+                    this.level = 500;  // Area 4 boss floor (floor 200 = area 4, floor 50)
+                    this.lastArea = 9;  // Set to previous area so transition shows
+                    this.currentArea = 10;
+                    this.player.gold = 5000;  // Extra gold for testing
+                    this.player.potions = { small: 5, medium: 5, large: 5, full: 5 };
+                    this.classSelectionShown = false; 
+                    
+                    this.player.equipment.weapon = { ...EQUIPMENT.weapons[12], type: 'weapon', id: Date.now() };
+                    
+                    console.log('🐛 DEBUG MODE: Starting at Area 5 Boss (Floor 250)');
+                }
+                // ==================== END DEBUG ====================
+
                 document.getElementById('main-menu').classList.add('hidden');
                 document.getElementById('soul-shop').style.display = 'none';
                 document.getElementById('game-screen').classList.remove('hidden');
@@ -2945,6 +3175,11 @@ body {
                 if (this.player.equipment.armor) total += this.player.equipment.armor.attack;
                 if (this.player.equipment.accessory) total += this.player.equipment.accessory.attack;
                 this.buffs.forEach(b => { if (b.stat === 'attack') total += b.value; });
+
+                // ✅ Apply class multiplier
+                const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
+                total = Math.floor(total * playerClass.attackMult);
+
                 return Math.max(1, total);
             }
 
@@ -2954,6 +3189,10 @@ body {
                 if (this.player.equipment.armor) total += this.player.equipment.armor.defense;
                 if (this.player.equipment.accessory) total += this.player.equipment.accessory.defense;
                 this.buffs.forEach(b => { if (b.stat === 'defense') total += b.value; });
+
+                const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
+                total = Math.floor(total * playerClass.defenseMult);
+
                 return Math.max(0, total);
             }
 
@@ -2963,7 +3202,14 @@ body {
                 if (this.player.equipment.armor) total += this.player.equipment.armor.dodge;
                 if (this.player.equipment.accessory) total += this.player.equipment.accessory.dodge;
                 this.buffs.forEach(b => { if (b.stat === 'dodge') total += b.value; });
-                return Math.min(50, Math.max(0, total));
+
+                // ✅ Apply class multiplier first, then add flat bonus
+                const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
+                total = Math.floor(total * playerClass.dodgeMult) + playerClass.dodgeBonus;
+                
+                // ✅ Ninja can reach higher dodge cap (up to 75%)
+                const dodgeCap = playerClass.id === 'ninja' ? 75 : 50;
+                return Math.min(dodgeCap, Math.max(0, total));
             }
 
             getCrit() {
@@ -2972,6 +3218,11 @@ body {
                 if (this.player.equipment.armor) total += this.player.equipment.armor.crit;
                 if (this.player.equipment.accessory) total += this.player.equipment.accessory.crit;
                 this.buffs.forEach(b => { if (b.stat === 'crit') total += b.value; });
+
+                // ✅ Apply class bonus
+                const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
+                total += playerClass.critBonus;
+
                 return Math.min(60, Math.max(0, total));
             }
 
@@ -3125,6 +3376,134 @@ body {
                 this.level++;
                 this.nextLevel();
             }
+
+            // ==================== CLASS SYSTEM ====================
+
+            showClassSelection() {
+                const container = document.getElementById('class-options');
+                
+                container.innerHTML = `
+                    <div class="class-option swordmaster" onclick="game.selectClass('swordmaster')">
+                        <div class="class-option-header">
+                            <span class="class-option-icon">⚔️</span>
+                            <span class="class-option-name">劍聖</span>
+                        </div>
+                        <div class="class-option-desc">
+                            追求極致攻擊的劍術大師。犧牲防禦換取毀滅性的攻擊力。
+                        </div>
+                        <div class="class-option-stats">
+                            <span class="class-stat buff">⚔️ 攻擊 150%</span>
+                            <span class="class-stat nerf">🛡️ 防禦 80%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="class-option ninja" onclick="game.selectClass('ninja')">
+                        <div class="class-option-header">
+                            <span class="class-option-icon">🥷</span>
+                            <span class="class-option-name">忍者</span>
+                        </div>
+                        <div class="class-option-desc">
+                            來無影去無蹤的暗殺者。極高的閃避與爆擊，但防禦薄弱。
+                        </div>
+                        <div class="class-option-stats">
+                            <span class="class-stat buff">💥 爆擊 +20%</span>
+                            <span class="class-stat buff">💨 閃避 +50%</span>
+                            <span class="class-stat nerf">🛡️ 防禦 50%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="class-option guardian" onclick="game.selectClass('guardian')">
+                        <div class="class-option-header">
+                            <span class="class-option-icon">🏰</span>
+                            <span class="class-option-name">盾衛</span>
+                        </div>
+                        <div class="class-option-desc">
+                            堅不可摧的守護者。以攻擊力換取鋼鐵般的防禦。
+                        </div>
+                        <div class="class-option-stats">
+                            <span class="class-stat nerf">⚔️ 攻擊 80%</span>
+                            <span class="class-stat buff">🛡️ 防禦 150%</span>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('class-selection').classList.remove('hidden');
+            }
+
+            selectClass(classId) {
+                if (!PLAYER_CLASSES[classId]) return;
+                
+                this.player.playerClass = classId;
+                this.classSelectionShown = true;
+                
+                const selectedClass = PLAYER_CLASSES[classId];
+                
+                // Show confirmation
+                document.getElementById('class-selection').classList.add('hidden');
+                
+                // Show a brief transition message
+                this.showClassConfirmation(selectedClass);
+            }
+
+            showClassConfirmation(selectedClass) {
+                // Create a temporary overlay for class confirmation
+                const overlay = document.createElement('div');
+                overlay.className = 'class-selection';
+                overlay.id = 'class-confirm-overlay';
+                overlay.innerHTML = `
+                    <div class="class-selection-icon">${selectedClass.icon}</div>
+                    <h2 class="class-selection-title">職業覺醒完成！</h2>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <p style="font-size: 1.3rem; color: #ffd700; margin-bottom: 10px;">
+                            你已成為 <strong>${selectedClass.name}</strong>
+                        </p>
+                        <p style="color: #aaa; font-size: 0.9rem;">
+                            ${selectedClass.description}
+                        </p>
+                    </div>
+                    <button class="btn btn-primary" onclick="game.closeClassConfirmation()">繼續冒險</button>
+                `;
+                document.body.appendChild(overlay);
+            }
+
+            closeClassConfirmation() {
+                const overlay = document.getElementById('class-confirm-overlay');
+                if (overlay) {
+                    overlay.remove();
+                }
+                this.updateUI();
+                this.generateEvent();
+            }
+
+            // When player declines to change class - stays as Knight (secret true ending path)
+            declineClassChange() {
+                this.classSelectionShown = true;
+                this.player.playerClass = 'knight';  // Explicitly stay as knight
+                
+                // Show a subtle response from the mysterious swordsman
+                document.getElementById('class-selection').classList.add('hidden');
+                
+                // Brief acknowledgment without hinting at anything special
+                const overlay = document.createElement('div');
+                overlay.className = 'class-selection';
+                overlay.id = 'class-confirm-overlay';
+                overlay.innerHTML = `
+                    <div class="class-selection-icon">🛡️</div>
+                    <h2 class="class-selection-title" style="color: #aaa;">騎士之道</h2>
+                    <div class="dialog-box" style="max-width: 350px; margin: 0 auto 20px;">
+                        <div class="dialog-speaker">神秘劍士</div>
+                        <div class="dialog-text">...我明白了。堅守自己的道路，也是一種選擇。願你的劍永不動搖。</div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="game.closeClassConfirmation()">繼續前進</button>
+                `;
+                document.body.appendChild(overlay);
+            }
+
+            // Keep the original skipClassSelection as a backup, but it won't be used in UI
+            skipClassSelection() {
+                this.declineClassChange();
+            }
+
 
             // ==================== MONSTER SYSTEM ====================
 
@@ -4586,6 +4965,17 @@ body {
                 document.getElementById('floor-area-icon').textContent = area.icon;
                 document.getElementById('floor-area-name').textContent = area.name;
                 document.getElementById('current-floor').textContent = floorInArea;
+
+                const playerClass = PLAYER_CLASSES[this.player.playerClass] || PLAYER_CLASSES.knight;
+                const floorDisplay = document.querySelector('.floor-display');
+                let classSpan = document.getElementById('player-class-display');
+                if (!classSpan) {
+                    classSpan = document.createElement('span');
+                    classSpan.id = 'player-class-display';
+                    classSpan.className = 'class-display';
+                    floorDisplay.appendChild(classSpan);
+                }
+                classSpan.textContent = `| ${playerClass.icon} ${playerClass.name}`;
                 
                 // Stats
                 document.getElementById('stat-attack').textContent = this.getAttack();
