@@ -2301,22 +2301,18 @@ body {
         const EQUIPMENT = {
             weapons: [
                 { name: '生鏽的劍', rarity: 'common', attack: 5, defense: 0, dodge: 0, crit: 1, hp: 0 },
-                { name: '鐵劍', rarity: 'common', attack: 10, defense: 0, dodge: 0, crit: 2, hp: 0 }, // Buffed
+                { name: '鐵劍', rarity: 'common', attack: 10, defense: 0, dodge: 0, crit: 2, hp: 0 }, 
                 { name: '獵人短刀', rarity: 'common', attack: 6, defense: 0, dodge: 2, crit: 3, hp: 0 },
-
-                { name: '鋼刃', rarity: 'uncommon', attack: 20, defense: 2, dodge: 1, crit: 3, hp: 0 }, // Buffed
-                { name: '附魔之劍', rarity: 'uncommon', attack: 25, defense: 5, dodge: 0, crit: 5, hp: 0 }, // Buffed
-                { name: '刺客匕首', rarity: 'uncommon', attack: 18, defense: 0, dodge: 5, crit: 10, hp: 0 }, // Buffed
-
-                { name: '烈焰之刃', rarity: 'rare', attack: 45, defense: 0, dodge: 3, crit: 8, hp: 0 }, // Buffed from 28
-                { name: '霜寒之刃', rarity: 'rare', attack: 40, defense: 10, dodge: 0, crit: 6, hp: 20 }, // Buffed
-                { name: '暗影匕首', rarity: 'rare', attack: 35, defense: 0, dodge: 8, crit: 15, hp: 0 }, // Buffed
-                
-                // End Game (Areas 9-10)
-                { name: '屠龍者', rarity: 'epic', attack: 75, defense: 15, dodge: 4, crit: 12, hp: 50 }, // Buffed from 45
-                { name: '致命細劍', rarity: 'epic', attack: 65, defense: 5, dodge: 12, crit: 25, hp: 0 }, // Buffed
-                { name: '聖劍', rarity: 'legendary', attack: 120, defense: 30, dodge: 8, crit: 20, hp: 100 }, // Buffed from 70
-
+                { name: '鋼刃', rarity: 'uncommon', attack: 20, defense: 2, dodge: 1, crit: 3, hp: 0 }, 
+                { name: '附魔之劍', rarity: 'uncommon', attack: 25, defense: 5, dodge: 0, crit: 5, hp: 0 }, 
+                { name: '刺客匕首', rarity: 'uncommon', attack: 18, defense: 0, dodge: 5, crit: 10, hp: 0 }, 
+                { name: '烈焰之刃', rarity: 'rare', attack: 45, defense: 0, dodge: 3, crit: 8, hp: 0 }, 
+                { name: '霜寒之刃', rarity: 'rare', attack: 40, defense: 10, dodge: 0, crit: 6, hp: 20 }, 
+                { name: '暗影匕首', rarity: 'rare', attack: 35, defense: 0, dodge: 8, crit: 15, hp: 0 }, 
+                { name: '屠龍者', rarity: 'epic', attack: 75, defense: 15, dodge: 4, crit: 12, hp: 50 }, 
+                { name: '致命細劍', rarity: 'epic', attack: 65, defense: 5, dodge: 12, crit: 25, hp: 0 }, 
+                { name: '聖劍', rarity: 'legendary', attack: 120, defense: 30, dodge: 8, crit: 20, hp: 100 }, 
+                // debug
                 { name: 'debug劍', rarity: 'legendary', attack: 999, defense: 999, dodge: 8, crit: 20, hp: 999 }
             ],
             armor: [
@@ -2326,11 +2322,11 @@ body {
                 { name: '鎖子甲', rarity: 'uncommon', attack: 0, defense: 14, dodge: 0, crit: 0, hp: 30 },
                 { name: '強化皮甲', rarity: 'uncommon', attack: 3, defense: 12, dodge: 3, crit: 2, hp: 25 },
                 { name: '刺客套裝', rarity: 'uncommon', attack: 5, defense: 8, dodge: 6, crit: 5, hp: 15 },
-                { name: '板甲', rarity: 'rare', attack: 0, defense: 40, dodge: -5, crit: 0, hp: 100 }, // Buffed
-                { name: '秘銀甲', rarity: 'rare', attack: 8, defense: 35, dodge: 4, crit: 4, hp: 80 }, // Buffed
-                { name: '龍鱗甲', rarity: 'epic', attack: 15, defense: 65, dodge: 3, crit: 6, hp: 200 }, // Buffed
-                { name: '幻影披風', rarity: 'epic', attack: 25, defense: 45, dodge: 20, crit: 15, hp: 80 }, // Buffed
-                { name: '神聖板甲', rarity: 'legendary', attack: 40, defense: 100, dodge: 5, crit: 10, hp: 300 }, // Massive Buff
+                { name: '板甲', rarity: 'rare', attack: 0, defense: 40, dodge: -5, crit: 0, hp: 100 }, 
+                { name: '秘銀甲', rarity: 'rare', attack: 8, defense: 35, dodge: 4, crit: 4, hp: 80 }, 
+                { name: '龍鱗甲', rarity: 'epic', attack: 15, defense: 65, dodge: 3, crit: 6, hp: 200 }, 
+                { name: '幻影披風', rarity: 'epic', attack: 25, defense: 45, dodge: 20, crit: 15, hp: 80 }, 
+                { name: '神聖板甲', rarity: 'legendary', attack: 40, defense: 100, dodge: 5, crit: 10, hp: 300 }, 
             ],
             accessories: [
                 { name: '銅戒指', rarity: 'common', attack: 2, defense: 2, dodge: 1, crit: 1, hp: 5 },
@@ -2340,11 +2336,11 @@ body {
                 { name: '藍寶石吊墜', rarity: 'uncommon', attack: 0, defense: 8, dodge: 3, crit: 2, hp: 25 },
                 { name: '生命護符', rarity: 'uncommon', attack: 2, defense: 4, dodge: 0, crit: 0, hp: 40 },
                 { name: '翡翠護符', rarity: 'rare', attack: 10, defense: 10, dodge: 5, crit: 5, hp: 30 },
-                { name: '鑽石戒指', rarity: 'rare', attack: 25, defense: 10, dodge: 5, crit: 12, hp: 40 }, // Buffed
+                { name: '鑽石戒指', rarity: 'rare', attack: 25, defense: 10, dodge: 5, crit: 12, hp: 40 }, 
                 { name: '不死護符', rarity: 'rare', attack: 5, defense: 8, dodge: 2, crit: 2, hp: 70 },
-                { name: '鳳凰羽飾', rarity: 'epic', attack: 35, defense: 25, dodge: 10, crit: 15, hp: 100 }, // Buffed
+                { name: '鳳凰羽飾', rarity: 'epic', attack: 35, defense: 25, dodge: 10, crit: 15, hp: 100 }, 
                 { name: '龍之心', rarity: 'epic', attack: 25, defense: 20, dodge: 5, crit: 8, hp: 100 },
-                { name: '時代之冠', rarity: 'legendary', attack: 60, defense: 50, dodge: 15, crit: 20, hp: 200 }, // Massive Buff
+                { name: '時代之冠', rarity: 'legendary', attack: 60, defense: 50, dodge: 15, crit: 20, hp: 200 },
             ]
         };
 
@@ -2392,7 +2388,7 @@ body {
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { 
                             const h = Math.floor(game.getMaxHp() * 0.2); 
-                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); 
                             return `雖然味道怪怪的，但意外地恢復了 ${h} 體力。`; 
                         },
                         () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp = Math.max(0, game.player.hp - d); return `嘔...這麵包壞了，你食物中毒受到 ${d} 傷害。`; }
@@ -2448,11 +2444,11 @@ body {
                         () => { const d = Math.floor(game.getMaxHp() * 0.1); game.player.hp = Math.max(0, game.player.hp - d); return `石頭突然爆炸了！受到 ${d} 傷害。`; }
                     )
                 },
-                {   // Positive - ✅ FIX
+                {   // Positive 
                     name: '地下清泉', icon: '💧', description: '一股清澈的泉水從岩縫中流出。',
                     resolve: (game) => { 
                         const h = Math.floor(game.getMaxHp() * 0.3); 
-                        game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                        game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); 
                         return { text: `清涼的泉水！恢復了 ${h} 生命。`, type: 'positive' }; 
                     }
                 }
@@ -2501,7 +2497,7 @@ body {
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { 
                             const h = Math.floor(game.getMaxHp() * 0.4); 
-                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); 
                             return `美味多汁！恢復了 ${h} 生命。`; 
                         },
                         () => { game.addBuff('致幻', 15, 'dodge', -10, 'negative'); return `吃了之後天旋地轉... 閃避 -10% (15層)`; }
@@ -2532,7 +2528,7 @@ body {
                     name: '月光空地', icon: '🌙', description: '月光灑落在這片寧靜的空地上。',
                     resolve: (game) => { 
                         const h = Math.floor(game.getMaxHp() * 0.3); 
-                        game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                        game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); 
                         return { text: `心靈得到了平靜。恢復 ${h} 生命。`, type: 'positive' }; 
                     }
                 }
@@ -2644,7 +2640,7 @@ body {
                     name: '地熱溫泉', icon: '♨️', description: '在這冰天雪地中竟然有一處溫泉。',
                     resolve: (game) => { 
                         const h = Math.floor(game.getMaxHp() * 0.4); 
-                        game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                        game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); 
                         return { text: `溫暖了身心。恢復 ${h} 生命。`, type: 'positive' }; 
                     }
                 }
@@ -2678,7 +2674,7 @@ body {
                     resolve: (game) => game.gambleEvent(0.5, 
                         () => { 
                             const h = Math.floor(game.getMaxHp() * 0.2); 
-                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); 
                             return `充滿活力的能量！恢復 ${h} 生命。`; 
                         },
                         () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `花朵噴出了火焰！受到 ${d} 傷害。`; }
@@ -2747,7 +2743,7 @@ body {
                     resolve: (game) => game.gambleEvent(0.4, 
                         () => { 
                             const h = Math.floor(game.getMaxHp() * 0.5); 
-                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); // ✅ FIX
+                            game.player.hp = Math.min(game.player.hp + h, game.getMaxHp()); 
                             return `是魔力的瓊漿！恢復 ${h} 生命。`; 
                         },
                         () => { game.addBuff('劇毒', 20, 'attack', -40, 'negative'); return `是毒酒！攻擊 -40 (20層)`; }
