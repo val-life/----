@@ -2323,7 +2323,7 @@ body {
                         () => { const d = Math.floor(game.getMaxHp() * 0.15); game.player.hp = Math.max(0, game.player.hp - d); return `被精靈惡作劇了！受到 ${d} 傷害。`; }
                     )
                 },
-                {   // Positive - ✅ FIX
+                {   
                     name: '月光空地', icon: '🌙', description: '月光灑落在這片寧靜的空地上。',
                     resolve: (game) => { 
                         const h = Math.floor(game.getMaxHp() * 0.3); 
@@ -2479,7 +2479,7 @@ body {
                         () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `花朵噴出了火焰！受到 ${d} 傷害。`; }
                     )
                 },
-                {   // Positive
+                {   
                     name: '火神祭壇', icon: '🔱', description: '一座供奉火神的祭壇，周圍很涼爽。',
                     resolve: (game) => { game.addBuff('火焰抗性', 30, 'defense', 35, 'positive'); return { text: `獲得了火神的庇佑！防禦 +35 (30層)`, type: 'positive' }; }
                 }
@@ -2515,7 +2515,7 @@ body {
                         () => { const d = Math.floor(game.getMaxHp() * 0.2); game.player.hp = Math.max(0, game.player.hp - d); return `被重力壓垮了！受到 ${d} 傷害。`; }
                     )
                 },
-                {   // Positive
+                {   
                     name: '虛空行商', icon: '👽', description: '一個友好的虛空生物路過。',
                     resolve: (game) => { game.player.potions['full']++; return { text: `他送了你一瓶強力藥水！獲得 [完全恢復藥水]`, type: 'positive' }; }
                 }
@@ -2555,7 +2555,7 @@ body {
                         () => { const d = Math.floor(game.getMaxHp() * 0.4); game.player.hp = Math.max(0, game.player.hp - d); return `被王座拒絕了！受到 ${d} 雷擊傷害。`; }
                     )
                 },
-                {   // Positive
+                {   
                     name: '公主的手帕', icon: '🧣', description: '地上掉落著一條繡著皇室徽章的手帕。',
                     resolve: (game) => { game.addBuff('愛的信念', 50, 'attack', 30, 'positive'); game.addBuff('守護誓言', 50, 'defense', 30, 'positive'); return { text: `公主就在前面了！全屬性大幅提升！`, type: 'positive' }; }
                 }
@@ -2571,7 +2571,6 @@ body {
                 this.selectedUnequipSlot = null;
                 this.selectedSellIndex = -1;
 
-                // ✅ Only initialize once in constructor - no need to reset per run
                 this.combatHeightSet = false;
                 this.referenceHeight = 320;
 
@@ -2611,7 +2610,7 @@ body {
                     pendingLoot: this.pendingLoot,
                     lastBattleLog: this.lastBattleLog,
                     randomEventName: this.currentRandomEvent ? this.currentRandomEvent.name : null,
-                    isActionLocked: false  // ✅ Always save as false (reset on load)
+                    isActionLocked: false  
                 };
 
                 localStorage.setItem('magicTower_autoSave', JSON.stringify(saveData));
@@ -2648,7 +2647,7 @@ body {
                     return true;
                 } catch (e) {
                     console.error("Save file corrupted", e);
-                    localStorage.removeItem('magicTower_autoSave'); // ✅ Clean up corrupted save
+                    localStorage.removeItem('magicTower_autoSave'); 
                     return false;
                 }
             }
@@ -2677,7 +2676,6 @@ body {
                     if (this.level > 500) this.renderFinalVictory();
                     else this.renderVictory();
                 } else {
-                    // Generate new event if nothing valid
                     this.generateEvent();
                 }
             }
@@ -2699,7 +2697,7 @@ body {
                 }
             }
 
-            // ✅ NEW: Add helper method to re-render random event choice
+            
             renderRandomEventChoice() {
                 const event = this.currentRandomEvent;
                 const panel = document.getElementById('event-panel');
@@ -2926,7 +2924,6 @@ body {
                 this.soulData.totalRuns++;
                 saveSoulData(this.soulData);
                 
-                // Clear event panel first
                 document.getElementById('event-panel').innerHTML = '';
                 
                 this.updateUI();
@@ -3226,7 +3223,6 @@ body {
             // ==================== COMBAT SYSTEM ====================
 
             performAttack() {
-                // ✅ FIX: Add debounce check
                 if (!this.inCombat || !this.currentMonster || this.isActionLocked) return;
                 
                 // Lock actions
@@ -3264,7 +3260,7 @@ body {
                     this.currentMonster.hp = 0;
                     this.renderCombat();
                     setTimeout(() => {
-                        this.isActionLocked = false; // ✅ Unlock after victory
+                        this.isActionLocked = false; 
                         this.monsterDefeated();
                     }, 500);
                     return;
@@ -3300,7 +3296,7 @@ body {
                         this.player.hp = 0;
                         this.renderCombat();
                         setTimeout(() => {
-                            this.isActionLocked = false; // ✅ Unlock after game over
+                            this.isActionLocked = false; 
                             this.gameOver();
                         }, 500);
                         return;
@@ -3310,7 +3306,6 @@ body {
                 this.updateUI();
                 this.renderCombat();
                 
-                // ✅ FIX: Unlock actions after a short delay
                 setTimeout(() => {
                     this.isActionLocked = false;
                 }, 400);
@@ -3398,7 +3393,6 @@ body {
             }
 
             tryFlee() {
-                // ✅ FIX: Add debounce check
                 if (this.isActionLocked) return;
                 this.isActionLocked = true;
                 
@@ -3406,7 +3400,7 @@ body {
                 if (Math.random() * 100 < fleeChance) {
                     this.inCombat = false;
                     this.isMimicFight = false;
-                    this.isActionLocked = false; // ✅ Unlock on success
+                    this.isActionLocked = false; 
                     this.renderFleeSuccess();
                 } else {
                     this.lastBattleLog = {
@@ -3720,11 +3714,6 @@ body {
                 
                 // Adjust current HP
                 if (newMaxHp < oldMaxHp && itemHp > 0) {
-                    // Option 1: Proportional reduction
-                    // const hpRatio = oldHp / oldMaxHp;
-                    // this.player.hp = Math.floor(hpRatio * newMaxHp);
-                    
-                    // Option 2: Simply subtract the item's HP bonus (more intuitive)
                     this.player.hp = Math.max(1, oldHp - itemHp);
                 }
                 
@@ -3800,11 +3789,9 @@ body {
             }
 
             openChestRisky() {
-                // 40% chance of mimic
                 if (Math.random() < 0.55) {
                     this.generateMimic();
                 } else {
-                    // Better loot for risky choice
                     const goldAmount = Math.floor((40 + this.level * 0.6 + Math.random() * 50) * this.getGoldMultiplier());
                     const hasEquipment = Math.random() < 0.30;
                     const equipment = hasEquipment ? this.generateEquipmentDrop(0.15) : null;
@@ -3818,7 +3805,6 @@ body {
                         else potion = 'small';
                     }
 
-                    // Chance for souls
                     const souls = Math.random() < 0.3 ? Math.floor(2 + this.getAreaNumber() * 0.5) : 0;
 
                     this.pendingLoot = {
@@ -3919,7 +3905,6 @@ body {
                 for (let i = 0; i < equipCount; i++) {
                     const rarityBoost = areaNum > 6 ? 0.25 : (areaNum > 3 ? 0.15 : 0.05);
                     const equip = this.generateEquipmentDrop(rarityBoost);
-                    //const equip = this.generateEquipmentDrop(0); 
                     equip.price = this.calculateEquipmentPrice(equip);
                     this.merchantItems.push({
                         shopType: 'equipment',
@@ -4201,14 +4186,12 @@ body {
                 let battleLogEntries = [];
 
                 if (this.lastBattleLog.initialEncounter) {
-                    // 第一次進戰鬥，只顯示遭遇訊息
                     battleLogEntries.push(`
                         <div class="battle-log-entry" style="font-size:1rem; color:#ffd700; font-weight:bold;">
                             遭遇 ${monster.emoji} ${monster.name}${typeText ? '（' + typeText + '）' : ''}
                         </div>
                     `);
                 } else {
-                    // 之後的回合，只保留最近兩筆「實質戰鬥紀錄」
                     if (this.lastBattleLog.playerDamage > 0) {
                         if (this.lastBattleLog.playerCrit) {
                             battleLogEntries.push(`<div class="battle-log-entry player-crit">爆擊！造成 <span class="damage-number">${this.lastBattleLog.playerDamage}</span> 傷害</div>`);
