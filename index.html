@@ -1749,6 +1749,18 @@ body {
         </div>
     </div>
 
+    <!-- Sell Equipment Confirm Modal -->
+    <div class="equip-compare-modal hidden" id="sell-equip-modal">
+        <div class="equip-compare-content">
+            <div class="equip-compare-title">💰 出售裝備</div>
+            <div id="sell-equip-modal-content"></div>
+            <div class="equip-compare-buttons">
+                <button class="btn btn-warning btn-small" id="sell-equip-confirm-btn">出售</button>
+                <button class="btn btn-secondary btn-small" onclick="game.closeSellEquipModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Unequip Confirm Modal -->
     <div class="equip-compare-modal hidden" id="unequip-modal">
         <div class="equip-compare-content">
@@ -2557,6 +2569,7 @@ body {
                 this.resetRunState();
                 this.updateMenuSoulDisplay();
                 this.selectedUnequipSlot = null;
+                this.selectedSellIndex = -1;
 
                 // ✅ Only initialize once in constructor - no need to reset per run
                 this.combatHeightSet = false;
@@ -2750,6 +2763,7 @@ body {
                 this.currentArea = 1;
                 this.lastArea = 0;
                 this.selectedBagIndex = -1;
+                this.selectedSellIndex = -1;
                 this.isMimicFight = false;
                 this.mimicLootBonus = false;  
                 this.isActionLocked = false; 
@@ -4000,24 +4014,92 @@ body {
                 this.renderMerchant();
             }
 
-            sellEquipFromBag(index) {
+            showSellEquipModal(index) {
                 if (index < 0 || index >= this.player.bag.length) return;
                 
                 const item = this.player.bag[index];
                 const price = Math.floor(this.calculateEquipmentPrice(item) * 0.35);
                 
-                // ✅ FIX: Add confirmation for rare+ equipment
-                if (item.rarity === 'rare' || item.rarity === 'epic' || item.rarity === 'legendary') {
-                    const rarityName = RARITY_NAMES[item.rarity];
-                    if (!confirm(`⚠️ 確定要賣掉【${rarityName}】${item.name} 嗎？\n\n售價: ${price} 金幣\n這個動作無法復原！`)) {
-                        return;
-                    }
+                this.selectedSellIndex = index;
+                
+                const container = document.getElementById('sell-equip-modal-content');
+                
+                // Build stats - only show non-zero
+                let statsHtml = '';
+                if (item.attack > 0) statsHtml += `<div class="stat-line"><span>⚔️ 攻擊</span><span style="color:#ff6b35">${item.attack}</span></div>`;
+                if (item.defense > 0) statsHtml += `<div class="stat-line"><span>🛡️ 防禦</span><span style="color:#4ecdc4">${item.defense}</span></div>`;
+                if (item.dodge > 0) statsHtml += `<div class="stat-line"><span>💨 閃避</span><span style="color:#a8e6cf">${item.dodge}%</span></div>`;
+                if (item.crit > 0) statsHtml += `<div class="stat-line"><span>💥 爆擊</span><span style="color:#f39c12">${item.crit}%</span></div>`;
+                if (item.hp && item.hp > 0) statsHtml += `<div class="stat-line"><span>❤️ 生命</span><span style="color:#e94560">${item.hp}</span></div>`;
+                
+                // Warning for rare+ items
+                const isValuable = item.rarity === 'rare' || item.rarity === 'epic' || item.rarity === 'legendary';
+                
+                container.innerHTML = `
+                    <div class="equip-card new ${item.rarity}" style="margin: 15px auto; max-width: 200px;">
+                        <div class="equip-card-label">${SLOT_NAMES[item.type]}</div>
+                        <div class="equip-card-name" style="color: ${this.getRarityColor(item.rarity)}">
+                            ${item.name}
+                        </div>
+                        <div class="equip-card-stats">
+                            ${statsHtml}
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px;">
+                        <div style="font-size: 1.1rem; color: #ffd700; font-weight: bold;">
+                            💰 售價: ${price} 金幣
+                        </div>
+                        ${isValuable ? `
+                            <div style="color: #e94560; font-size: 0.8rem; margin-top: 8px;">
+                                ⚠️ 這是${RARITY_NAMES[item.rarity]}裝備，確定要賣掉嗎？
+                            </div>
+                        ` : `
+                            <div style="color: #aaa; font-size: 0.8rem; margin-top: 8px;">
+                                此操作無法復原
+                            </div>
+                        `}
+                    </div>
+                `;
+                
+                document.getElementById('sell-equip-confirm-btn').onclick = () => {
+                    this.confirmSellEquip();
+                };
+                
+                document.getElementById('sell-equip-modal').classList.remove('hidden');
+            }
+
+            closeSellEquipModal() {
+                document.getElementById('sell-equip-modal').classList.add('hidden');
+                this.selectedSellIndex = -1;
+            }
+
+            confirmSellEquip() {
+                const index = this.selectedSellIndex;
+                if (index < 0 || index >= this.player.bag.length) {
+                    this.closeSellEquipModal();
+                    return;
                 }
+                
+                const item = this.player.bag[index];
+                const price = Math.floor(this.calculateEquipmentPrice(item) * 0.35);
                 
                 this.player.bag.splice(index, 1);
                 this.player.gold += price;
+                
+                this.closeSellEquipModal();
                 this.updateUI();
-                this.renderMerchant();
+                
+                // Re-render merchant if currently at merchant
+                if (this.currentEvent === 'merchant') {
+                    this.renderMerchant();
+                }
+            }
+
+            sellEquipFromBag(index) {
+                if (index < 0 || index >= this.player.bag.length) return;
+                
+                // Show confirmation modal instead of direct sell
+                this.showSellEquipModal(index);
             }
 
             // ==================== RANDOM EVENT SYSTEM ====================
