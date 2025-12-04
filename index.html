@@ -1960,16 +1960,14 @@ body {
         }
 
         function calculateTotalLifetimeSouls(oldData) {
-            let total = oldData.souls || 0; // Start with currently held souls
+            let total = oldData.souls || 0; 
 
-            // Add up cost of every purchased upgrade
             if (oldData.upgrades) {
                 Object.keys(oldData.upgrades).forEach(key => {
                     const level = oldData.upgrades[key];
                     const upgradeDef = SOUL_UPGRADES.find(u => u.id === key);
                     
                     if (upgradeDef && level > 0) {
-                        // Sum cost for levels 0 to current_level-1
                         for (let i = 0; i < level; i++) {
                             total += Math.floor(upgradeDef.baseCost * Math.pow(upgradeDef.costMult, i));
                         }
@@ -2007,7 +2005,7 @@ body {
                     }
                 }
                 
-                // Calculate 50% Refund
+                // Calculate  Refund
                 const refundAmount = Math.floor(totalVal * 0.8);
                 
                 localStorage.removeItem('magicTower_autoSave'); 
@@ -2027,8 +2025,6 @@ body {
                 
                 return newData;
             }
-            // ---------------------------------
-
             return data;
         }
 
@@ -2146,68 +2142,68 @@ body {
         };
 
         const MATERIALS = {
-    // Area 1
-    slime_gel: { name: '史萊姆凝膠', emoji: '🟢', basePrice: 5, rarity: 'common' },
-    rat_tail: { name: '老鼠尾巴', emoji: '🐁', basePrice: 6, rarity: 'common' },
-    bat_fang: { name: '蝙蝠尖牙', emoji: '🦷', basePrice: 7, rarity: 'common' },
-    
-    // Area 2
-    spider_leg: { name: '蜘蛛斷腿', emoji: '🦵', basePrice: 12, rarity: 'common' },
-    goblin_ear: { name: '哥布林耳朵', emoji: '👂', basePrice: 15, rarity: 'common' },
-    cave_bat_wing: { name: '洞穴蝙蝠翼', emoji: '🦇', basePrice: 14, rarity: 'common' },
-    
-    // Area 3
-    rib_bone: { name: '腐朽肋骨', emoji: '🦴', basePrice: 25, rarity: 'uncommon' },
-    zombie_flesh: { name: '感染腐肉', emoji: '🧟', basePrice: 28, rarity: 'uncommon' },
-    ectoplasm: { name: '幽靈靈質', emoji: '👻', basePrice: 35, rarity: 'uncommon' },
-    
-    // Area 4
-    wolf_pelt: { name: '狼人毛皮', emoji: '🐺', basePrice: 45, rarity: 'uncommon' },
-    dryad_branch: { name: '樹妖枯枝', emoji: '🍂', basePrice: 50, rarity: 'uncommon' },
-    poison_gland: { name: '劇毒囊腺', emoji: '🧪', basePrice: 48, rarity: 'uncommon' },
-    
-    // Area 5
-    stone_heart: { name: '石像鬼之心', emoji: '🗿', basePrice: 70, rarity: 'rare' },
-    puppet_gear: { name: '魔偶齒輪', emoji: '⚙️', basePrice: 75, rarity: 'rare' },
-    mutant_fluid: { name: '突變體液', emoji: '🦠', basePrice: 80, rarity: 'rare' },
-    
-    // Area 6
-    imp_horn: { name: '小惡魔角', emoji: '😈', basePrice: 100, rarity: 'rare' },
-    hellhound_ash: { name: '地獄犬灰燼', emoji: '🐕', basePrice: 110, rarity: 'rare' },
-    black_feather: { name: '墮落黑羽', emoji: '🪶', basePrice: 120, rarity: 'rare' },
-    
-    // Area 7
-    frost_core: { name: '永凍核心', emoji: '❄️', basePrice: 150, rarity: 'rare' },
-    wraith_dust: { name: '冤魂塵埃', emoji: '🌪️', basePrice: 160, rarity: 'rare' },
-    ice_wolf_claw: { name: '冰狼利爪', emoji: '🐾', basePrice: 155, rarity: 'rare' },
-    
-    // Area 8
-    ember_spark: { name: '不滅火種', emoji: '🔥', basePrice: 200, rarity: 'epic' },
-    magma_rock: { name: '熔岩凝塊', emoji: '🌋', basePrice: 220, rarity: 'epic' },
-    salamander_scale: { name: '火蜥蜴鱗', emoji: '🦎', basePrice: 210, rarity: 'epic' },
-    
-    // Area 9
-    void_dust: { name: '虛空星塵', emoji: '✨', basePrice: 280, rarity: 'epic' },
-    alien_eye: { name: '異界眼球', emoji: '👁️', basePrice: 300, rarity: 'epic' },
-    chaos_shard: { name: '混沌碎片', emoji: '🌀', basePrice: 320, rarity: 'epic' },
-    
-    // Area 10
-    guard_badge: { name: '近衛勳章', emoji: '🎖️', basePrice: 400, rarity: 'epic' },
-    dragon_scale: { name: '黑龍逆鱗', emoji: '🐉', basePrice: 500, rarity: 'legendary' },
-    dark_metal: { name: '死亡金屬', emoji: '⛓️', basePrice: 450, rarity: 'epic' },
+            // Area 1
+            slime_gel: { name: '史萊姆凝膠', emoji: '🟢', basePrice: 5, rarity: 'common' },
+            rat_tail: { name: '老鼠尾巴', emoji: '🐁', basePrice: 6, rarity: 'common' },
+            bat_fang: { name: '蝙蝠尖牙', emoji: '🦷', basePrice: 7, rarity: 'common' },
+            
+            // Area 2
+            spider_leg: { name: '蜘蛛斷腿', emoji: '🦵', basePrice: 12, rarity: 'common' },
+            goblin_ear: { name: '哥布林耳朵', emoji: '👂', basePrice: 15, rarity: 'common' },
+            cave_bat_wing: { name: '洞穴蝙蝠翼', emoji: '🦇', basePrice: 14, rarity: 'common' },
+            
+            // Area 3
+            rib_bone: { name: '腐朽肋骨', emoji: '🦴', basePrice: 25, rarity: 'uncommon' },
+            zombie_flesh: { name: '感染腐肉', emoji: '🧟', basePrice: 28, rarity: 'uncommon' },
+            ectoplasm: { name: '幽靈靈質', emoji: '👻', basePrice: 35, rarity: 'uncommon' },
+            
+            // Area 4
+            wolf_pelt: { name: '狼人毛皮', emoji: '🐺', basePrice: 45, rarity: 'uncommon' },
+            dryad_branch: { name: '樹妖枯枝', emoji: '🍂', basePrice: 50, rarity: 'uncommon' },
+            poison_gland: { name: '劇毒囊腺', emoji: '🧪', basePrice: 48, rarity: 'uncommon' },
+            
+            // Area 5
+            stone_heart: { name: '石像鬼之心', emoji: '🗿', basePrice: 70, rarity: 'rare' },
+            puppet_gear: { name: '魔偶齒輪', emoji: '⚙️', basePrice: 75, rarity: 'rare' },
+            mutant_fluid: { name: '突變體液', emoji: '🦠', basePrice: 80, rarity: 'rare' },
+            
+            // Area 6
+            imp_horn: { name: '小惡魔角', emoji: '😈', basePrice: 100, rarity: 'rare' },
+            hellhound_ash: { name: '地獄犬灰燼', emoji: '🐕', basePrice: 110, rarity: 'rare' },
+            black_feather: { name: '墮落黑羽', emoji: '🪶', basePrice: 120, rarity: 'rare' },
+            
+            // Area 7
+            frost_core: { name: '永凍核心', emoji: '❄️', basePrice: 150, rarity: 'rare' },
+            wraith_dust: { name: '冤魂塵埃', emoji: '🌪️', basePrice: 160, rarity: 'rare' },
+            ice_wolf_claw: { name: '冰狼利爪', emoji: '🐾', basePrice: 155, rarity: 'rare' },
+            
+            // Area 8
+            ember_spark: { name: '不滅火種', emoji: '🔥', basePrice: 200, rarity: 'epic' },
+            magma_rock: { name: '熔岩凝塊', emoji: '🌋', basePrice: 220, rarity: 'epic' },
+            salamander_scale: { name: '火蜥蜴鱗', emoji: '🦎', basePrice: 210, rarity: 'epic' },
+            
+            // Area 9
+            void_dust: { name: '虛空星塵', emoji: '✨', basePrice: 280, rarity: 'epic' },
+            alien_eye: { name: '異界眼球', emoji: '👁️', basePrice: 300, rarity: 'epic' },
+            chaos_shard: { name: '混沌碎片', emoji: '🌀', basePrice: 320, rarity: 'epic' },
+            
+            // Area 10
+            guard_badge: { name: '近衛勳章', emoji: '🎖️', basePrice: 400, rarity: 'epic' },
+            dragon_scale: { name: '黑龍逆鱗', emoji: '🐉', basePrice: 500, rarity: 'legendary' },
+            dark_metal: { name: '死亡金屬', emoji: '⛓️', basePrice: 450, rarity: 'epic' },
 
-    // Bosses - ✅ All boss materials are legendary!
-    boss_1: { name: '看守鑰匙', emoji: '🗝️', basePrice: 100, rarity: 'rare' },
-    boss_2: { name: '蛛后毒牙', emoji: '🕷️', basePrice: 150, rarity: 'rare' },
-    boss_3: { name: '領主頭骨', emoji: '💀', basePrice: 250, rarity: 'rare' },
-    boss_4: { name: '森林之心', emoji: '💚', basePrice: 350, rarity: 'epic' },
-    boss_5: { name: '賢者之石', emoji: '💎', basePrice: 500, rarity: 'epic' },
-    boss_6: { name: '惡魔之血', emoji: '🍷', basePrice: 650, rarity: 'epic' },
-    boss_7: { name: '冰霜皇冠', emoji: '👑', basePrice: 850, rarity: 'legendary' },
-    boss_8: { name: '炎魔核心', emoji: '🌞', basePrice: 1100, rarity: 'legendary' },
-    boss_9: { name: '虛空水晶', emoji: '🔮', basePrice: 1500, rarity: 'legendary' },
-    boss_10: { name: '魔王靈魂', emoji: '👹', basePrice: 5000, rarity: 'legendary' }
-};
+
+            boss_1: { name: '看守鑰匙', emoji: '🗝️', basePrice: 100, rarity: 'rare' },
+            boss_2: { name: '蛛后毒牙', emoji: '🕷️', basePrice: 150, rarity: 'rare' },
+            boss_3: { name: '領主頭骨', emoji: '💀', basePrice: 250, rarity: 'rare' },
+            boss_4: { name: '森林之心', emoji: '💚', basePrice: 350, rarity: 'epic' },
+            boss_5: { name: '賢者之石', emoji: '💎', basePrice: 500, rarity: 'epic' },
+            boss_6: { name: '惡魔之血', emoji: '🍷', basePrice: 650, rarity: 'epic' },
+            boss_7: { name: '冰霜皇冠', emoji: '👑', basePrice: 850, rarity: 'legendary' },
+            boss_8: { name: '炎魔核心', emoji: '🌞', basePrice: 1100, rarity: 'legendary' },
+            boss_9: { name: '虛空水晶', emoji: '🔮', basePrice: 1500, rarity: 'legendary' },
+            boss_10: { name: '魔王靈魂', emoji: '👹', basePrice: 5000, rarity: 'legendary' }
+        };
 
         const MONSTERS_BY_AREA = {
             1: [
@@ -2273,7 +2269,7 @@ body {
             7: { name: '冰凍魔箱', emoji: '🧊', hpMult: 1.5, atkMult: 1.5, defMult: 1.3 },
             8: { name: '烈焰魔箱', emoji: '🔥', hpMult: 1.5, atkMult: 1.6, defMult: 1.3 },
             9: { name: '虛空吞噬者', emoji: '🌑', hpMult: 1.6, atkMult: 1.6, defMult: 1.4 },
-            10: { name: '魔王的寶物', emoji: '👑', hpMult: 1.8, atkMult: 1.5, defMult: 1.5 } // Reduced Atk Mult from 2.0 to 1.5
+            10: { name: '魔王的寶物', emoji: '👑', hpMult: 1.8, atkMult: 1.5, defMult: 1.5 } 
         };
 
         const AREA_BOSSES = {
@@ -2298,8 +2294,8 @@ body {
             goldMin: 10000,
             goldMax: 15000,
             soulReward: 1000,
-            material: 'boss_10',  // Same material as fake boss
-            trueBonusSouls: 500   // Extra souls for true ending
+            material: 'boss_10',
+            trueBonusSouls: 500 
         };
 
         const EQUIPMENT = {
