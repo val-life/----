@@ -1934,7 +1934,7 @@ body {
     <script>
         // ==================== PERSISTENT DATA ====================
         const SAVE_KEY = 'magicTower_soulData_v2';
-        const GAME_VERSION = '0.8';
+        const GAME_VERSION = '0.8.1';
         const DEBUG_MODE = false;
 
         function getNewSoulData() {
@@ -3133,7 +3133,31 @@ body {
                 const container = document.getElementById('soul-shop-items');
                 this.updateMenuSoulDisplay();
                 
-                container.innerHTML = SOUL_UPGRADES.map(upgrade => {
+                // Calculate total spent for reset button
+                let totalSpent = 0;
+                Object.keys(this.soulData.upgrades).forEach(upgradeId => {
+                    const level = this.soulData.upgrades[upgradeId];
+                    const upgradeDef = SOUL_UPGRADES.find(u => u.id === upgradeId);
+                    if (upgradeDef && level > 0) {
+                        for (let i = 0; i < level; i++) {
+                            totalSpent += Math.floor(upgradeDef.baseCost * Math.pow(upgradeDef.costMult, i));
+                        }
+                    }
+                });
+                
+                const resetButtonHtml = totalSpent > 0 ? `
+                    <div style="text-align: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(147, 51, 234, 0.3);">
+                        <button class="btn btn-danger btn-small" onclick="game.resetSoulShop()" 
+                            style="opacity: 0.8; font-size: 0.75rem;">
+                            🔄 重置所有升級
+                        </button>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 5px;">
+                            已投資: ${totalSpent} 靈魂
+                        </div>
+                    </div>
+                ` : '';
+                
+                container.innerHTML = resetButtonHtml + SOUL_UPGRADES.map(upgrade => {
                     const currentLevel = this.soulData.upgrades[upgrade.id];
                     const isMaxed = currentLevel >= upgrade.maxLevel;
                     const cost = isMaxed ? 0 : Math.floor(upgrade.baseCost * Math.pow(upgrade.costMult, currentLevel));
@@ -3147,7 +3171,7 @@ body {
                                 <div class="upgrade-level">等級 ${currentLevel} / ${upgrade.maxLevel} (${upgrade.effect})</div>
                             </div>
                             <div class="upgrade-cost ${isMaxed ? 'maxed' : (!canAfford ? 'disabled' : '')}" 
-                                 onclick="${isMaxed ? '' : `game.purchaseUpgrade('${upgrade.id}')`}">
+                                onclick="${isMaxed ? '' : `game.purchaseUpgrade('${upgrade.id}')`}">
                                 ${isMaxed ? '✓ 已滿級' : `💎 ${cost}`}
                             </div>
                         </div>
@@ -3169,6 +3193,53 @@ body {
                 this.soulData.upgrades[upgradeId]++;
                 saveSoulData(this.soulData);
                 this.renderSoulShop();
+            }
+
+            resetSoulShop() {
+                // Calculate total souls spent on upgrades
+                let totalRefund = 0;
+                
+                Object.keys(this.soulData.upgrades).forEach(upgradeId => {
+                    const level = this.soulData.upgrades[upgradeId];
+                    const upgradeDef = SOUL_UPGRADES.find(u => u.id === upgradeId);
+                    
+                    if (upgradeDef && level > 0) {
+                        // Calculate total cost for all levels purchased
+                        for (let i = 0; i < level; i++) {
+                            totalRefund += Math.floor(upgradeDef.baseCost * Math.pow(upgradeDef.costMult, i));
+                        }
+                    }
+                });
+                
+                if (totalRefund === 0) {
+                    alert('沒有可重置的升級！');
+                    return;
+                }
+                
+                // 80% refund
+                const refundAmount = Math.floor(totalRefund * 1);
+                
+                const confirmMsg = `確定要重置所有靈魂商店升級嗎？`;
+                
+                if (!confirm(confirmMsg)) {
+                    return;
+                }
+                
+                // Reset all upgrades to 0
+                Object.keys(this.soulData.upgrades).forEach(key => {
+                    this.soulData.upgrades[key] = 0;
+                });
+                
+                // Add refund
+                this.soulData.souls += refundAmount;
+                
+                // Save
+                saveSoulData(this.soulData);
+                
+                // Re-render
+                this.renderSoulShop();
+                
+                alert(`重置完成！已退還 ${refundAmount} 靈魂碎片。`);
             }
 
             startNewRun() {
