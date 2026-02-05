@@ -1736,6 +1736,14 @@ body {
             <div class="action-buttons">
                 <button class="btn btn-secondary" onclick="game.closeSoulShop()">返回主選單</button>
             </div>
+            <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(233, 69, 96, 0.3);">
+                <button class="btn btn-danger btn-small" onclick="game.resetAllGameData()" style="font-size: 0.75rem; background: linear-gradient(135deg, #dc2626, #991b1b);">
+                    🔄 重置靈魂碎片
+                </button>
+                <div style="font-size: 0.65rem; color: #888; margin-top: 8px; max-width: 280px; margin-left: auto; margin-right: auto;">
+                    將靈魂碎片數量重置為 0
+                </div>
+            </div>
         </div>
 
         <!-- Game Screen -->
@@ -3240,6 +3248,22 @@ body {
                 this.renderSoulShop();
                 
                 alert(`重置完成！已退還 ${refundAmount} 靈魂碎片。`);
+            }
+
+            resetAllGameData() {
+                if (!confirm(`確定要重置靈魂碎片為 0 嗎？\n目前擁有：${this.soulData.souls} 靈魂碎片`)) {
+                    return;
+                }
+                
+                // Reset only soul fragments to 0
+                this.soulData.souls = 0;
+                saveSoulData(this.soulData);
+                
+                // Re-render the shop
+                this.renderSoulShop();
+                this.updateMenuSoulDisplay();
+                
+                alert(`靈魂碎片已重置為 0`);
             }
 
             startNewRun() {
